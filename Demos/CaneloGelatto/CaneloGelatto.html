@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Canelo Gelatto · Artesanal · Neuquén</title>
+  <!-- Tailwind + Font Awesome -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    /* efectos y detalles personalizados frescos / gelatto */
+    .parallax-hero {
+      background-attachment: fixed;
+      background-position: center;
+      background-size: cover;
+    }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      border: 1px solid rgba(200, 230, 210, 0.3);
+    }
+    .hover-scale {
+      transition: transform 0.25s ease, box-shadow 0.3s ease;
+    }
+    .hover-scale:hover {
+      transform: scale(1.02);
+      box-shadow: 0 20px 30px -10px rgba(60, 130, 100, 0.2);
+    }
+    .btn-cta {
+      background: linear-gradient(145deg, #3a9e7a, #2a7a5e);
+      transition: all 0.2s ease;
+      border: none;
+      color: white;
+    }
+    .btn-cta:hover {
+      background: linear-gradient(145deg, #4abe8e, #3a8a6e);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 20px -8px rgba(40, 110, 80, 0.4);
+    }
+    .btn-outline-cta {
+      border: 2px solid #3a9e7a;
+      color: #2a7a5e;
+      transition: all 0.2s ease;
+    }
+    .btn-outline-cta:hover {
+      background: #3a9e7a;
+      color: white;
+      transform: translateY(-2px);
+    }
+    .filter-btn.active {
+      background: #3a9e7a;
+      color: white;
+      border-color: #3a9e7a;
+    }
+    .filter-btn {
+      transition: all 0.15s ease;
+    }
+    .bg-wave-soft {
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.03"><path d="M0 30 Q25 10 50 30 T100 30 L100 100 L0 100Z" fill="%233a9e7a"/><path d="M0 60 Q25 40 50 60 T100 60 L100 100 L0 100Z" fill="%233a9e7a" opacity="0.5"/></svg>');
+      background-repeat: repeat;
+      background-size: 200px;
+    }
+    .hamburger-line {
+      display: block;
+      width: 28px;
+      height: 3px;
+      margin: 5px auto;
+      background: #2a7a5e;
+      transition: all 0.25s ease;
+    }
+    .mobile-menu {
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transform: translateX(100%);
+    }
+    .mobile-menu.open {
+      transform: translateX(0);
+    }
+    .slider-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.3);
+      transition: background 0.3s;
+      cursor: pointer;
+    }
+    .slider-dot.active {
+      background: #f7d44a;
+    }
+    .flavor-tag {
+      background: rgba(255,255,240,0.7);
+      backdrop-filter: blur(2px);
+    }
+  </style>
+</head>
+<body class="font-sans antialiased text-gray-700 bg-white">
+
+  <!-- ========== NAVBAR ========== -->
+  <nav class="fixed top-0 left-0 w-full z-50 bg-white/90 backdrop-blur-md shadow-sm border-b border-emerald-200/50 px-6 py-3 flex items-center justify-between">
+    <div class="flex items-center gap-2">
+      <i class="fas fa-ice-cream text-3xl text-emerald-600"></i>
+      <span class="text-2xl font-serif font-bold tracking-tight text-gray-800">Canelo <span class="text-emerald-600">Gelatto</span></span>
+    </div>
+    <ul class="hidden md:flex gap-8 text-base font-medium text-gray-600">
+      <li><a href="#inicio" class="hover:text-emerald-600 transition">Inicio</a></li>
+      <li><a href="#sabores" class="hover:text-emerald-600 transition">Sabores</a></li>
+      <li><a href="#historia" class="hover:text-emerald-600 transition">Historia</a></li>
+      <li><a href="#local" class="hover:text-emerald-600 transition">Local</a></li>
+      <li><a href="#contacto" class="hover:text-emerald-600 transition">Contacto</a></li>
+    </ul>
+    <div class="flex items-center gap-3">
+      <a href="#pedido" class="hidden md:inline-block btn-cta px-5 py-2 rounded-full text-sm font-semibold shadow-md"><i class="fas fa-shopping-bag mr-1"></i> Pedir</a>
+      <button id="hamburgerBtn" class="md:hidden flex flex-col items-center justify-center w-10 h-10 rounded-full hover:bg-emerald-50 transition" aria-label="menu">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- mobile menu -->
+  <div id="mobileMenu" class="mobile-menu fixed top-0 right-0 w-3/4 max-w-xs h-full bg-white/95 backdrop-blur-md shadow-2xl z-40 p-8 pt-24 flex flex-col gap-6 text-lg border-l border-emerald-100">
+    <a href="#inicio" class="border-b border-emerald-100 pb-3 text-emerald-700 font-semibold">Inicio</a>
+    <a href="#sabores" class="border-b border-emerald-100 pb-3">Sabores</a>
+    <a href="#historia" class="border-b border-emerald-100 pb-3">Historia</a>
+    <a href="#local" class="border-b border-emerald-100 pb-3">Local</a>
+    <a href="#contacto" class="border-b border-emerald-100 pb-3">Contacto</a>
+    <a href="#pedido" class="btn-cta text-center py-3 rounded-full mt-4"><i class="fas fa-shopping-bag mr-2"></i> Pedir</a>
+    <a href="#" class="btn-outline-cta text-center py-3 rounded-full border-2"><i class="fab fa-whatsapp mr-2"></i> WhatsApp</a>
+  </div>
+
+  <!-- ========== HERO ========== -->
+  <section id="inicio" class="relative w-full h-screen overflow-hidden parallax-hero" style="background-image: url('https://images.unsplash.com/photo-1579954115545-a95591f28bfc?w=1600&q=80');">
+    <div class="absolute inset-0 bg-black/25"></div>
+    <div class="relative z-10 flex flex-col items-center justify-center h-full text-center px-4 text-white">
+      <h1 class="text-5xl md:text-7xl font-serif font-bold drop-shadow-lg">Canelo <span class="text-emerald-200">Gelatto</span></h1>
+      <p class="text-xl md:text-3xl max-w-2xl mt-4 font-light drop-shadow">Sabores artesanales · frescura en cada cucharada</p>
+      <div class="flex flex-wrap justify-center gap-4 mt-8">
+        <a href="#sabores" class="btn-cta px-8 py-4 rounded-full text-lg font-semibold shadow-xl"><i class="fas fa-ice-cream mr-2"></i> Ver sabores</a>
+        <a href="#pedido" class="bg-white/20 backdrop-blur-sm border border-white/40 px-8 py-4 rounded-full text-lg font-semibold hover:bg-white/30 transition"><i class="fas fa-shopping-bag mr-2"></i> Pedir online</a>
+        <a href="#local" class="bg-emerald-600/50 backdrop-blur-sm border border-emerald-300/40 px-8 py-4 rounded-full text-lg font-semibold hover:bg-emerald-700/50 transition"><i class="fas fa-map-pin mr-2"></i> Ubicación</a>
+      </div>
+      <div class="absolute bottom-8 left-0 right-0 flex justify-center gap-2">
+        <span class="slider-dot active"></span>
+        <span class="slider-dot"></span>
+        <span class="slider-dot"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== SABORES ========== -->
+  <section id="sabores" class="py-20 px-6 bg-wave-soft bg-white">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-12">
+        <span class="text-emerald-600 font-semibold tracking-wide"><i class="fas fa-ice-cream mr-1"></i> carta</span>
+        <h2 class="text-4xl md:text-5xl font-serif font-bold mt-2 text-gray-700">Nuestros sabores</h2>
+        <p class="text-gray-500 text-lg mt-2">Gelatto artesanal, con ingredientes de primera calidad</p>
+        <div class="flex flex-wrap justify-center gap-2 mt-6">
+          <button class="filter-btn active border border-emerald-600 px-5 py-2 rounded-full text-sm font-medium" data-filter="all">Todos</button>
+          <button class="filter-btn border border-emerald-600 px-5 py-2 rounded-full text-sm font-medium" data-filter="clasico">Clásicos</button>
+          <button class="filter-btn border border-emerald-600 px-5 py-2 rounded-full text-sm font-medium" data-filter="fruta">Frutales</button>
+          <button class="filter-btn border border-emerald-600 px-5 py-2 rounded-full text-sm font-medium" data-filter="vegano">Veganos</button>
+        </div>
+      </div>
+
+      <div id="menuGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="menu-item bg-white rounded-2xl shadow-md overflow-hidden hover-scale border border-emerald-100" data-category="clasico">
+          <img src="https://images.unsplash.com/photo-1579954115545-a95591f28bfc?w=400&q=80" alt="pistacho" class="w-full h-52 object-cover">
+          <div class="p-5">
+            <h3 class="text-xl font-bold">Pistacho</h3>
+            <p class="text-sm text-gray-400">pasta de pistacho artesanal</p>
+            <div class="flex justify-between items-center mt-3">
+              <span class="text-emerald-700 font-bold text-lg">$5.900</span>
+              <span class="bg-emerald-100 text-emerald-700 text-xs px-3 py-1 rounded-full">clásico</span>
+            </div>
+            <button class="mt-4 w-full btn-cta py-2 rounded-full text-sm font-semibold"><i class="fas fa-plus mr-1"></i> Añadir</button>
+          </div>
+        </div>
+        <div class="menu-item bg-white rounded-2xl shadow-md overflow-hidden hover-scale border border-emerald-100" data-category="fruta">
+          <img src="https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400&q=80" alt="frutilla" class="w-full h-52 object-cover">
+          <div class="p-5">
+            <h3 class="text-xl font-bold">Frutilla</h3>
+            <p class="text-sm text-gray-400">con trozos de fruta natural</p>
+            <div class="flex justify-between items-center mt-3">
+              <span class="text-emerald-700 font-bold text-lg">$4.800</span>
+              <span class="bg-rose-100 text-rose-700 text-xs px-3 py-1 rounded-full">frutal</span>
+            </div>
+            <button class="mt-4 w-full btn-cta py-2 rounded-full text-sm font-semibold"><i class="fas fa-plus mr-1"></i> Añadir</button>
+          </div>
+        </div>
+        <div class="menu-item bg-white rounded-2xl shadow-md overflow-hidden hover-scale border border-emerald-100" data-category="vegano fruta">
+          <img src="https://images.unsplash.com/photo-1558618666-fcd25c85f64d?w=400&q=80" alt="mango" class="w-full h-52 object-cover">
+          <div class="p-5">
+            <h3 class="text-xl font-bold">Mango & maracuyá</h3>
+            <p class="text-sm text-gray-400">base de agua, fruta pura</p>
+            <div class="flex justify-between items-center mt-3">
+              <span class="text-emerald-700 font-bold text-lg">$5.200</span>
+              <span class="bg-green-100 text-green-700 text-xs px-3 py-1 rounded-full">vegano · frutal</span>
+            </div>
+            <button class="mt-4 w-full btn-cta py-2 rounded-full text-sm font-semibold"><i class="fas fa-plus mr-1"></i> Añadir</button>
+          </div>
+        </div>
+        <div class="menu-item bg-white rounded-2xl shadow-md overflow-hidden hover-scale border border-emerald-100" data-category="clasico">
+          <img src="https://images.unsplash.com/photo-1579954115545-a95591f28bfc?w=400&q=80" alt="chocolate" class="w-full h-52 object-cover">
+          <div class="p-5">
+            <h3 class="text-xl font-bold">Chocolate belga</h3>
+            <p class="text-sm text-gray-400">con chips de cacao</p>
+            <div class="flex justify-between items-center mt-3">
+              <span class="text-emerald-700 font-bold text-lg">$5.500</span>
+              <span class="bg-emerald-100 text-emerald-700 text-xs px-3 py-1 rounded-full">clásico</span>
+            </div>
+            <button class="mt-4 w-full btn-cta py-2 rounded-full text-sm font-semibold"><i class="fas fa-plus mr-1"></i> Añadir</button>
+          </div>
+        </div>
+        <div class="menu-item bg-white rounded-2xl shadow-md overflow-hidden hover-scale border border-emerald-100" data-category="fruta">
+          <img src="https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400&q=80" alt="limón" class="w-full h-52 object-cover">
+          <div class="p-5">
+            <h3 class="text-xl font-bold">Limón & albahaca</h3>
+            <p class="text-sm text-gray-400">combinación refrescante</p>
+            <div class="flex justify-between items-center mt-3">
+              <span class="text-emerald-700 font-bold text-lg">$4.900</span>
+              <span class="bg-rose-100 text-rose-700 text-xs px-3 py-1 rounded-full">frutal</span>
+            </div>
+            <button class="mt-4 w-full btn-cta py-2 rounded-full text-sm font-semibold"><i class="fas fa-plus mr-1"></i> Añadir</button>
+          </div>
+        </div>
+        <div class="menu-item bg-white rounded-2xl shadow-md overflow-hidden hover-scale border border-emerald-100" data-category="vegano">
+          <img src="https://images.unsplash.com/photo-1558618666-fcd25c85f64d?w=400&q=80" alt="coco" class="w-full h-52 object-cover">
+          <div class="p-5">
+            <h3 class="text-xl font-bold">Coco & chocolate</h3>
+            <p class="text-sm text-gray-400">leche de coco, sin lácteos</p>
+            <div class="flex justify-between items-center mt-3">
+              <span class="text-emerald-700 font-bold text-lg">$5.800</span>
+              <span class="bg-green-100 text-green-700 text-xs px-3 py-1 rounded-full">vegano</span>
+            </div>
+            <button class="mt-4 w-full btn-cta py-2 rounded-full text-sm font-semibold"><i class="fas fa-plus mr-1"></i> Añadir</button>
+          </div>
+        </div>
+      </div>
+      <div class="text-center mt-12">
+        <a href="#" class="btn-outline-cta px-8 py-3 rounded-full text-lg font-semibold border-2"><i class="fas fa-arrow-right mr-2"></i> Ver todos los sabores</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== HISTORIA ========== -->
+  <section id="historia" class="py-20 px-6 bg-emerald-50/20">
+    <div class="max-w-5xl mx-auto">
+      <div class="flex flex-col md:flex-row items-center gap-10">
+        <div class="md:w-1/2">
+          <span class="text-emerald-600 font-semibold tracking-wide"><i class="fas fa-heart mr-1"></i> nuestra historia</span>
+          <h2 class="text-4xl md:text-5xl font-serif font-bold mt-2 text-gray-700">Pasión por el gelatto</h2>
+          <p class="text-gray-500 text-lg mt-6 leading-relaxed">Canelo Gelatto nace con la idea de ofrecer un helado artesanal de calidad superior, con ingredientes frescos y naturales. Cada sabor es creado con dedicación, utilizando técnicas tradicionales italianas y un toque de innovación. Somos el rincón helado de Neuquén, donde la frescura y el sabor se encuentran.</p>
+          <div class="mt-8 flex flex-wrap gap-6">
+            <div><i class="fas fa-check-circle text-emerald-600 mr-2"></i> Ingredientes naturales</div>
+            <div><i class="fas fa-check-circle text-emerald-600 mr-2"></i> Recetas propias</div>
+          </div>
+        </div>
+        <div class="md:w-1/2 grid grid-cols-2 gap-3">
+          <img src="https://images.unsplash.com/photo-1579954115545-a95591f28bfc?w=400&q=80" alt="gelatto" class="rounded-2xl shadow-lg hover-scale w-full h-48 object-cover">
+          <img src="https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400&q=80" alt="producción" class="rounded-2xl shadow-lg hover-scale w-full h-48 object-cover mt-6">
+          <img src="https://images.unsplash.com/photo-1558618666-fcd25c85f64d?w=400&q=80" alt="ingredientes" class="rounded-2xl shadow-lg hover-scale w-full h-48 object-cover -mt-4">
+          <img src="https://images.unsplash.com/photo-1579954115545-a95591f28bfc?w=400&q=80" alt="local" class="rounded-2xl shadow-lg hover-scale w-full h-48 object-cover">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== LOCAL ========== -->
+  <section id="local" class="py-20 px-6 bg-white">
+    <div class="max-w-5xl mx-auto">
+      <div class="text-center mb-10">
+        <span class="text-emerald-600 font-semibold tracking-wide"><i class="fas fa-store mr-1"></i> nuestra esquina</span>
+        <h2 class="text-4xl md:text-5xl font-serif font-bold mt-2 text-gray-700">Visitá Canelo Gelatto</h2>
+      </div>
+      <div class="grid md:grid-cols-2 gap-8">
+        <div class="bg-emerald-50/60 p-6 rounded-2xl shadow-sm border border-emerald-200/50">
+          <div class="flex items-start gap-4">
+            <i class="fas fa-map-pin text-3xl text-emerald-600 mt-1"></i>
+            <div>
+              <h3 class="text-xl font-bold">Canelo Gelatto</h3>
+              <p class="text-gray-600">9 de Julio 456, Neuquén</p>
+              <p class="text-gray-600"><i class="far fa-clock mr-1"></i> Lun–Dom 12:00 – 23:00</p>
+              <p class="text-gray-600"><i class="fas fa-phone mr-1"></i> +54 299 444-5678</p>
+              <a href="#" class="inline-block mt-3 btn-cta px-5 py-2 rounded-full text-sm font-semibold"><i class="fas fa-map-pin mr-1"></i> Cómo llegar</a>
+            </div>
+          </div>
+          <div class="mt-4 text-sm text-gray-500">
+            <i class="fas fa-utensils mr-1"></i> También podés disfrutar de nuestra pastelería en <strong>Canelo Café & Pastelería</strong> (Av. Argentina 123)
+          </div>
+        </div>
+        <div class="rounded-2xl overflow-hidden shadow-lg h-64 md:h-auto min-h-[200px]">
+          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3104.456789!2d-68.123456!3d-38.951234!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x960a3b4c5d6e7f8b%3A0x9a8b7c6d5e4f3a2b!2sNeuqu%C3%A9n%2C%20Argentina!5e0!3m2!1ses!2sar!4v1712345678901" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== RESEÑAS ========== -->
+  <section class="py-16 px-6 bg-emerald-50/10">
+    <div class="max-w-4xl mx-auto text-center">
+      <i class="fas fa-star text-4xl text-yellow-400"></i>
+      <p class="text-4xl font-bold text-gray-700 mt-2">★ 4.9</p>
+      <p class="text-gray-500">120+ reseñas · Google</p>
+      <div class="mt-8 grid md:grid-cols-3 gap-6">
+        <div class="bg-white p-6 rounded-2xl shadow-sm"><i class="fas fa-quote-left text-emerald-500 text-2xl"></i><p class="mt-2 italic">“El mejor gelatto de Neuquén, el pistacho es espectacular.”</p><span class="block mt-2 text-sm font-semibold">— Lucía M.</span></div>
+        <div class="bg-white p-6 rounded-2xl shadow-sm"><i class="fas fa-quote-left text-emerald-500 text-2xl"></i><p class="mt-2 italic">“Sabores auténticos, textura cremosa. Muy recomendable.”</p><span class="block mt-2 text-sm font-semibold">— Diego R.</span></div>
+        <div class="bg-white p-6 rounded-2xl shadow-sm"><i class="fas fa-quote-left text-emerald-500 text-2xl"></i><p class="mt-2 italic">“Atención excelente y los sabores frutales son increíbles.”</p><span class="block mt-2 text-sm font-semibold">— Sofía G.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== CONTACTO ========== -->
+  <section id="contacto" class="py-20 px-6 bg-white">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-4xl font-serif font-bold text-center">Contacto & pedidos</h2>
+      <p class="text-center text-gray-500 mt-2">Consultá sabores o hacé tu pedido</p>
+      <div class="mt-10 glass-card p-8 rounded-3xl shadow-xl border border-emerald-200/50">
+        <form class="grid sm:grid-cols-2 gap-6">
+          <input type="text" placeholder="Nombre" class="p-4 rounded-xl border border-emerald-200 focus:ring-2 focus:ring-emerald-400 outline-none">
+          <input type="tel" placeholder="Teléfono" class="p-4 rounded-xl border border-emerald-200 focus:ring-2 focus:ring-emerald-400 outline-none">
+          <textarea placeholder="Mensaje / pedido" rows="3" class="sm:col-span-2 p-4 rounded-xl border border-emerald-200 focus:ring-2 focus:ring-emerald-400 outline-none"></textarea>
+          <button type="submit" class="sm:col-span-2 btn-cta py-4 rounded-full text-lg font-semibold"><i class="fas fa-paper-plane mr-2"></i> Enviar</button>
+        </form>
+        <div class="flex flex-wrap justify-center gap-6 mt-8 text-center">
+          <a href="#" class="text-emerald-700 text-lg"><i class="fab fa-whatsapp mr-2"></i> +54 299 444-5678</a>
+          <a href="#" class="text-emerald-700 text-lg"><i class="fas fa-phone-alt mr-2"></i> +54 299 444-1234</a>
+          <a href="#" class="text-emerald-700 text-lg"><i class="fas fa-envelope mr-2"></i> gelatto@canelo.com</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="bg-emerald-900/10 border-t border-emerald-200 py-10 px-6 text-center">
+    <p class="text-gray-500 text-sm"><i class="fas fa-ice-cream text-emerald-600 mr-1"></i> Canelo Gelatto · Artesanal · Neuquén</p>
+    <div class="flex justify-center gap-6 mt-4 text-2xl text-emerald-700">
+      <a href="#"><i class="fab fa-instagram"></i></a>
+      <a href="#"><i class="fab fa-facebook"></i></a>
+      <a href="#"><i class="fab fa-tripadvisor"></i></a>
+    </div>
+    <div class="mt-4 text-sm text-gray-400">
+      <a href="#" class="hover:text-emerald-600">Canelo Café & Pastelería</a> · <a href="#" class="hover:text-emerald-600">Canelo Gelatto</a>
+    </div>
+  </footer>
+
+  <!-- ========== JS ========== -->
+  <script>
+    (function() {
+      // hamburguesa
+      const hamburger = document.getElementById('hamburgerBtn');
+      const mobileMenu = document.getElementById('mobileMenu');
+      hamburger.addEventListener('click', () => {
+        mobileMenu.classList.toggle('open');
+      });
+      document.querySelectorAll('#mobileMenu a').forEach(link => {
+        link.addEventListener('click', () => mobileMenu.classList.remove('open'));
+      });
+
+      // filtros menú
+      const filterBtns = document.querySelectorAll('.filter-btn');
+      const menuItems = document.querySelectorAll('.menu-item');
+      filterBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+          filterBtns.forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          const filter = this.dataset.filter;
+          menuItems.forEach(item => {
+            const cats = item.dataset.category.split(' ');
+            if (filter === 'all' || cats.includes(filter)) {
+              item.style.display = 'block';
+            } else {
+              item.style.display = 'none';
+            }
+          });
+        });
+      });
+
+      // slider dots
+      const dots = document.querySelectorAll('.slider-dot');
+      let current = 0;
+      setInterval(() => {
+        dots.forEach(d => d.classList.remove('active'));
+        current = (current + 1) % dots.length;
+        dots[current].classList.add('active');
+      }, 5000);
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plan Juego · Diversión y Aprendizaje</title>
+    <!-- Tailwind + Font Awesome -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* ===== ESTILO ARCADE / GAMIFICADO ===== */
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+        .font-pixel {
+            font-family: 'Press Start 2P', monospace;
+            letter-spacing: 0.05em;
+        }
+
+        /* parallax layers */
+        .parallax-bg {
+            background-attachment: fixed;
+            background-position: center;
+            background-size: cover;
+        }
+
+        .parallax-layer {
+            will-change: transform;
+        }
+
+        /* glassmorphism arcade */
+        .glass-arcade {
+            background: rgba(0, 20, 40, 0.75);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            border: 2px solid rgba(0, 255, 200, 0.3);
+            box-shadow: 0 0 30px rgba(0, 255, 200, 0.1);
+        }
+
+        .glass-arcade-light {
+            background: rgba(10, 30, 50, 0.7);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border: 2px solid rgba(255, 215, 0, 0.25);
+        }
+
+        .hover-scale {
+            transition: transform 0.25s ease, box-shadow 0.3s ease;
+        }
+        .hover-scale:hover {
+            transform: scale(1.03) translateY(-4px);
+            box-shadow: 0 20px 40px -10px rgba(0, 255, 200, 0.25);
+        }
+
+        .btn-arcade {
+            background: linear-gradient(145deg, #f7d44a, #e6b800);
+            color: #0a0a1a;
+            font-weight: 700;
+            border: 3px solid #0a0a1a;
+            box-shadow: 0 6px 0 #0a0a1a;
+            transition: all 0.1s ease;
+        }
+        .btn-arcade:hover {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #0a0a1a;
+        }
+
+        .btn-arcade-outline {
+            border: 3px solid #f7d44a;
+            color: #f7d44a;
+            font-weight: 700;
+            transition: all 0.2s ease;
+            box-shadow: 0 0 20px rgba(247, 212, 74, 0.1);
+        }
+        .btn-arcade-outline:hover {
+            background: #f7d44a;
+            color: #0a0a1a;
+            box-shadow: 0 0 40px rgba(247, 212, 74, 0.3);
+        }
+
+        .filter-btn.active {
+            background: #f7d44a;
+            color: #0a0a1a;
+            border-color: #f7d44a;
+        }
+        .filter-btn {
+            transition: all 0.15s ease;
+            border-color: #f7d44a;
+            color: #f7d44a;
+            font-family: 'Press Start 2P', monospace;
+            font-size: 0.6rem;
+        }
+        .filter-btn:hover {
+            background: #f7d44a;
+            color: #0a0a1a;
+        }
+
+        .hamburger-line {
+            display: block;
+            width: 28px;
+            height: 3px;
+            margin: 5px auto;
+            background: #f7d44a;
+            transition: all 0.25s ease;
+        }
+        .mobile-menu {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateX(100%);
+        }
+        .mobile-menu.open {
+            transform: translateX(0);
+        }
+
+        .slider-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: rgba(247, 212, 74, 0.2);
+            border: 2px solid rgba(247, 212, 74, 0.4);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .slider-dot.active {
+            background: #f7d44a;
+            border-color: #f7d44a;
+            box-shadow: 0 0 20px #f7d44a;
+        }
+
+        body {
+            background: #0a0a1a;
+            color: #e0f0ff;
+        }
+
+        .section-dark-arcade {
+            background: linear-gradient(180deg, #0a0a1a 0%, #12122a 100%);
+        }
+        .section-light-arcade {
+            background: linear-gradient(180deg, #12122a 0%, #1a1a3a 100%);
+        }
+
+        .text-arcade-yellow {
+            color: #f7d44a;
+        }
+        .border-arcade-yellow {
+            border-color: #f7d44a;
+        }
+        .bg-arcade-dark {
+            background: #0a0a1a;
+        }
+
+        /* diálogo de videojuego */
+        .dialog-box {
+            background: rgba(10, 10, 30, 0.9);
+            border: 3px solid #f7d44a;
+            border-radius: 12px;
+            padding: 1.5rem;
+            position: relative;
+            box-shadow: 0 0 40px rgba(247, 212, 74, 0.1);
+        }
+        .dialog-box::before {
+            content: '';
+            position: absolute;
+            top: -12px;
+            left: 30px;
+            border-left: 12px solid transparent;
+            border-right: 12px solid transparent;
+            border-bottom: 12px solid #f7d44a;
+        }
+
+        .pixel-icon {
+            filter: pixelated;
+            image-rendering: pixelated;
+        }
+
+        /* animaciones */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        .float-anim {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        .blink-anim {
+            animation: blink 1.2s step-end infinite;
+        }
+
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(2px, -2px); }
+            60% { transform: translate(-1px, 1px); }
+            80% { transform: translate(1px, -1px); }
+            100% { transform: translate(0); }
+        }
+        .glitch-hover:hover {
+            animation: glitch 0.3s ease-in-out;
+        }
+
+        /* efecto de scanline en secciones */
+        .scanline {
+            position: relative;
+            overflow: hidden;
+        }
+        .scanline::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(0deg,
+                transparent,
+                transparent 2px,
+                rgba(0, 255, 200, 0.02) 2px,
+                rgba(0, 255, 200, 0.02) 4px);
+            pointer-events: none;
+        }
+
+        /* pixel art decorativo */
+        .pixel-heart {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            background: #f7d44a;
+            clip-path: polygon(50% 15%, 70% 0, 90% 15%, 100% 40%, 80% 70%, 50% 100%, 20% 70%, 0 40%, 10% 15%, 30% 0);
+        }
+    </style>
+</head>
+<body class="font-sans antialiased text-gray-200 bg-arcade-dark">
+
+    <!-- ========== NAVBAR ARCADE ========== -->
+    <nav class="fixed top-0 left-0 w-full z-50 bg-black/90 backdrop-blur-md shadow-lg border-b-2 border-arcade-yellow/40 px-6 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <span class="text-3xl font-pixel text-arcade-yellow text-sm md:text-base">🕹️ PJ</span>
+            <span class="text-xl md:text-2xl font-pixel text-arcade-yellow tracking-widest">PLAN JUEGO</span>
+            <span class="hidden md:inline text-[8px] font-pixel text-gray-400 bg-gray-800 px-2 py-1 rounded-full">v1.0</span>
+        </div>
+        <ul class="hidden md:flex gap-6 text-xs font-pixel text-gray-300">
+            <li><a href="#inicio" class="hover:text-arcade-yellow transition">INICIO</a></li>
+            <li><a href="#actividades" class="hover:text-arcade-yellow transition">ACTIVIDADES</a></li>
+            <li><a href="#eventos" class="hover:text-arcade-yellow transition">EVENTOS</a></li>
+            <li><a href="#reservas" class="hover:text-arcade-yellow transition">RESERVAS</a></li>
+            <li><a href="#contacto" class="hover:text-arcade-yellow transition">CONTACTO</a></li>
+        </ul>
+        <div class="flex items-center gap-3">
+            <a href="#reservas" class="hidden md:inline-block btn-arcade px-4 py-2 rounded-full text-xs font-pixel shadow-md"><i class="fas fa-gamepad mr-1"></i> JUGAR</a>
+            <button id="hamburgerBtn" class="md:hidden flex flex-col items-center justify-center w-10 h-10 rounded-full hover:bg-gray-800 transition" aria-label="menu">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- mobile menu -->
+    <div id="mobileMenu" class="mobile-menu fixed top-0 right-0 w-3/4 max-w-xs h-full bg-black/95 backdrop-blur-md shadow-2xl z-40 p-8 pt-24 flex flex-col gap-6 text-lg border-l-2 border-arcade-yellow/30">
+        <a href="#inicio" class="border-b border-arcade-yellow/20 pb-3 text-arcade-yellow font-pixel text-sm">INICIO</a>
+        <a href="#actividades" class="border-b border-arcade-yellow/20 pb-3 font-pixel text-sm">ACTIVIDADES</a>
+        <a href="#eventos" class="border-b border-arcade-yellow/20 pb-3 font-pixel text-sm">EVENTOS</a>
+        <a href="#reservas" class="border-b border-arcade-yellow/20 pb-3 font-pixel text-sm">RESERVAS</a>
+        <a href="#contacto" class="border-b border-arcade-yellow/20 pb-3 font-pixel text-sm">CONTACTO</a>
+        <a href="#reservas" class="btn-arcade text-center py-3 rounded-full mt-4 font-pixel text-sm"><i class="fas fa-gamepad mr-2"></i> JUGAR</a>
+        <a href="#" class="btn-arcade-outline text-center py-3 rounded-full font-pixel text-sm border-2"><i class="fab fa-whatsapp mr-2"></i> WHATSAPP</a>
+    </div>
+
+    <!-- ========== HERO CON PARALLAX ========== -->
+    <section id="inicio" class="relative w-full min-h-screen overflow-hidden parallax-bg" style="background-image: url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=1600&q=80');">
+        <div class="absolute inset-0 bg-black/60"></div>
+        <!-- capas parallax (simuladas) -->
+        <div class="absolute inset-0 flex items-center justify-center">
+            <div class="relative z-10 text-center px-4 max-w-4xl mx-auto">
+                <div class="float-anim mb-4">
+                    <span class="text-7xl md:text-9xl">🕹️</span>
+                </div>
+                <h1 class="text-5xl md:text-7xl font-pixel text-arcade-yellow drop-shadow-[0_0_30px_rgba(247,212,74,0.3)]">PLAN JUEGO</h1>
+                <p class="text-xl md:text-3xl mt-4 font-pixel text-cyan-300 drop-shadow-lg">DIVERSIÓN Y APRENDIZAJE</p>
+                <p class="text-base md:text-xl mt-2 text-gray-300 max-w-2xl mx-auto">Un lugar donde jugar es aprender · Neuquén</p>
+                <div class="flex flex-wrap justify-center gap-4 mt-8">
+                    <a href="#actividades" class="btn-arcade px-8 py-4 rounded-full text-sm font-pixel shadow-xl"><i class="fas fa-joystick mr-2"></i> EXPLORAR</a>
+                    <a href="#reservas" class="bg-white/10 backdrop-blur-sm border-2 border-white/30 px-8 py-4 rounded-full text-sm font-pixel hover:bg-white/20 transition"><i class="fas fa-ticket-alt mr-2"></i> RESERVAR</a>
+                    <a href="#" class="bg-arcade-yellow/20 backdrop-blur-sm border-2 border-arcade-yellow/40 px-8 py-4 rounded-full text-sm font-pixel hover:bg-arcade-yellow/30 transition"><i class="fab fa-whatsapp mr-2"></i> WHATSAPP</a>
+                </div>
+                <div class="mt-12 flex justify-center gap-3">
+                    <span class="slider-dot active"></span>
+                    <span class="slider-dot"></span>
+                    <span class="slider-dot"></span>
+                </div>
+                <div class="mt-6 text-arcade-yellow/60 text-xs font-pixel blink-anim">▼ SCROLL PARA JUGAR ▼</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== QUIÉNES SOMOS (estilo diálogo) ========== -->
+    <section class="py-16 px-6 section-dark-arcade border-b-2 border-arcade-yellow/10 scanline">
+        <div class="max-w-5xl mx-auto">
+            <div class="dialog-box text-center">
+                <span class="text-4xl block mb-4">🎮</span>
+                <h2 class="text-2xl md:text-4xl font-pixel text-arcade-yellow">¡NIVEL 1!</h2>
+                <p class="text-gray-300 text-base md:text-lg mt-4 max-w-3xl mx-auto leading-relaxed">
+                    <span class="text-arcade-yellow">PLAN JUEGO</span> es un espacio recreativo y educativo para familias.
+                    Cada actividad es un <span class="text-cyan-300">nuevo nivel</span> donde los niños aprenden jugando,
+                    y los padres disfrutan de un entorno seguro y creativo.
+                </p>
+                <div class="mt-6 flex flex-wrap justify-center gap-4 text-xs font-pixel text-gray-400">
+                    <span><i class="fas fa-check-circle text-arcade-yellow mr-1"></i> +5 años de experiencia</span>
+                    <span><i class="fas fa-check-circle text-arcade-yellow mr-1"></i> 10+ actividades</span>
+                    <span><i class="fas fa-check-circle text-arcade-yellow mr-1"></i> 500+ familias felices</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== ACTIVIDADES ========== -->
+    <section id="actividades" class="py-20 px-6 section-light-arcade border-b-2 border-arcade-yellow/10 scanline">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-12">
+                <span class="text-arcade-yellow font-pixel text-xs tracking-widest"><i class="fas fa-gamepad mr-1"></i> SELECCIONA TU AVENTURA</span>
+                <h2 class="text-3xl md:text-5xl font-pixel mt-2 text-arcade-yellow">ACTIVIDADES</h2>
+                <p class="text-gray-400 text-sm mt-2 font-pixel">Elegí tu modo de juego</p>
+                <div class="flex flex-wrap justify-center gap-2 mt-6">
+                    <button class="filter-btn active border-2 px-4 py-2 rounded-full text-[10px] font-pixel" data-filter="all">TODOS</button>
+                    <button class="filter-btn border-2 px-4 py-2 rounded-full text-[10px] font-pixel" data-filter="recreativo">RECREATIVO</button>
+                    <button class="filter-btn border-2 px-4 py-2 rounded-full text-[10px] font-pixel" data-filter="creativo">CREATIVO</button>
+                    <button class="filter-btn border-2 px-4 py-2 rounded-full text-[10px] font-pixel" data-filter="educativo">EDUCATIVO</button>
+                </div>
+            </div>
+
+            <div id="actividadesGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="actividad-item bg-gray-900/80 rounded-2xl shadow-lg overflow-hidden hover-scale border-2 border-arcade-yellow/20" data-category="recreativo">
+                    <div class="h-48 bg-gradient-to-br from-purple-900/50 to-blue-900/50 flex items-center justify-center text-7xl">🕹️</div>
+                    <div class="p-5">
+                        <h3 class="text-xl font-pixel text-arcade-yellow text-sm">JUEGOS RECREATIVOS</h3>
+                        <p class="text-gray-400 text-xs mt-2 font-pixel">Circuitos de destreza, juegos de mesa gigantes y mucho más.</p>
+                        <span class="inline-block mt-3 bg-arcade-yellow/10 text-arcade-yellow text-[8px] px-3 py-1 rounded-full border border-arcade-yellow/30 font-pixel">RECREATIVO</span>
+                    </div>
+                </div>
+                <div class="actividad-item bg-gray-900/80 rounded-2xl shadow-lg overflow-hidden hover-scale border-2 border-arcade-yellow/20" data-category="creativo">
+                    <div class="h-48 bg-gradient-to-br from-pink-900/50 to-orange-900/50 flex items-center justify-center text-7xl">🎨</div>
+                    <div class="p-5">
+                        <h3 class="text-xl font-pixel text-arcade-yellow text-sm">TALLERES CREATIVOS</h3>
+                        <p class="text-gray-400 text-xs mt-2 font-pixel">Arte, pintura, manualidades y expresión artística.</p>
+                        <span class="inline-block mt-3 bg-arcade-yellow/10 text-arcade-yellow text-[8px] px-3 py-1 rounded-full border border-arcade-yellow/30 font-pixel">CREATIVO</span>
+                    </div>
+                </div>
+                <div class="actividad-item bg-gray-900/80 rounded-2xl shadow-lg overflow-hidden hover-scale border-2 border-arcade-yellow/20" data-category="educativo">
+                    <div class="h-48 bg-gradient-to-br from-green-900/50 to-teal-900/50 flex items-center justify-center text-7xl">📚</div>
+                    <div class="p-5">
+                        <h3 class="text-xl font-pixel text-arcade-yellow text-sm">APRENDIZAJE LÚDICO</h3>
+                        <p class="text-gray-400 text-xs mt-2 font-pixel">Ciencia divertida, robótica y juegos educativos.</p>
+                        <span class="inline-block mt-3 bg-arcade-yellow/10 text-arcade-yellow text-[8px] px-3 py-1 rounded-full border border-arcade-yellow/30 font-pixel">EDUCATIVO</span>
+                    </div>
+                </div>
+                <div class="actividad-item bg-gray-900/80 rounded-2xl shadow-lg overflow-hidden hover-scale border-2 border-arcade-yellow/20" data-category="recreativo educativo">
+                    <div class="h-48 bg-gradient-to-br from-yellow-900/50 to-amber-900/50 flex items-center justify-center text-7xl">🤸</div>
+                    <div class="p-5">
+                        <h3 class="text-xl font-pixel text-arcade-yellow text-sm">MOVIMIENTO & MINDFULNESS</h3>
+                        <p class="text-gray-400 text-xs mt-2 font-pixel">Yoga para niños, juegos de equilibrio y coordinación.</p>
+                        <span class="inline-block mt-3 bg-arcade-yellow/10 text-arcade-yellow text-[8px] px-3 py-1 rounded-full border border-arcade-yellow/30 font-pixel">RECREATIVO · EDUCATIVO</span>
+                    </div>
+                </div>
+                <div class="actividad-item bg-gray-900/80 rounded-2xl shadow-lg overflow-hidden hover-scale border-2 border-arcade-yellow/20" data-category="creativo educativo">
+                    <div class="h-48 bg-gradient-to-br from-indigo-900/50 to-violet-900/50 flex items-center justify-center text-7xl">🎭</div>
+                    <div class="p-5">
+                        <h3 class="text-xl font-pixel text-arcade-yellow text-sm">TEATRO & EXPRESIÓN</h3>
+                        <p class="text-gray-400 text-xs mt-2 font-pixel">Juegos de rol, títeres y actuación para niños.</p>
+                        <span class="inline-block mt-3 bg-arcade-yellow/10 text-arcade-yellow text-[8px] px-3 py-1 rounded-full border border-arcade-yellow/30 font-pixel">CREATIVO · EDUCATIVO</span>
+                    </div>
+                </div>
+                <div class="actividad-item bg-gray-900/80 rounded-2xl shadow-lg overflow-hidden hover-scale border-2 border-arcade-yellow/20" data-category="recreativo creativo">
+                    <div class="h-48 bg-gradient-to-br from-red-900/50 to-rose-900/50 flex items-center justify-center text-7xl">🎵</div>
+                    <div class="p-5">
+                        <h3 class="text-xl font-pixel text-arcade-yellow text-sm">MÚSICA & RITMO</h3>
+                        <p class="text-gray-400 text-xs mt-2 font-pixel">Talleres de percusión, canto y movimiento musical.</p>
+                        <span class="inline-block mt-3 bg-arcade-yellow/10 text-arcade-yellow text-[8px] px-3 py-1 rounded-full border border-arcade-yellow/30 font-pixel">RECREATIVO · CREATIVO</span>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-12">
+                <a href="#" class="btn-arcade-outline px-8 py-3 rounded-full text-sm font-pixel border-2"><i class="fas fa-arrow-right mr-2"></i> VER TODAS</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== EVENTOS ========== -->
+    <section id="eventos" class="py-20 px-6 section-dark-arcade border-b-2 border-arcade-yellow/10 scanline">
+        <div class="max-w-5xl mx-auto">
+            <div class="text-center mb-10">
+                <span class="text-arcade-yellow font-pixel text-xs tracking-widest"><i class="fas fa-calendar-alt mr-1"></i> PRÓXIMOS NIVELES</span>
+                <h2 class="text-3xl md:text-5xl font-pixel mt-2 text-arcade-yellow">EVENTOS</h2>
+            </div>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-gray-900/80 p-6 rounded-2xl border-2 border-arcade-yellow/20 hover-scale">
+                    <div class="flex items-start gap-4">
+                        <span class="text-5xl">🎂</span>
+                        <div>
+                            <h3 class="text-lg font-pixel text-arcade-yellow text-sm">Fiesta Arcade</h3>
+                            <p class="text-gray-400 text-xs mt-1 font-pixel">Sábado 15 · 15:00 hs</p>
+                            <p class="text-gray-300 text-sm mt-2">Celebramos con juegos retro, torta y sorpresas para todos.</p>
+                            <span class="inline-block mt-2 bg-arcade-yellow/10 text-arcade-yellow text-[8px] px-3 py-1 rounded-full border border-arcade-yellow/30 font-pixel">¡NUEVO!</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-900/80 p-6 rounded-2xl border-2 border-arcade-yellow/20 hover-scale">
+                    <div class="flex items-start gap-4">
+                        <span class="text-5xl">🎨</span>
+                        <div>
+                            <h3 class="text-lg font-pixel text-arcade-yellow text-sm">Maratón Creativa</h3>
+                            <p class="text-gray-400 text-xs mt-1 font-pixel">Domingo 23 · 11:00 hs</p>
+                            <p class="text-gray-300 text-sm mt-2">Talleres de arte, pintura y manualidades para toda la familia.</p>
+                            <span class="inline-block mt-2 bg-arcade-yellow/10 text-arcade-yellow text-[8px] px-3 py-1 rounded-full border border-arcade-yellow/30 font-pixel">PLAZAS LIMITADAS</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-8">
+                <a href="#reservas" class="btn-arcade px-8 py-3 rounded-full text-sm font-pixel"><i class="fas fa-ticket-alt mr-2"></i> RESERVAR ENTRADA</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== RESEÑAS (diálogos arcade) ========== -->
+    <section class="py-16 px-6 section-light-arcade border-b-2 border-arcade-yellow/10 scanline">
+        <div class="max-w-4xl mx-auto text-center">
+            <span class="text-arcade-yellow font-pixel text-xs tracking-widest"><i class="fas fa-star mr-1"></i> POWER-UPS</span>
+            <h2 class="text-3xl md:text-5xl font-pixel mt-2 text-arcade-yellow">RESEÑAS</h2>
+            <div class="mt-8 grid md:grid-cols-3 gap-6">
+                <div class="dialog-box text-left">
+                    <p class="text-gray-300 text-sm italic">"¡Mis hijos no querían irse! Actividades súper divertidas y educativas."</p>
+                    <span class="block mt-3 text-arcade-yellow font-pixel text-[8px]">— Laura G.</span>
+                </div>
+                <div class="dialog-box text-left">
+                    <p class="text-gray-300 text-sm italic">"Un espacio único en Neuquén. Los talleres creativos son increíbles."</p>
+                    <span class="block mt-3 text-arcade-yellow font-pixel text-[8px]">— Martín R.</span>
+                </div>
+                <div class="dialog-box text-left">
+                    <p class="text-gray-300 text-sm italic">"Plan Juego es el mejor plan familiar. Siempre hay algo nuevo."</p>
+                    <span class="block mt-3 text-arcade-yellow font-pixel text-[8px]">— Carla F.</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== RESERVAS (doble canal) ========== -->
+    <section id="reservas" class="py-20 px-6 section-dark-arcade border-b-2 border-arcade-yellow/10 scanline">
+        <div class="max-w-5xl mx-auto">
+            <div class="text-center mb-10">
+                <span class="text-arcade-yellow font-pixel text-xs tracking-widest"><i class="fas fa-gamepad mr-1"></i> INSERT COIN</span>
+                <h2 class="text-3xl md:text-5xl font-pixel mt-2 text-arcade-yellow">RESERVAS</h2>
+                <p class="text-gray-400 text-sm mt-2 font-pixel">Elegí tu canal para reservar</p>
+            </div>
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- formulario web -->
+                <div class="glass-arcade p-8 rounded-2xl">
+                    <h3 class="text-xl font-pixel text-arcade-yellow text-sm mb-4"><i class="fas fa-laptop mr-2"></i> WEB</h3>
+                    <form class="space-y-4">
+                        <input type="text" placeholder="NOMBRE" class="w-full p-3 rounded-xl bg-black/60 border-2 border-arcade-yellow/30 focus:ring-2 focus:ring-arcade-yellow outline-none text-white placeholder-gray-400 font-pixel text-xs">
+                        <input type="tel" placeholder="TELÉFONO" class="w-full p-3 rounded-xl bg-black/60 border-2 border-arcade-yellow/30 focus:ring-2 focus:ring-arcade-yellow outline-none text-white placeholder-gray-400 font-pixel text-xs">
+                        <input type="email" placeholder="EMAIL" class="w-full p-3 rounded-xl bg-black/60 border-2 border-arcade-yellow/30 focus:ring-2 focus:ring-arcade-yellow outline-none text-white placeholder-gray-400 font-pixel text-xs">
+                        <div class="grid grid-cols-2 gap-3">
+                            <input type="date" class="w-full p-3 rounded-xl bg-black/60 border-2 border-arcade-yellow/30 focus:ring-2 focus:ring-arcade-yellow outline-none text-white font-pixel text-xs">
+                            <input type="time" class="w-full p-3 rounded-xl bg-black/60 border-2 border-arcade-yellow/30 focus:ring-2 focus:ring-arcade-yellow outline-none text-white font-pixel text-xs">
+                        </div>
+                        <select class="w-full p-3 rounded-xl bg-black/60 border-2 border-arcade-yellow/30 focus:ring-2 focus:ring-arcade-yellow outline-none text-white font-pixel text-xs">
+                            <option value="2">2 personas</option>
+                            <option value="3">3 personas</option>
+                            <option value="4" selected>4 personas</option>
+                            <option value="5">5 personas</option>
+                            <option value="6">6+ personas</option>
+                        </select>
+                        <button type="submit" class="w-full btn-arcade py-3 rounded-full text-sm font-pixel"><i class="fas fa-paper-plane mr-2"></i> ENVIAR</button>
+                    </form>
+                    <p class="text-[8px] text-gray-400 mt-3 text-center font-pixel">✅ Recibirás confirmación por email</p>
+                </div>
+                <!-- whatsapp -->
+                <div class="glass-arcade p-8 rounded-2xl flex flex-col items-center justify-center text-center">
+                    <i class="fab fa-whatsapp text-7xl text-green-500 mb-4"></i>
+                    <h3 class="text-xl font-pixel text-arcade-yellow text-sm">WHATSAPP</h3>
+                    <p class="text-gray-300 text-xs mt-2 font-pixel">Reservá en 1 minuto</p>
+                    <p class="text-gray-400 text-[8px] mt-1 font-pixel">Respuesta inmediata</p>
+                    <a href="#" class="mt-6 bg-green-600 hover:bg-green-700 px-8 py-4 rounded-full text-sm font-pixel shadow-lg hover:scale-105 transition border-2 border-green-400"><i class="fab fa-whatsapp mr-2"></i> +54 299 511-3883</a>
+                    <p class="text-[8px] text-gray-400 mt-3 font-pixel">📅 Lun–Dom 10:00–20:00</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== CONTACTO ========== -->
+    <section id="contacto" class="py-20 px-6 section-light-arcade scanline">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="text-3xl md:text-5xl font-pixel text-center text-arcade-yellow">CONTACTO</h2>
+            <p class="text-center text-gray-400 text-sm mt-2 font-pixel">¿Preguntas? Escribinos</p>
+            <div class="mt-10 glass-arcade p-8 rounded-2xl">
+                <form class="grid sm:grid-cols-2 gap-6">
+                    <input type="text" placeholder="NOMBRE" class="p-4 rounded-xl bg-black/60 border-2 border-arcade-yellow/30 focus:ring-2 focus:ring-arcade-yellow outline-none text-white placeholder-gray-400 font-pixel text-xs">
+                    <input type="tel" placeholder="TELÉFONO" class="p-4 rounded-xl bg-black/60 border-2 border-arcade-yellow/30 focus:ring-2 focus:ring-arcade-yellow outline-none text-white placeholder-gray-400 font-pixel text-xs">
+                    <textarea placeholder="MENSAJE" rows="3" class="sm:col-span-2 p-4 rounded-xl bg-black/60 border-2 border-arcade-yellow/30 focus:ring-2 focus:ring-arcade-yellow outline-none text-white placeholder-gray-400 font-pixel text-xs"></textarea>
+                    <button type="submit" class="sm:col-span-2 btn-arcade py-4 rounded-full text-sm font-pixel"><i class="fas fa-paper-plane mr-2"></i> ENVIAR</button>
+                </form>
+                <div class="flex flex-wrap justify-center gap-6 mt-8 text-center">
+                    <a href="#" class="text-arcade-yellow text-sm font-pixel hover:text-yellow-300 transition"><i class="fab fa-whatsapp mr-2"></i> +54 299 511-3883</a>
+                    <a href="#" class="text-arcade-yellow text-sm font-pixel hover:text-yellow-300 transition"><i class="fas fa-phone-alt mr-2"></i> +54 299 511-3883</a>
+                    <a href="#" class="text-arcade-yellow text-sm font-pixel hover:text-yellow-300 transition"><i class="fas fa-envelope mr-2"></i> hola@planjuego.com</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-black border-t-2 border-arcade-yellow/20 py-10 px-6 text-center">
+        <p class="text-gray-400 text-xs font-pixel"><i class="fas fa-gamepad text-arcade-yellow mr-1"></i> PLAN JUEGO · v1.0 · NEUQUÉN</p>
+        <div class="flex justify-center gap-6 mt-4 text-2xl text-arcade-yellow">
+            <a href="#" class="hover:text-yellow-300 transition"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="hover:text-yellow-300 transition"><i class="fab fa-facebook"></i></a>
+            <a href="#" class="hover:text-yellow-300 transition"><i class="fab fa-youtube"></i></a>
+        </div>
+        <div class="mt-4 text-[8px] text-gray-500 font-pixel">
+            <span>🕹️ ¡Sigue jugando! 🕹️</span>
+        </div>
+    </footer>
+
+    <!-- ========== JS ========== -->
+    <script>
+        (function() {
+            // hamburguesa
+            const hamburger = document.getElementById('hamburgerBtn');
+            const mobileMenu = document.getElementById('mobileMenu');
+            hamburger.addEventListener('click', () => {
+                mobileMenu.classList.toggle('open');
+            });
+            document.querySelectorAll('#mobileMenu a').forEach(link => {
+                link.addEventListener('click', () => mobileMenu.classList.remove('open'));
+            });
+
+            // filtros actividades
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const items = document.querySelectorAll('.actividad-item');
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    const filter = this.dataset.filter;
+                    items.forEach(item => {
+                        const cats = item.dataset.category.split(' ');
+                        if (filter === 'all' || cats.includes(filter)) {
+                            item.style.display = 'block';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                });
+            });
+
+            // slider dots
+            const dots = document.querySelectorAll('.slider-dot');
+            let current = 0;
+            setInterval(() => {
+                dots.forEach(d => d.classList.remove('active'));
+                current = (current + 1) % dots.length;
+                dots[current].classList.add('active');
+            }, 5000);
+
+            // efecto de "pantalla de carga" en enlaces internos (simulado)
+            document.querySelectorAll('a[href^="#"]').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    const target = document.querySelector(targetId);
+                    if (target) {
+                        // pequeño efecto "cargando"
+                        const originalText = this.innerHTML;
+                        this.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> CARGANDO...';
+                        setTimeout(() => {
+                            window.location.hash = targetId;
+                            target.scrollIntoView({ behavior: 'smooth' });
+                            this.innerHTML = originalText;
+                        }, 300);
+                    }
+                });
+            });
+        })();
+    </script>
+</body>
+</html>
