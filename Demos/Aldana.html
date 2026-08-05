@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Materiales Aldana — Construí con confianza</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Source+Sans+3:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --concrete:#e7e2d6;
+    --concrete2:#dcd5c4;
+    --charcoal:#2a2723;
+    --charcoal2:#3c3730;
+    --brick:#b1502f;
+    --brick-deep:#8c3b21;
+    --kraft:#cdb98a;
+    --dim:#6c655a;
+    --line: rgba(42,39,35,0.16);
+  }
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--concrete);
+    color:var(--charcoal);
+    font-family:'Source Sans 3',sans-serif;
+    overflow-x:hidden;
+  }
+  .font-display{font-family:'Oswald',sans-serif; text-transform:uppercase; letter-spacing:.015em;}
+  .font-mono{font-family:'IBM Plex Mono',monospace;}
+
+  /* textura hormigon sutil */
+  .concrete-texture{
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(42,39,35,0.05) 0, transparent 40%),
+      radial-gradient(circle at 80% 70%, rgba(42,39,35,0.05) 0, transparent 45%),
+      radial-gradient(circle at 50% 90%, rgba(42,39,35,0.04) 0, transparent 40%);
+  }
+
+  [data-parallax]{ will-change: transform; }
+
+  .reveal{ opacity:0; transform: translateY(26px); transition: opacity .8s ease, transform .8s ease; }
+  .reveal.in{ opacity:1; transform:translateY(0); }
+
+  .underline-grow{ position:relative; display:inline-block; }
+  .underline-grow::after{
+    content:""; position:absolute; left:0; bottom:-3px; height:2px; width:0%;
+    background:var(--brick); transition:width .5s ease;
+  }
+  .underline-grow:hover::after{ width:100%; }
+
+  .btn-primary{
+    background:var(--brick); color:var(--concrete); font-weight:600;
+    transition: transform .25s ease, box-shadow .25s ease, background .25s ease;
+  }
+  .btn-primary:hover{ transform:translateY(-3px); box-shadow:0 14px 28px -12px rgba(140,59,33,0.5); background:var(--brick-deep); }
+
+  .btn-ghost{
+    border:1px solid var(--charcoal); color:var(--charcoal);
+    transition:border-color .25s ease, background .25s ease, color .25s ease;
+  }
+  .btn-ghost:hover{ border-color:var(--brick); background:var(--charcoal); color:var(--concrete); }
+
+  /* signature: etiqueta que se despega (sticker peel) */
+  .peel-card{ position:relative; overflow:hidden; border-radius:6px; }
+  .peel-card img{ transition: transform .6s ease, filter .6s ease; }
+  .peel-card:hover img{ transform: scale(1.05); filter:contrast(1.05); }
+  .peel-sticker{
+    position:absolute; top:14px; left:14px;
+    background:var(--kraft); color:var(--charcoal);
+    padding:8px 12px; border-radius:2px;
+    font-family:'IBM Plex Mono',monospace; font-size:.68rem; letter-spacing:.02em;
+    box-shadow:0 6px 14px -6px rgba(0,0,0,0.35);
+    transform-origin: top left;
+    transition: transform .5s cubic-bezier(.3,.9,.3,1), box-shadow .5s ease;
+    clip-path: polygon(0 0, 100% 0, 100% 85%, 85% 100%, 0 100%);
+  }
+  .peel-card:hover .peel-sticker{
+    transform: rotate(-14deg) translate(-4px,-6px);
+    box-shadow:0 14px 22px -8px rgba(0,0,0,0.45);
+  }
+  .peel-detail{
+    position:absolute; inset:0; display:flex; align-items:flex-end;
+    background:linear-gradient(180deg, transparent 45%, rgba(42,39,35,0.9) 100%);
+    opacity:0; transition:opacity .5s ease;
+  }
+  .peel-card:hover .peel-detail{ opacity:1; }
+
+  .filter-pill{
+    font-family:'IBM Plex Mono',monospace; font-size:.7rem; letter-spacing:.02em;
+    border:1px solid var(--line); transition:all .25s ease;
+  }
+  .filter-pill.active, .filter-pill:hover{ background:var(--brick); color:var(--concrete); border-color:var(--brick); }
+
+  .marquee-track{ display:flex; width:200%; animation: marquee 30s linear infinite; }
+  @keyframes marquee{ from{transform:translateX(0);} to{transform:translateX(-50%);} }
+
+  /* divisor tipo pila de ladrillos */
+  .brick-divider{
+    height:26px;
+    background-image: linear-gradient(var(--charcoal) 1px, transparent 1px), linear-gradient(90deg, var(--charcoal) 1px, transparent 1px);
+    background-size: 46px 13px;
+    background-color: var(--brick);
+    opacity:0.9;
+  }
+
+  ::selection{ background:var(--brick); color:var(--concrete); }
+
+  @media (prefers-reduced-motion: reduce){
+    .reveal, .peel-sticker, .peel-detail, .peel-card img{ transition:none !important; }
+    .marquee-track{ animation:none; }
+  }
+
+  input:focus-visible, button:focus-visible, a:focus-visible, select:focus-visible{
+    outline:2px solid var(--brick); outline-offset:3px;
+  }
+
+  input[type=number], select{
+    background:var(--concrete); border:1px solid var(--line); color:var(--charcoal);
+  }
+</style>
+</head>
+<body class="antialiased concrete-texture">
+
+<!-- NAV -->
+<header class="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-[#e7e2d6]/88 border-b border-[color:var(--line)]">
+  <div class="max-w-7xl mx-auto px-6 md:px-10 h-20 flex items-center justify-between">
+    <a href="#inicio" class="flex items-center gap-2">
+      <span class="font-display font-bold text-2xl" style="color:var(--brick-deep)">ALDANA</span>
+      <span class="font-mono text-[10px] tracking-[0.25em] text-[color:var(--dim)] hidden sm:inline">CORRALÓN · NEUQUÉN</span>
+    </a>
+    <nav class="hidden lg:flex items-center gap-8 font-mono text-xs tracking-wide">
+      <a href="#nosotros" class="underline-grow">NOSOTROS</a>
+      <a href="#catalogo" class="underline-grow">CATÁLOGO</a>
+      <a href="#presupuesto" class="underline-grow">PRESUPUESTO</a>
+      <a href="#resenas" class="underline-grow">RESEÑAS</a>
+      <a href="#contacto" class="underline-grow">CONTACTO</a>
+    </nav>
+    <a href="https://wa.me/5492990000000" target="_blank" class="btn-primary rounded px-5 py-2.5 text-sm font-display tracking-wide">WhatsApp</a>
+  </div>
+</header>
+
+<!-- HERO -->
+<section id="inicio" class="relative min-h-[100svh] flex items-end overflow-hidden pt-24">
+  <div data-parallax data-speed="0.32" class="absolute inset-0 -z-10">
+    <img src="https://images.unsplash.com/photo-1541976590-713941681591?q=80&w=1800&auto=format&fit=crop"
+         alt="Materiales de construcción apilados en corralón"
+         class="w-full h-[130%] object-cover object-center" />
+    <div class="absolute inset-0" style="background:linear-gradient(180deg, rgba(42,39,35,0.35) 0%, rgba(42,39,35,0.5) 45%, var(--concrete) 92%);"></div>
+  </div>
+
+  <div class="max-w-7xl mx-auto w-full px-6 md:px-10 pb-20 reveal">
+    <p class="font-mono text-xs tracking-[0.3em] text-[color:var(--kraft)] mb-5">NEUQUÉN · CORRALÓN Y FERRETERÍA DE OBRA</p>
+    <h1 class="font-display font-bold text-5xl sm:text-6xl md:text-7xl leading-[0.95] mb-6 max-w-4xl" style="color:var(--concrete)">
+      Construí con <span style="color:var(--brick)">confianza.</span>
+    </h1>
+    <p class="max-w-xl text-[color:var(--concrete2)] text-lg mb-8">
+      Cemento, arena, ladrillos, herramientas y ferretería para tu obra. Stock real, entrega coordinada y presupuesto sin vueltas.
+    </p>
+    <div class="flex flex-wrap gap-4">
+      <a href="#catalogo" class="btn-primary rounded px-7 py-3.5 font-display tracking-wide">Ver catálogo</a>
+      <a href="#presupuesto" class="rounded px-7 py-3.5 font-display tracking-wide border" style="border-color:var(--concrete); color:var(--concrete);">Calcular presupuesto</a>
+    </div>
+  </div>
+</section>
+
+<div class="brick-divider"></div>
+
+<!-- NOSOTROS -->
+<section id="nosotros" class="max-w-7xl mx-auto px-6 md:px-10 py-24 grid lg:grid-cols-12 gap-12">
+  <div class="lg:col-span-5 reveal">
+    <p class="font-mono text-xs tracking-[0.3em] text-[color:var(--brick-deep)] mb-4">QUIÉNES SOMOS</p>
+    <h2 class="font-display font-bold text-4xl md:text-5xl leading-tight mb-6">El corralón que <span style="color:var(--brick)">no te deja a mitad de obra.</span></h2>
+    <p class="text-[color:var(--dim)] leading-relaxed mb-6">
+      Materiales Aldana acompaña obras y reformas en Neuquén con stock real de materiales pesados y ferretería, y presupuestos claros desde el primer día. Sabemos que en obra el tiempo se paga.
+    </p>
+    <div class="flex gap-8 font-mono text-sm text-[color:var(--dim)]">
+      <span>🧱 Materiales al peso y por bolsa</span>
+      <span>📐 Presupuesto por m²</span>
+    </div>
+  </div>
+  <div class="lg:col-span-7 relative reveal">
+    <div class="rounded-lg overflow-hidden h-full min-h-[380px] relative">
+      <img data-parallax data-speed="0.13" src="https://images.unsplash.com/photo-1489514354504-1653aa90e34e?q=80&w=1600&auto=format&fit=crop" alt="Ladrillos y bolsas de cemento apiladas" class="w-full h-[120%] object-cover" />
+    </div>
+  </div>
+</section>
+
+<!-- CATALOGO -->
+<section id="catalogo" class="max-w-7xl mx-auto px-6 md:px-10 py-24">
+  <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12 reveal">
+    <div>
+      <p class="font-mono text-xs tracking-[0.3em] text-[color:var(--brick-deep)] mb-4">CATÁLOGO</p>
+      <h2 class="font-display font-bold text-4xl md:text-5xl">De los cimientos a los detalles.</h2>
+    </div>
+    <div class="flex flex-wrap gap-2" id="filterPills">
+      <button class="filter-pill active rounded px-4 py-2" data-filter="todos">TODOS</button>
+      <button class="filter-pill rounded px-4 py-2" data-filter="materiales">MATERIALES</button>
+      <button class="filter-pill rounded px-4 py-2" data-filter="herramientas">HERRAMIENTAS</button>
+      <button class="filter-pill rounded px-4 py-2" data-filter="pintura">PINTURA</button>
+      <button class="filter-pill rounded px-4 py-2" data-filter="seguridad">SEGURIDAD</button>
+    </div>
+  </div>
+
+  <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8" id="productGrid">
+
+    <div class="product-card reveal" data-cat="materiales">
+      <div class="peel-card h-72">
+        <img src="https://images.unsplash.com/photo-1517581177682-a085bb7ffb15?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover" alt="Bolsas de cemento">
+        <div class="peel-sticker">CEMENTO · 50KG</div>
+        <div class="peel-detail p-5">
+          <div>
+            <h3 class="font-display font-bold text-xl text-white mb-1">Cemento Uso General</h3>
+            <p class="font-mono text-xs text-[color:var(--kraft)]">Estructural y albañilería · retiro o delivery</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card reveal" data-cat="materiales">
+      <div class="peel-card h-72">
+        <img src="https://images.unsplash.com/photo-1590274853856-f22d5ee3d228?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover" alt="Ladrillos huecos apilados">
+        <div class="peel-sticker">LADRILLO HUECO</div>
+        <div class="peel-detail p-5">
+          <div>
+            <h3 class="font-display font-bold text-xl text-white mb-1">Ladrillo Hueco 18x18x33</h3>
+            <p class="font-mono text-xs text-[color:var(--kraft)]">Venta por unidad o pallet completo</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card reveal" data-cat="herramientas">
+      <div class="peel-card h-72">
+        <img src="https://images.unsplash.com/photo-1504148455328-c376907d081c?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover" alt="Amoladora angular">
+        <div class="peel-sticker">ELÉCTRICA · 850W</div>
+        <div class="peel-detail p-5">
+          <div>
+            <h3 class="font-display font-bold text-xl text-white mb-1">Amoladora Angular</h3>
+            <p class="font-mono text-xs text-[color:var(--kraft)]">Disco 4.5" · incluye protector</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card reveal" data-cat="pintura">
+      <div class="peel-card h-72">
+        <img src="https://images.unsplash.com/photo-1562259949-e8e7689d7828?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover" alt="Latas de pintura para exteriores">
+        <div class="peel-sticker">LÁTEX EXTERIOR</div>
+        <div class="peel-detail p-5">
+          <div>
+            <h3 class="font-display font-bold text-xl text-white mb-1">Látex Exterior Reforzado</h3>
+            <p class="font-mono text-xs text-[color:var(--kraft)]">Resistente a intemperie · 4L / 20L</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card reveal" data-cat="seguridad">
+      <div class="peel-card h-72">
+        <img src="https://images.unsplash.com/photo-1618424181438-9deac9315bb8?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover" alt="Casco y guantes de seguridad">
+        <div class="peel-sticker">KIT SEGURIDAD</div>
+        <div class="peel-detail p-5">
+          <div>
+            <h3 class="font-display font-bold text-xl text-white mb-1">Kit Protección de Obra</h3>
+            <p class="font-mono text-xs text-[color:var(--kraft)]">Casco, guantes y antiparras norma IRAM</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card reveal" data-cat="materiales">
+      <div class="peel-card h-72">
+        <img src="https://images.unsplash.com/photo-1596496181848-3091d4878b24?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover" alt="Arena gruesa a granel">
+        <div class="peel-sticker">ARENA GRUESA</div>
+        <div class="peel-detail p-5">
+          <div>
+            <h3 class="font-display font-bold text-xl text-white mb-1">Arena Gruesa a Granel</h3>
+            <p class="font-mono text-xs text-[color:var(--kraft)]">Por m³ · entrega en obra</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- PRESUPUESTO -->
+<section id="presupuesto" class="py-24" style="background:var(--charcoal); color:var(--concrete)">
+  <div class="max-w-5xl mx-auto px-6 md:px-10">
+    <p class="font-mono text-xs tracking-[0.3em] mb-4 reveal" style="color:var(--kraft)">CALCULÁ TU OBRA</p>
+    <h2 class="font-display font-bold text-4xl md:text-5xl mb-4 reveal">Presupuesto estimado en 10 segundos.</h2>
+    <p class="text-[color:var(--concrete2)] mb-12 reveal max-w-xl">Cargá los m² de tu pared o contrapiso y te damos un cálculo aproximado de cemento necesario. Después lo confirmamos con precio exacto por WhatsApp.</p>
+
+    <div class="grid md:grid-cols-2 gap-10 items-start">
+      <div class="reveal">
+        <label class="font-mono text-xs tracking-[0.2em] block mb-2" style="color:var(--kraft)">TIPO DE TRABAJO</label>
+        <select id="calcTipo" class="w-full rounded px-4 py-3 mb-6 font-mono text-sm">
+          <option value="0.35">Contrapiso (0.35 bolsas/m²)</option>
+          <option value="0.20">Revoque grueso (0.20 bolsas/m²)</option>
+          <option value="0.09">Pared de ladrillo (0.09 bolsas/m²)</option>
+        </select>
+
+        <label class="font-mono text-xs tracking-[0.2em] block mb-2" style="color:var(--kraft)">SUPERFICIE (M²)</label>
+        <input id="calcM2" type="number" min="1" value="20" class="w-full rounded px-4 py-3 mb-6 font-mono text-sm">
+
+        <button id="calcBtn" class="btn-primary rounded px-7 py-3.5 font-display tracking-wide w-full">Calcular</button>
+      </div>
+
+      <div class="rounded-lg p-7" style="background:var(--charcoal2); border:1px solid rgba(231,226,214,0.15);">
+        <p class="font-mono text-[10px] tracking-[0.25em] mb-4" style="color:var(--kraft)">RESULTADO ESTIMADO</p>
+        <div class="flex items-baseline gap-3 mb-2">
+          <span id="calcResultado" class="font-display font-bold text-6xl" style="color:var(--brick)">7</span>
+          <span class="font-mono text-sm" style="color:var(--concrete2)">bolsas de cemento (50kg)</span>
+        </div>
+        <p class="text-sm mt-6" style="color:var(--concrete2)">Es una estimación orientativa. Para el presupuesto final con precio, escribinos por WhatsApp con estos datos.</p>
+        <a href="https://wa.me/5492990000000" target="_blank" class="btn-ghost rounded px-6 py-3 inline-block mt-6 font-display tracking-wide" style="border-color:var(--concrete2); color:var(--concrete);">Confirmar por WhatsApp</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESEÑAS -->
+<section id="resenas" class="max-w-7xl mx-auto px-6 md:px-10 py-24">
+  <p class="font-mono text-xs tracking-[0.3em] text-[color:var(--brick-deep)] mb-4 reveal">LA FERRETERÍA PREFERIDA DE NEUQUÉN</p>
+  <h2 class="font-display font-bold text-4xl md:text-5xl mb-14 reveal">Obras que arrancaron acá.</h2>
+
+  <div class="grid md:grid-cols-3 gap-8">
+    <div class="rounded-lg p-7 reveal" style="background:var(--concrete2); border:1px solid var(--line);">
+      <p style="color:var(--brick)" class="mb-4">★★★★★</p>
+      <p class="text-[color:var(--dim)] mb-5">"Usé la calculadora de la web y el cálculo de bolsas dio casi exacto con lo que terminé usando. Buenísimo para no comprar de más."</p>
+      <p class="font-mono text-xs text-[color:var(--dim)]">— Ezequiel, Neuquén Capital</p>
+    </div>
+    <div class="rounded-lg p-7 reveal" style="background:var(--concrete2); border:1px solid var(--line);">
+      <p style="color:var(--brick)" class="mb-4">★★★★★</p>
+      <p class="text-[color:var(--dim)] mb-5">"Entregaron la arena y los ladrillos el mismo día directo en la obra. Puntuales y con buen trato."</p>
+      <p class="font-mono text-xs text-[color:var(--dim)]">— Lorena, Plottier</p>
+    </div>
+    <div class="rounded-lg p-7 reveal" style="background:var(--concrete2); border:1px solid var(--line);">
+      <p style="color:var(--brick)" class="mb-4">★★★★★</p>
+      <p class="text-[color:var(--dim)] mb-5">"Soy maestro mayor de obra y ya compro todo acá: material, herramienta y ferretería en el mismo lugar."</p>
+      <p class="font-mono text-xs text-[color:var(--dim)]">— Diego, Cipolletti</p>
+    </div>
+  </div>
+</section>
+
+<!-- GALERIA / PROMOS -->
+<section class="py-24" style="background:var(--concrete2);">
+  <div class="max-w-7xl mx-auto px-6 md:px-10">
+    <p class="font-mono text-xs tracking-[0.3em] text-[color:var(--brick-deep)] mb-4 reveal">GALERÍA & PROMOCIONES</p>
+    <h2 class="font-display font-bold text-4xl md:text-5xl mb-12 reveal">Lo que entra y sale del depósito.</h2>
+  </div>
+  <div class="overflow-hidden relative">
+    <div class="marquee-track gap-6 px-6">
+      <img src="https://images.unsplash.com/photo-1541976590-713941681591?q=80&w=700&auto=format&fit=crop" class="h-64 w-80 object-cover rounded-lg flex-shrink-0" alt="Depósito de materiales">
+      <img src="https://images.unsplash.com/photo-1517581177682-a085bb7ffb15?q=80&w=700&auto=format&fit=crop" class="h-64 w-80 object-cover rounded-lg flex-shrink-0" alt="Bolsas de cemento apiladas">
+      <img src="https://images.unsplash.com/photo-1590274853856-f22d5ee3d228?q=80&w=700&auto=format&fit=crop" class="h-64 w-80 object-cover rounded-lg flex-shrink-0" alt="Ladrillos huecos">
+      <img src="https://images.unsplash.com/photo-1489514354504-1653aa90e34e?q=80&w=700&auto=format&fit=crop" class="h-64 w-80 object-cover rounded-lg flex-shrink-0" alt="Materiales de obra">
+      <img src="https://images.unsplash.com/photo-1541976590-713941681591?q=80&w=700&auto=format&fit=crop" class="h-64 w-80 object-cover rounded-lg flex-shrink-0" alt="Depósito de materiales">
+      <img src="https://images.unsplash.com/photo-1517581177682-a085bb7ffb15?q=80&w=700&auto=format&fit=crop" class="h-64 w-80 object-cover rounded-lg flex-shrink-0" alt="Bolsas de cemento apiladas">
+      <img src="https://images.unsplash.com/photo-1590274853856-f22d5ee3d228?q=80&w=700&auto=format&fit=crop" class="h-64 w-80 object-cover rounded-lg flex-shrink-0" alt="Ladrillos huecos">
+      <img src="https://images.unsplash.com/photo-1489514354504-1653aa90e34e?q=80&w=700&auto=format&fit=crop" class="h-64 w-80 object-cover rounded-lg flex-shrink-0" alt="Materiales de obra">
+    </div>
+  </div>
+</section>
+
+<!-- CONTACTO -->
+<section id="contacto" class="max-w-7xl mx-auto px-6 md:px-10 py-24 grid lg:grid-cols-12 gap-10">
+  <div class="lg:col-span-5 reveal">
+    <p class="font-mono text-xs tracking-[0.3em] text-[color:var(--brick-deep)] mb-4">UBICACIÓN & CONTACTO</p>
+    <h2 class="font-display font-bold text-4xl md:text-5xl mb-6">Retirá en el depósito o coordiná entrega.</h2>
+    <div class="rounded-lg p-6" style="background:var(--concrete2); border:1px solid var(--line);">
+      <p class="flex justify-between border-b py-2 font-mono text-sm" style="border-color:var(--line)"><span>Dirección</span><span class="text-[color:var(--dim)]">Neuquén Capital, Río Negro</span></p>
+      <p class="flex justify-between border-b py-2 font-mono text-sm" style="border-color:var(--line)"><span>WhatsApp</span><span class="text-[color:var(--dim)]">+54 9 299 000-0000</span></p>
+      <p class="flex justify-between border-b py-2 font-mono text-sm" style="border-color:var(--line)"><span>Email</span><span class="text-[color:var(--dim)]">hola@materialesaldana.com.ar</span></p>
+      <p class="flex justify-between py-2 font-mono text-sm"><span>Horario</span><span class="text-[color:var(--dim)]">Lun a Sáb · 7:30 a 18 hs</span></p>
+    </div>
+    <a href="https://wa.me/5492990000000" target="_blank" class="btn-primary rounded px-7 py-3.5 inline-block mt-8 font-display tracking-wide">Escribinos ahora</a>
+  </div>
+  <div class="lg:col-span-7 reveal">
+    <div class="rounded-lg overflow-hidden h-full min-h-[340px] border" style="border-color:var(--line);">
+      <iframe
+        src="https://www.google.com/maps?q=Neuqu%C3%A9n%20Capital&output=embed"
+        class="w-full h-full min-h-[340px]"
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="border-t" style="border-color:var(--line); background:var(--concrete2);">
+  <div class="max-w-7xl mx-auto px-6 md:px-10 py-14 grid md:grid-cols-3 gap-10">
+    <div>
+      <span class="font-display font-bold text-xl" style="color:var(--brick-deep)">ALDANA</span>
+      <p class="text-[color:var(--dim)] mt-3 max-w-xs">Corralón y ferretería de materiales de construcción en Neuquén.</p>
+    </div>
+    <div class="font-mono text-sm text-[color:var(--dim)] space-y-2">
+      <p class="text-[color:var(--brick-deep)] tracking-[0.2em] text-xs mb-2">SEGUINOS</p>
+      <a href="#" class="block underline-grow w-fit">Instagram</a>
+      <a href="#" class="block underline-grow w-fit">Facebook</a>
+    </div>
+    <div class="font-mono text-sm text-[color:var(--dim)] space-y-2">
+      <p class="text-[color:var(--brick-deep)] tracking-[0.2em] text-xs mb-2">NAVEGACIÓN</p>
+      <a href="#catalogo" class="block underline-grow w-fit">Catálogo</a>
+      <a href="#presupuesto" class="block underline-grow w-fit">Presupuesto</a>
+      <a href="#contacto" class="block underline-grow w-fit">Contacto</a>
+    </div>
+  </div>
+  <div class="text-center font-mono text-[10px] tracking-[0.2em] text-[color:var(--dim)] pb-8">© 2026 MATERIALES ALDANA — HECHO EN NEUQUÉN</div>
+</footer>
+
+<script>
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el=>io.observe(el));
+
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const parallaxEls = document.querySelectorAll('[data-parallax]');
+  function onScroll(){
+    if(prefersReduced) return;
+    const y = window.scrollY;
+    parallaxEls.forEach(el=>{
+      const speed = parseFloat(el.dataset.speed || 0.2);
+      el.style.transform = `translateY(${y*speed*0.25}px)`;
+    });
+  }
+  window.addEventListener('scroll', onScroll, { passive:true });
+
+  const pills = document.querySelectorAll('#filterPills .filter-pill');
+  const cards = document.querySelectorAll('#productGrid .product-card');
+  pills.forEach(p=>{
+    p.addEventListener('click', ()=>{
+      pills.forEach(x=>x.classList.remove('active'));
+      p.classList.add('active');
+      const f = p.dataset.filter;
+      cards.forEach(c=>{
+        c.style.display = (f==='todos' || c.dataset.cat===f) ? '' : 'none';
+      });
+    });
+  });
+
+  // calculadora de presupuesto
+  const calcBtn = document.getElementById('calcBtn');
+  const calcTipo = document.getElementById('calcTipo');
+  const calcM2 = document.getElementById('calcM2');
+  const calcResultado = document.getElementById('calcResultado');
+  function calcular(){
+    const factor = parseFloat(calcTipo.value);
+    const m2 = parseFloat(calcM2.value) || 0;
+    const bolsas = Math.max(1, Math.ceil(factor * m2));
+    calcResultado.textContent = bolsas;
+  }
+  calcBtn.addEventListener('click', calcular);
+  calcM2.addEventListener('input', calcular);
+  calcTipo.addEventListener('change', calcular);
+  calcular();
+</script>
+</body>
+</html>

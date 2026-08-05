@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eluney · Florería Boutique</title>
+    <!-- Tailwind + Font Awesome -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* paleta: verde natural #2a6a3a, rosa pastel #e8b4b8, blanco #ffffff, dorado #c9a84a */
+        .parallax-bg {
+            background-attachment: fixed;
+            background-position: center;
+            background-size: cover;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(42, 106, 58, 0.08);
+        }
+        .hover-scale {
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+        .hover-scale:hover {
+            transform: scale(1.03);
+            box-shadow: 0 25px 45px -12px rgba(42, 106, 58, 0.15);
+        }
+        .btn-cta {
+            background: linear-gradient(145deg, #2a6a3a, #1a4a2a);
+            transition: all 0.3s ease;
+            border: none;
+            color: white;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+        }
+        .btn-cta:hover {
+            background: linear-gradient(145deg, #3a8a4a, #2a5a3a);
+            transform: translateY(-3px);
+            box-shadow: 0 16px 32px -8px rgba(42, 106, 58, 0.3);
+        }
+        .btn-outline-cta {
+            border: 2px solid #2a6a3a;
+            color: #2a6a3a;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+        }
+        .btn-outline-cta:hover {
+            background: #2a6a3a;
+            color: white;
+            transform: translateY(-3px);
+        }
+        .btn-gold {
+            background: linear-gradient(145deg, #c9a84a, #b0882a);
+            color: white;
+        }
+        .btn-gold:hover {
+            background: linear-gradient(145deg, #d9b85a, #c0983a);
+            transform: translateY(-3px);
+            box-shadow: 0 16px 32px -8px rgba(201, 168, 74, 0.3);
+        }
+        .filter-btn.active {
+            background: #2a6a3a;
+            color: white;
+            border-color: #2a6a3a;
+        }
+        .filter-btn {
+            transition: all 0.25s ease;
+            border-color: #2a6a3a;
+            color: #2a6a3a;
+            font-weight: 500;
+        }
+        .filter-btn:hover {
+            background: #2a6a3a;
+            color: white;
+        }
+        .bg-pattern-floral {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.04"><circle cx="20" cy="20" r="12" fill="%23e8b4b8"/><circle cx="80" cy="80" r="10" fill="%23e8b4b8"/><circle cx="50" cy="50" r="15" fill="%23c9a84a"/><path d="M30 80 Q40 70 50 80 Q60 70 70 80" stroke="%232a6a3a" stroke-width="2" fill="none"/></svg>');
+            background-repeat: repeat;
+            background-size: 160px;
+        }
+        .hamburger-line {
+            display: block;
+            width: 28px;
+            height: 3px;
+            margin: 5px auto;
+            background: #2a6a3a;
+            transition: all 0.25s ease;
+            border-radius: 2px;
+        }
+        .mobile-menu {
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateX(100%);
+        }
+        .mobile-menu.open {
+            transform: translateX(0);
+        }
+        .slider-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(42, 106, 58, 0.2);
+            transition: all 0.3s;
+            cursor: pointer;
+            border: 2px solid rgba(42, 106, 58, 0.1);
+        }
+        .slider-dot.active {
+            background: #2a6a3a;
+            border-color: #2a6a3a;
+            box-shadow: 0 0 20px rgba(42, 106, 58, 0.2);
+        }
+        body {
+            background-color: #faf8f5;
+            color: #2a2a2a;
+        }
+        .section-light {
+            background-color: #faf8f5;
+        }
+        .section-dark {
+            background-color: #1a2a1a;
+            color: #e8e0d8;
+        }
+        .section-mid {
+            background-color: #f5f0eb;
+        }
+        .text-green-floral {
+            color: #2a6a3a;
+        }
+        .text-pink {
+            color: #e8b4b8;
+        }
+        .text-gold {
+            color: #c9a84a;
+        }
+        .border-green-floral {
+            border-color: #2a6a3a;
+        }
+        .border-pink {
+            border-color: #e8b4b8;
+        }
+        .bg-green-light {
+            background-color: rgba(42, 106, 58, 0.04);
+        }
+        .review-card {
+            background: white;
+            border-radius: 2rem;
+            padding: 2rem;
+            border: 1px solid rgba(42, 106, 58, 0.06);
+            transition: all 0.3s ease;
+        }
+        .review-card:hover {
+            border-color: #e8b4b8;
+            box-shadow: 0 8px 35px rgba(232, 180, 184, 0.1);
+        }
+        .star-filled {
+            color: #c9a84a;
+        }
+        .producto-tag {
+            background: rgba(232, 180, 184, 0.12);
+            border: 1px solid rgba(232, 180, 184, 0.15);
+            padding: 0.2rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.6rem;
+            color: #e8b4b8;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .section-title {
+            font-size: 3.2rem;
+            font-weight: 300;
+            letter-spacing: -0.02em;
+            font-family: 'Georgia', serif;
+        }
+        .section-subtitle {
+            font-size: 1.1rem;
+            color: #7a8a7a;
+            font-weight: 300;
+            letter-spacing: 0.03em;
+        }
+        .hero-title {
+            font-size: 5rem;
+            font-weight: 300;
+            letter-spacing: 0.05em;
+            font-family: 'Georgia', serif;
+        }
+        @media (max-width: 768px) {
+            .hero-title { font-size: 3rem; }
+            .section-title { font-size: 2.4rem; }
+        }
+        /* animaciones */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in-up {
+            animation: fadeInUp 0.9s ease forwards;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-12px); }
+        }
+        .float-anim {
+            animation: float 5s ease-in-out infinite;
+        }
+        @keyframes fallPetal {
+            0% { transform: translateY(-50px) rotate(0deg); opacity: 0; }
+            60% { opacity: 1; }
+            100% { transform: translateY(10px) rotate(15deg); opacity: 1; }
+        }
+        .fall-petal {
+            animation: fallPetal 1.5s ease forwards;
+        }
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 300;
+            color: #c9a84a;
+            font-family: 'Georgia', serif;
+        }
+        .cart-badge {
+            background: #e8b4b8;
+            color: #1a2a1a;
+            border-radius: 9999px;
+            padding: 0.1rem 0.6rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        .service-icon {
+            font-size: 2.8rem;
+            color: #2a6a3a;
+            transition: all 0.3s ease;
+        }
+        .service-card:hover .service-icon {
+            transform: scale(1.1) rotate(-5deg);
+        }
+        .floral-divider {
+            width: 80px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #c9a84a, transparent);
+            margin: 0 auto;
+        }
+        .nav-link {
+            position: relative;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #c9a84a;
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ========== NAVBAR ========== -->
+    <nav class="fixed top-0 left-0 w-full z-50 bg-white/95 backdrop-blur-md shadow-sm border-b border-pink/20 px-6 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <i class="fas fa-seedling text-3xl text-green-floral"></i>
+            <span class="text-2xl font-serif font-light tracking-widest text-green-floral">ELUNEY</span>
+            <span class="hidden md:inline text-xs font-light text-gray-400 bg-gray-50 px-3 py-1 rounded-full tracking-wider">FLORES · BOUTIQUE</span>
+        </div>
+        <ul class="hidden lg:flex gap-10 text-sm font-light text-gray-700 uppercase tracking-wider">
+            <li><a href="#inicio" class="nav-link hover:text-green-floral transition">Inicio</a></li>
+            <li><a href="#nosotros" class="nav-link hover:text-green-floral transition">Nosotros</a></li>
+            <li><a href="#catalogo" class="nav-link hover:text-green-floral transition">Catálogo</a></li>
+            <li><a href="#servicios" class="nav-link hover:text-green-floral transition">Servicios</a></li>
+            <li><a href="#contacto" class="nav-link hover:text-green-floral transition">Contacto</a></li>
+        </ul>
+        <div class="flex items-center gap-4">
+            <a href="#carrito" class="hidden md:flex items-center gap-2 text-green-floral hover:text-gold transition">
+                <i class="fas fa-shopping-bag text-xl"></i>
+                <span class="cart-badge">0</span>
+            </a>
+            <a href="#comprar" class="hidden md:inline-block btn-cta px-6 py-2.5 rounded-full text-xs font-light tracking-wider shadow-sm"><i class="fas fa-flower mr-2"></i> Pedir ahora</a>
+            <button id="hamburgerBtn" class="md:hidden flex flex-col items-center justify-center w-10 h-10 rounded-full hover:bg-gray-50 transition" aria-label="menu">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- mobile menu -->
+    <div id="mobileMenu" class="mobile-menu fixed top-0 right-0 w-3/4 max-w-sm h-full bg-white/98 backdrop-blur-md shadow-2xl z-40 p-8 pt-28 flex flex-col gap-6 text-lg border-l-2 border-pink/20">
+        <a href="#inicio" class="border-b border-pink/10 pb-3 text-green-floral font-light tracking-wider">Inicio</a>
+        <a href="#nosotros" class="border-b border-pink/10 pb-3 font-light tracking-wider">Nosotros</a>
+        <a href="#catalogo" class="border-b border-pink/10 pb-3 font-light tracking-wider">Catálogo</a>
+        <a href="#servicios" class="border-b border-pink/10 pb-3 font-light tracking-wider">Servicios</a>
+        <a href="#contacto" class="border-b border-pink/10 pb-3 font-light tracking-wider">Contacto</a>
+        <a href="#comprar" class="btn-cta text-center py-3.5 rounded-full mt-4 font-light tracking-wider"><i class="fas fa-flower mr-2"></i> Pedir ahora</a>
+        <a href="#" class="btn-outline-cta text-center py-3.5 rounded-full border-2 font-light tracking-wider"><i class="fab fa-whatsapp mr-2"></i> WhatsApp</a>
+    </div>
+
+    <!-- ========== HERO ========== -->
+    <section id="inicio" class="relative w-full min-h-screen overflow-hidden parallax-bg" style="background-image: url('https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=1600&q=80');">
+        <div class="absolute inset-0 bg-gradient-to-b from-black/30 via-black/10 to-black/50"></div>
+        <div class="relative z-10 flex flex-col items-center justify-center h-full min-h-screen text-center px-4 text-white">
+            <div class="float-anim mb-8 text-7xl opacity-80">🌸</div>
+            <h1 class="hero-title text-white drop-shadow-2xl font-light tracking-widest">ELUNEY</h1>
+            <p class="text-xl md:text-2xl max-w-3xl mt-4 font-light tracking-wide drop-shadow-lg">Flores que hablan por vos</p>
+            <div class="floral-divider mt-6"></div>
+            <div class="flex flex-wrap justify-center gap-4 mt-10">
+                <a href="#catalogo" class="btn-cta px-10 py-4 rounded-full text-base font-light tracking-wide shadow-xl"><i class="fas fa-flower mr-2"></i> Ver catálogo</a>
+                <a href="#comprar" class="bg-white/15 backdrop-blur-sm border-2 border-white/30 px-10 py-4 rounded-full text-base font-light hover:bg-white/25 transition shadow-xl"><i class="fas fa-shopping-bag mr-2"></i> Pedir ahora</a>
+                <a href="#" class="bg-gold/25 backdrop-blur-sm border-2 border-gold/30 px-10 py-4 rounded-full text-base font-light hover:bg-gold/40 transition shadow-xl"><i class="fab fa-whatsapp mr-2"></i> WhatsApp</a>
+            </div>
+            <div class="mt-12 flex gap-3">
+                <span class="slider-dot active"></span>
+                <span class="slider-dot"></span>
+                <span class="slider-dot"></span>
+            </div>
+            <div class="absolute bottom-10 left-0 right-0 text-center text-white/40 text-xs tracking-widest font-light uppercase">▼ Desplazate para explorar ▼</div>
+        </div>
+    </section>
+
+    <!-- ========== NOSOTROS ========== -->
+    <section id="nosotros" class="py-24 px-6 section-light border-b border-pink/10 bg-pattern-floral">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row items-center gap-16">
+                <div class="md:w-1/2 fade-in-up">
+                    <span class="text-pink font-light tracking-widest text-sm uppercase"><i class="fas fa-heart mr-2"></i> desde 2015</span>
+                    <h2 class="section-title text-gray-800 mt-3">El arte de <span class="text-green-floral">florecer</span></h2>
+                    <p class="text-gray-600 text-lg mt-6 leading-relaxed font-light">Eluney nació del deseo de compartir belleza a través de las flores. Cada ramo que creamos cuenta una historia única, combinando colores, texturas y fragancias para transmitir emociones. Somos una florería boutique que cuida cada detalle, desde la selección de las flores hasta la presentación final.</p>
+                    <div class="mt-8 flex flex-wrap gap-8">
+                        <div><i class="fas fa-check-circle text-gold mr-2"></i> <span class="font-light">Flores de primera calidad</span></div>
+                        <div><i class="fas fa-check-circle text-gold mr-2"></i> <span class="font-light">Arreglos personalizados</span></div>
+                        <div><i class="fas fa-check-circle text-gold mr-2"></i> <span class="font-light">Delivery en Neuquén</span></div>
+                    </div>
+                    <a href="#catalogo" class="inline-block mt-10 btn-cta px-10 py-3.5 rounded-full text-sm font-light tracking-wide shadow-lg"><i class="fas fa-flower mr-2"></i> Explorar catálogo</a>
+                </div>
+                <div class="md:w-1/2 grid grid-cols-2 gap-4">
+                    <img src="https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=400&q=80" alt="flores" class="rounded-3xl shadow-2xl hover-scale w-full h-56 object-cover">
+                    <img src="https://images.unsplash.com/photo-1532372320572-cda25653a26d?w=400&q=80" alt="arreglo" class="rounded-3xl shadow-2xl hover-scale w-full h-56 object-cover mt-8">
+                    <img src="https://images.unsplash.com/photo-1519378058457-4c29a0a2efac?w=400&q=80" alt="taller" class="rounded-3xl shadow-2xl hover-scale w-full h-56 object-cover -mt-6">
+                    <img src="https://images.unsplash.com/photo-1532372320572-cda25653a26d?w=400&q=80" alt="ramo" class="rounded-3xl shadow-2xl hover-scale w-full h-56 object-cover">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== CATÁLOGO ========== -->
+    <section id="catalogo" class="py-24 px-6 section-mid border-b border-pink/10">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <span class="text-pink font-light tracking-widest text-sm uppercase"><i class="fas fa-flower mr-2"></i> catálogo</span>
+                <h2 class="section-title text-gray-800 mt-3">Nuestros <span class="text-green-floral">arreglos</span></h2>
+                <p class="section-subtitle mt-2">Elegí la flor que mejor exprese lo que sentís</p>
+                <div class="floral-divider mt-6"></div>
+                <div class="flex flex-wrap justify-center gap-3 mt-8">
+                    <button class="filter-btn active border-2 px-6 py-2.5 rounded-full text-xs font-light bg-white text-gray-800" data-filter="all">Todos</button>
+                    <button class="filter-btn border-2 px-6 py-2.5 rounded-full text-xs font-light bg-white text-gray-800" data-filter="ramos">Ramos</button>
+                    <button class="filter-btn border-2 px-6 py-2.5 rounded-full text-xs font-light bg-white text-gray-800" data-filter="eventos">Eventos</button>
+                    <button class="filter-btn border-2 px-6 py-2.5 rounded-full text-xs font-light bg-white text-gray-800" data-filter="plantas">Plantas</button>
+                    <button class="filter-btn border-2 px-6 py-2.5 rounded-full text-xs font-light bg-white text-gray-800" data-filter="ocasiones">Por ocasión</button>
+                </div>
+            </div>
+
+            <div id="catalogoGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="producto-item bg-white rounded-3xl shadow-xl overflow-hidden hover-scale border border-pink/10" data-category="ramos ocasiones">
+                    <img src="https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=400&q=80" alt="ramo rosas" class="w-full h-56 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-light text-gray-800">Ramo de rosas</h3>
+                        <p class="text-sm text-gray-500 font-light">12 rosas rojas · follaje natural</p>
+                        <div class="flex justify-between items-center mt-4">
+                            <span class="text-gold font-light text-xl">$18.900</span>
+                            <span class="producto-tag">ramos · ocasiones</span>
+                        </div>
+                        <button class="mt-5 w-full btn-cta py-3 rounded-full text-sm font-light"><i class="fas fa-shopping-bag mr-2"></i> Agregar</button>
+                    </div>
+                </div>
+                <div class="producto-item bg-white rounded-3xl shadow-xl overflow-hidden hover-scale border border-pink/10" data-category="eventos">
+                    <img src="https://images.unsplash.com/photo-1532372320572-cda25653a26d?w=400&q=80" alt="centro de mesa" class="w-full h-56 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-light text-gray-800">Centro de mesa</h3>
+                        <p class="text-sm text-gray-500 font-light">Arreglo floral para eventos</p>
+                        <div class="flex justify-between items-center mt-4">
+                            <span class="text-gold font-light text-xl">$32.500</span>
+                            <span class="producto-tag">eventos</span>
+                        </div>
+                        <button class="mt-5 w-full btn-cta py-3 rounded-full text-sm font-light"><i class="fas fa-shopping-bag mr-2"></i> Agregar</button>
+                    </div>
+                </div>
+                <div class="producto-item bg-white rounded-3xl shadow-xl overflow-hidden hover-scale border border-pink/10" data-category="plantas">
+                    <img src="https://images.unsplash.com/photo-1519378058457-4c29a0a2efac?w=400&q=80" alt="planta" class="w-full h-56 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-light text-gray-800">Planta de interior</h3>
+                        <p class="text-sm text-gray-500 font-light">Monstera · maceta cerámica</p>
+                        <div class="flex justify-between items-center mt-4">
+                            <span class="text-gold font-light text-xl">$14.200</span>
+                            <span class="producto-tag">plantas</span>
+                        </div>
+                        <button class="mt-5 w-full btn-cta py-3 rounded-full text-sm font-light"><i class="fas fa-shopping-bag mr-2"></i> Agregar</button>
+                    </div>
+                </div>
+                <div class="producto-item bg-white rounded-3xl shadow-xl overflow-hidden hover-scale border border-pink/10" data-category="ocasiones">
+                    <img src="https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=400&q=80" alt="ramo cumpleaños" class="w-full h-56 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-light text-gray-800">Ramo cumpleaños</h3>
+                        <p class="text-sm text-gray-500 font-light">Flores variadas · colores alegres</p>
+                        <div class="flex justify-between items-center mt-4">
+                            <span class="text-gold font-light text-xl">$21.800</span>
+                            <span class="producto-tag">ocasiones</span>
+                        </div>
+                        <button class="mt-5 w-full btn-cta py-3 rounded-full text-sm font-light"><i class="fas fa-shopping-bag mr-2"></i> Agregar</button>
+                    </div>
+                </div>
+                <div class="producto-item bg-white rounded-3xl shadow-xl overflow-hidden hover-scale border border-pink/10" data-category="ramos">
+                    <img src="https://images.unsplash.com/photo-1532372320572-cda25653a26d?w=400&q=80" alt="ramo silvestre" class="w-full h-56 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-light text-gray-800">Ramo silvestre</h3>
+                        <p class="text-sm text-gray-500 font-light">Flores de campo · estilo natural</p>
+                        <div class="flex justify-between items-center mt-4">
+                            <span class="text-gold font-light text-xl">$16.500</span>
+                            <span class="producto-tag">ramos</span>
+                        </div>
+                        <button class="mt-5 w-full btn-cta py-3 rounded-full text-sm font-light"><i class="fas fa-shopping-bag mr-2"></i> Agregar</button>
+                    </div>
+                </div>
+                <div class="producto-item bg-white rounded-3xl shadow-xl overflow-hidden hover-scale border border-pink/10" data-category="eventos">
+                    <img src="https://images.unsplash.com/photo-1519378058457-4c29a0a2efac?w=400&q=80" alt="decoración boda" class="w-full h-56 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-light text-gray-800">Decoración para boda</h3>
+                        <p class="text-sm text-gray-500 font-light">Arreglos personalizados</p>
+                        <div class="flex justify-between items-center mt-4">
+                            <span class="text-gold font-light text-xl">$45.000</span>
+                            <span class="producto-tag">eventos</span>
+                        </div>
+                        <button class="mt-5 w-full btn-cta py-3 rounded-full text-sm font-light"><i class="fas fa-shopping-bag mr-2"></i> Consultar</button>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-14">
+                <a href="#" class="btn-outline-cta px-10 py-4 rounded-full text-sm font-light border-2 bg-white shadow-xl"><i class="fas fa-arrow-right mr-2"></i> Ver catálogo completo</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== SERVICIOS ========== -->
+    <section id="servicios" class="py-24 px-6 section-dark border-b border-gold/20 bg-pattern-floral">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16">
+                <span class="text-pink font-light tracking-widest text-sm uppercase"><i class="fas fa-truck mr-2"></i> servicios</span>
+                <h2 class="section-title text-white mt-3">Más que <span class="text-gold">flores</span></h2>
+                <p class="section-subtitle text-gray-400 mt-2">Todo lo que necesitás para tus momentos especiales</p>
+                <div class="floral-divider mt-6"></div>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="service-card bg-white/5 p-8 rounded-3xl shadow-xl border border-gold/10 hover-scale text-center backdrop-blur-sm">
+                    <div class="service-icon text-gold"><i class="fas fa-truck"></i></div>
+                    <h3 class="text-xl font-light text-white mt-4">Delivery a domicilio</h3>
+                    <p class="text-gray-400 text-sm mt-2 font-light">Recibí tu pedido en la puerta de tu casa</p>
+                </div>
+                <div class="service-card bg-white/5 p-8 rounded-3xl shadow-xl border border-gold/10 hover-scale text-center backdrop-blur-sm">
+                    <div class="service-icon text-gold"><i class="fas fa-pencil-alt"></i></div>
+                    <h3 class="text-xl font-light text-white mt-4">Arreglos personalizados</h3>
+                    <p class="text-gray-400 text-sm mt-2 font-light">Diseñamos el ramo que imaginás</p>
+                </div>
+                <div class="service-card bg-white/5 p-8 rounded-3xl shadow-xl border border-gold/10 hover-scale text-center backdrop-blur-sm">
+                    <div class="service-icon text-gold"><i class="fas fa-calendar-check"></i></div>
+                    <h3 class="text-xl font-light text-white mt-4">Eventos y bodas</h3>
+                    <p class="text-gray-400 text-sm mt-2 font-light">Decoración floral para tu celebración</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== RESEÑAS ========== -->
+    <section class="py-20 px-6 section-light border-b border-pink/10">
+        <div class="max-w-5xl mx-auto text-center">
+            <i class="fas fa-star text-5xl text-gold"></i>
+            <p class="text-5xl font-light text-gray-800 mt-3">★ 4.9</p>
+            <p class="text-gray-500 font-light">+100 reseñas · Google</p>
+            <div class="floral-divider mt-6"></div>
+            <div class="mt-12 grid md:grid-cols-3 gap-8">
+                <div class="review-card"><i class="fas fa-quote-left text-pink text-2xl"></i><p class="mt-3 italic text-gray-600 text-sm font-light">“Los arreglos son espectaculares, siempre superan mis expectativas. Eluney es sinónimo de calidad.”</p><span class="block mt-4 text-sm font-light text-green-floral">— Laura M.</span></div>
+                <div class="review-card"><i class="fas fa-quote-left text-pink text-2xl"></i><p class="mt-3 italic text-gray-600 text-sm font-light">“El delivery es puntual y las flores llegan en perfecto estado. Mi florería de confianza.”</p><span class="block mt-4 text-sm font-light text-green-floral">— Carlos G.</span></div>
+                <div class="review-card"><i class="fas fa-quote-left text-pink text-2xl"></i><p class="mt-3 italic text-gray-600 text-sm font-light">“Eluney decoró mi boda y fue un sueño hecho realidad. Totalmente recomendables.”</p><span class="block mt-4 text-sm font-light text-green-floral">— Sofía R.</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== COMPRAR / CARRITO ========== -->
+    <section id="comprar" class="py-24 px-6 section-mid bg-pattern-floral">
+        <div class="max-w-5xl mx-auto">
+            <h2 class="section-title text-center text-gray-800">Tu <span class="text-green-floral">carrito</span></h2>
+            <p class="text-center text-gray-500 mt-2 section-subtitle">Agregá tus flores favoritas y realizá tu pedido</p>
+            <div class="floral-divider mt-6"></div>
+            <div class="mt-12 glass-card p-10 rounded-3xl shadow-2xl border border-pink/10">
+                <div class="flex items-center justify-between border-b border-pink/10 pb-4 mb-4">
+                    <span class="font-light text-gray-700">Producto</span>
+                    <span class="font-light text-gray-700">Precio</span>
+                </div>
+                <div class="text-center py-8 text-gray-400">
+                    <i class="fas fa-shopping-bag text-4xl text-pink/30 mb-3 block"></i>
+                    <p class="text-lg font-light">Tu carrito está vacío</p>
+                    <p class="text-sm font-light">Explorá nuestro catálogo y agregá productos</p>
+                </div>
+                <div class="mt-6 flex flex-wrap justify-center gap-4">
+                    <a href="#catalogo" class="btn-outline-cta px-8 py-3 rounded-full text-sm font-light border-2"><i class="fas fa-arrow-left mr-2"></i> Seguir comprando</a>
+                    <button class="btn-gold px-8 py-3 rounded-full text-sm font-light shadow-lg" disabled><i class="fas fa-check mr-2"></i> Finalizar compra</button>
+                </div>
+                <div class="mt-6 text-center text-sm text-gray-500 font-light">
+                    <i class="fas fa-lock text-gold mr-1"></i> Compra segura · Envíos a todo Neuquén
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== CONTACTO ========== -->
+    <section id="contacto" class="py-24 px-6 section-light">
+        <div class="max-w-5xl mx-auto">
+            <h2 class="section-title text-center text-gray-800">Contacto</h2>
+            <p class="text-center text-gray-500 mt-2 section-subtitle">Estamos para ayudarte</p>
+            <div class="floral-divider mt-6"></div>
+            <div class="mt-12 glass-card p-10 rounded-3xl shadow-2xl border border-pink/10">
+                <div class="grid md:grid-cols-2 gap-10">
+                    <div>
+                        <h3 class="text-xl font-light text-gray-800">Escribinos</h3>
+                        <form class="mt-4 space-y-4">
+                            <input type="text" placeholder="Nombre" class="w-full p-4 rounded-xl border border-pink/20 focus:ring-2 focus:ring-green-floral outline-none font-light">
+                            <input type="email" placeholder="Email" class="w-full p-4 rounded-xl border border-pink/20 focus:ring-2 focus:ring-green-floral outline-none font-light">
+                            <textarea placeholder="Mensaje" rows="3" class="w-full p-4 rounded-xl border border-pink/20 focus:ring-2 focus:ring-green-floral outline-none font-light"></textarea>
+                            <button type="submit" class="btn-cta w-full py-4 rounded-full text-sm font-light"><i class="fas fa-paper-plane mr-2"></i> Enviar</button>
+                        </form>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-light text-gray-800">Visitanos</h3>
+                        <p class="text-gray-600 mt-4 font-light"><i class="fas fa-map-pin text-gold mr-2"></i> Av. Argentina 123, Neuquén</p>
+                        <p class="text-gray-600 mt-2 font-light"><i class="fas fa-clock text-gold mr-2"></i> Lun–Vie 9:00–20:00 · Sáb 10:00–18:00</p>
+                        <p class="text-gray-600 mt-2 font-light"><i class="fas fa-phone-alt text-gold mr-2"></i> +54 299 444-5678</p>
+                        <div class="mt-6 flex gap-4">
+                            <a href="#" class="text-2xl text-green-floral hover:text-gold transition"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="text-2xl text-green-floral hover:text-gold transition"><i class="fab fa-facebook"></i></a>
+                            <a href="#" class="text-2xl text-green-floral hover:text-gold transition"><i class="fab fa-pinterest"></i></a>
+                        </div>
+                        <div class="mt-8 rounded-2xl overflow-hidden shadow-lg h-48 border border-pink/10">
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3104.456789!2d-68.123456!3d-38.951234!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x960a3b4c5d6e7f8b%3A0x9a8b7c6d5e4f3a2b!2sNeuqu%C3%A9n%2C%20Argentina!5e0!3m2!1ses!2sar!4v1712345678901" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-gray-900 border-t border-gold/20 py-12 px-6 text-center">
+        <p class="text-gray-400 text-sm font-light tracking-wide"><i class="fas fa-seedling text-gold mr-2"></i> Eluney · Florería Boutique · Neuquén</p>
+        <div class="flex justify-center gap-8 mt-6 text-2xl text-gold">
+            <a href="#" class="hover:text-pink transition"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="hover:text-pink transition"><i class="fab fa-facebook"></i></a>
+            <a href="#" class="hover:text-pink transition"><i class="fab fa-pinterest"></i></a>
+        </div>
+        <div class="mt-4 text-xs text-gray-500 tracking-widest font-light">© 2025 · Todos los derechos reservados</div>
+    </footer>
+
+    <!-- ========== JS ========== -->
+    <script>
+        (function() {
+            // hamburguesa
+            const hamburger = document.getElementById('hamburgerBtn');
+            const mobileMenu = document.getElementById('mobileMenu');
+            hamburger.addEventListener('click', () => {
+                mobileMenu.classList.toggle('open');
+            });
+            document.querySelectorAll('#mobileMenu a').forEach(link => {
+                link.addEventListener('click', () => mobileMenu.classList.remove('open'));
+            });
+
+            // filtros catálogo
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const productos = document.querySelectorAll('.producto-item');
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    const filter = this.dataset.filter;
+                    productos.forEach(item => {
+                        const cats = item.dataset.category.split(' ');
+                        if (filter === 'all' || cats.includes(filter)) {
+                            item.style.display = 'block';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                });
+            });
+
+            // slider dots
+            const dots = document.querySelectorAll('.slider-dot');
+            let current = 0;
+            setInterval(() => {
+                dots.forEach(d => d.classList.remove('active'));
+                current = (current + 1) % dots.length;
+                dots[current].classList.add('active');
+            }, 5000);
+        })();
+    </script>
+</body>
+</html>

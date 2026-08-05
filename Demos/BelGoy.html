@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bel-Goy · Ferretería Neuquén</title>
+    <!-- Tailwind + Font Awesome -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* paleta: azul industrial #1a3a5a, gris metálico #6b7a8a, naranja #e87a2a, blanco #ffffff */
+        .parallax-bg {
+            background-attachment: fixed;
+            background-position: center;
+            background-size: cover;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(26, 58, 90, 0.1);
+        }
+        .hover-scale {
+            transition: transform 0.3s ease, box-shadow 0.4s ease;
+        }
+        .hover-scale:hover {
+            transform: scale(1.03);
+            box-shadow: 0 25px 40px -12px rgba(26, 58, 90, 0.2);
+        }
+        .btn-cta {
+            background: linear-gradient(145deg, #1a3a5a, #0f2a40);
+            transition: all 0.25s ease;
+            border: none;
+            color: white;
+            font-weight: 700;
+        }
+        .btn-cta:hover {
+            background: linear-gradient(145deg, #2a4a6a, #1a3a5a);
+            transform: translateY(-3px);
+            box-shadow: 0 16px 28px -8px rgba(26, 58, 90, 0.4);
+        }
+        .btn-outline-cta {
+            border: 2px solid #1a3a5a;
+            color: #1a3a5a;
+            transition: all 0.25s ease;
+            font-weight: 700;
+        }
+        .btn-outline-cta:hover {
+            background: #1a3a5a;
+            color: white;
+            transform: translateY(-3px);
+        }
+        .btn-orange {
+            background: linear-gradient(145deg, #e87a2a, #c85a1a);
+        }
+        .btn-orange:hover {
+            background: linear-gradient(145deg, #f08a3a, #d86a2a);
+        }
+        .filter-btn.active {
+            background: #1a3a5a;
+            color: white;
+            border-color: #1a3a5a;
+        }
+        .filter-btn {
+            transition: all 0.2s ease;
+            border-color: #1a3a5a;
+            color: #1a3a5a;
+            font-weight: 600;
+        }
+        .filter-btn:hover {
+            background: #1a3a5a;
+            color: white;
+        }
+        .bg-pattern-industrial {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.03"><rect x="10" y="10" width="15" height="15" fill="%231a3a5a"/><rect x="40" y="30" width="20" height="10" fill="%23e87a2a"/><circle cx="80" cy="80" r="12" fill="%231a3a5a"/><path d="M20 80 L30 60 L40 80 Z" fill="%23e87a2a"/></svg>');
+            background-repeat: repeat;
+            background-size: 140px;
+        }
+        .hamburger-line {
+            display: block;
+            width: 28px;
+            height: 3px;
+            margin: 5px auto;
+            background: #1a3a5a;
+            transition: all 0.25s ease;
+        }
+        .mobile-menu {
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateX(100%);
+        }
+        .mobile-menu.open {
+            transform: translateX(0);
+        }
+        .slider-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(26, 58, 90, 0.2);
+            transition: all 0.3s;
+            cursor: pointer;
+            border: 2px solid rgba(26, 58, 90, 0.1);
+        }
+        .slider-dot.active {
+            background: #1a3a5a;
+            border-color: #1a3a5a;
+        }
+        body {
+            background-color: #f5f7fa;
+            color: #1a2a3a;
+        }
+        .section-light {
+            background-color: #f5f7fa;
+        }
+        .section-dark {
+            background-color: #1a2a3a;
+            color: #e8eef4;
+        }
+        .section-mid {
+            background-color: #e8edf2;
+        }
+        .text-blue-industrial {
+            color: #1a3a5a;
+        }
+        .text-orange {
+            color: #e87a2a;
+        }
+        .border-blue-industrial {
+            border-color: #1a3a5a;
+        }
+        .border-orange {
+            border-color: #e87a2a;
+        }
+        .bg-blue-light {
+            background-color: rgba(26, 58, 90, 0.05);
+        }
+        .review-card {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 1.75rem;
+            border: 1px solid rgba(26, 58, 90, 0.08);
+            transition: all 0.3s ease;
+        }
+        .review-card:hover {
+            border-color: #e87a2a;
+            box-shadow: 0 8px 30px rgba(26, 58, 90, 0.06);
+        }
+        .star-filled {
+            color: #f7b731;
+        }
+        .producto-tag {
+            background: rgba(232, 122, 42, 0.1);
+            border: 1px solid rgba(232, 122, 42, 0.15);
+            padding: 0.2rem 0.9rem;
+            border-radius: 9999px;
+            font-size: 0.6rem;
+            color: #e87a2a;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .section-title {
+            font-size: 3rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+        .section-subtitle {
+            font-size: 1.1rem;
+            color: #6a7a8a;
+            font-weight: 300;
+        }
+        .hero-title {
+            font-size: 4.5rem;
+            font-weight: 900;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+        }
+        @media (max-width: 768px) {
+            .hero-title { font-size: 2.8rem; }
+            .section-title { font-size: 2.2rem; }
+        }
+        /* animaciones */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in-up {
+            animation: fadeInUp 0.9s ease forwards;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-12px); }
+        }
+        .float-anim {
+            animation: float 5s ease-in-out infinite;
+        }
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 900;
+            color: #e87a2a;
+        }
+        .cart-badge {
+            background: #e87a2a;
+            color: white;
+            border-radius: 9999px;
+            padding: 0.1rem 0.5rem;
+            font-size: 0.7rem;
+            font-weight: 700;
+        }
+        .service-icon {
+            font-size: 2.8rem;
+            color: #e87a2a;
+            transition: all 0.3s ease;
+        }
+        .service-card:hover .service-icon {
+            transform: scale(1.1) rotate(-5deg);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ========== NAVBAR ========== -->
+    <nav class="fixed top-0 left-0 w-full z-50 bg-white/95 backdrop-blur-md shadow-md border-b border-blue-industrial/10 px-6 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <i class="fas fa-hard-hat text-3xl text-orange"></i>
+            <span class="text-2xl font-black tracking-tight text-blue-industrial">BEL-GOY</span>
+            <span class="hidden md:inline text-xs font-bold text-gray-400 bg-gray-100 px-3 py-1 rounded-full tracking-wider">FERRETERÍA</span>
+        </div>
+        <ul class="hidden lg:flex gap-8 text-sm font-bold text-gray-700 uppercase tracking-wider">
+            <li><a href="#inicio" class="hover:text-orange transition">Inicio</a></li>
+            <li><a href="#nosotros" class="hover:text-orange transition">Nosotros</a></li>
+            <li><a href="#catalogo" class="hover:text-orange transition">Catálogo</a></li>
+            <li><a href="#servicios" class="hover:text-orange transition">Servicios</a></li>
+            <li><a href="#contacto" class="hover:text-orange transition">Contacto</a></li>
+        </ul>
+        <div class="flex items-center gap-4">
+            <a href="#carrito" class="hidden md:flex items-center gap-2 text-blue-industrial font-bold hover:text-orange transition">
+                <i class="fas fa-shopping-cart text-xl"></i>
+                <span class="cart-badge">0</span>
+            </a>
+            <a href="#comprar" class="hidden md:inline-block btn-orange px-6 py-2.5 rounded-full text-xs font-bold shadow-lg tracking-wider"><i class="fas fa-shopping-bag mr-2"></i> Comprar ahora</a>
+            <button id="hamburgerBtn" class="md:hidden flex flex-col items-center justify-center w-10 h-10 rounded-full hover:bg-gray-100 transition" aria-label="menu">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- mobile menu -->
+    <div id="mobileMenu" class="mobile-menu fixed top-0 right-0 w-3/4 max-w-sm h-full bg-white/98 backdrop-blur-md shadow-2xl z-40 p-8 pt-28 flex flex-col gap-6 text-lg border-l-2 border-blue-industrial/20">
+        <a href="#inicio" class="border-b border-blue-industrial/10 pb-3 text-blue-industrial font-bold uppercase tracking-wider">Inicio</a>
+        <a href="#nosotros" class="border-b border-blue-industrial/10 pb-3 font-bold uppercase tracking-wider">Nosotros</a>
+        <a href="#catalogo" class="border-b border-blue-industrial/10 pb-3 font-bold uppercase tracking-wider">Catálogo</a>
+        <a href="#servicios" class="border-b border-blue-industrial/10 pb-3 font-bold uppercase tracking-wider">Servicios</a>
+        <a href="#contacto" class="border-b border-blue-industrial/10 pb-3 font-bold uppercase tracking-wider">Contacto</a>
+        <a href="#comprar" class="btn-orange text-center py-3.5 rounded-full mt-4 font-bold uppercase tracking-wider"><i class="fas fa-shopping-bag mr-2"></i> Comprar ahora</a>
+        <a href="#" class="btn-outline-cta text-center py-3.5 rounded-full border-2 font-bold uppercase tracking-wider"><i class="fab fa-whatsapp mr-2"></i> WhatsApp</a>
+    </div>
+
+    <!-- ========== HERO ========== -->
+    <section id="inicio" class="relative w-full min-h-screen overflow-hidden parallax-bg" style="background-image: url('https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=1600&q=80');">
+        <div class="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black/70"></div>
+        <div class="relative z-10 flex flex-col items-center justify-center h-full min-h-screen text-center px-4 text-white">
+            <div class="float-anim mb-6 text-8xl opacity-90">🔧</div>
+            <h1 class="hero-title text-white drop-shadow-2xl">BEL-GOY</h1>
+            <p class="text-xl md:text-3xl max-w-3xl mt-4 font-light tracking-wide drop-shadow-lg">Todo lo que necesitás para construir y reparar</p>
+            <div class="flex flex-wrap justify-center gap-4 mt-10">
+                <a href="#catalogo" class="btn-orange px-10 py-4 rounded-full text-base font-bold shadow-2xl"><i class="fas fa-tools mr-2"></i> Ver catálogo</a>
+                <a href="#comprar" class="bg-white/15 backdrop-blur-sm border-2 border-white/40 px-10 py-4 rounded-full text-base font-bold hover:bg-white/25 transition shadow-xl"><i class="fas fa-shopping-bag mr-2"></i> Comprar ahora</a>
+                <a href="#" class="bg-orange/30 backdrop-blur-sm border-2 border-orange/40 px-10 py-4 rounded-full text-base font-bold hover:bg-orange/50 transition shadow-xl"><i class="fab fa-whatsapp mr-2"></i> WhatsApp</a>
+            </div>
+            <div class="mt-12 flex gap-3">
+                <span class="slider-dot active"></span>
+                <span class="slider-dot"></span>
+                <span class="slider-dot"></span>
+            </div>
+            <div class="absolute bottom-10 left-0 right-0 text-center text-white/50 text-xs tracking-widest font-bold uppercase">▼ Desplazate para explorar ▼</div>
+        </div>
+    </section>
+
+    <!-- ========== NOSOTROS ========== -->
+    <section id="nosotros" class="py-24 px-6 section-light border-b border-blue-industrial/10 bg-pattern-industrial">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row items-center gap-16">
+                <div class="md:w-1/2 fade-in-up">
+                    <span class="text-orange font-bold tracking-widest text-sm uppercase"><i class="fas fa-hard-hat mr-2"></i> desde 1990</span>
+                    <h2 class="section-title text-gray-800 mt-3">Construyendo <span class="text-orange">confianza</span></h2>
+                    <p class="text-gray-600 text-lg mt-6 leading-relaxed">Bel-Goy es sinónimo de calidad y confianza en Neuquén desde hace más de 30 años. Somos una ferretería de referencia para profesionales y particulares, ofreciendo herramientas, materiales de construcción y asesoramiento técnico de primer nivel. Nuestro compromiso es acompañar cada proyecto con los mejores productos y el mejor servicio.</p>
+                    <div class="mt-8 flex flex-wrap gap-8">
+                        <div><i class="fas fa-check-circle text-orange mr-2"></i> <span class="font-bold">Herramientas de calidad</span></div>
+                        <div><i class="fas fa-check-circle text-orange mr-2"></i> <span class="font-bold">Materiales de construcción</span></div>
+                        <div><i class="fas fa-check-circle text-orange mr-2"></i> <span class="font-bold">Asesoramiento técnico</span></div>
+                    </div>
+                    <a href="#catalogo" class="inline-block mt-10 btn-cta px-10 py-3.5 rounded-full text-sm font-bold shadow-xl tracking-wide"><i class="fas fa-tools mr-2"></i> Explorar productos</a>
+                </div>
+                <div class="md:w-1/2 grid grid-cols-2 gap-4">
+                    <img src="https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=400&q=80" alt="ferretería" class="rounded-2xl shadow-2xl hover-scale w-full h-56 object-cover">
+                    <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=400&q=80" alt="herramientas" class="rounded-2xl shadow-2xl hover-scale w-full h-56 object-cover mt-8">
+                    <img src="https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=400&q=80" alt="construcción" class="rounded-2xl shadow-2xl hover-scale w-full h-56 object-cover -mt-6">
+                    <img src="https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?w=400&q=80" alt="obra" class="rounded-2xl shadow-2xl hover-scale w-full h-56 object-cover">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== CATÁLOGO ========== -->
+    <section id="catalogo" class="py-24 px-6 section-mid border-b border-blue-industrial/10">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <span class="text-orange font-bold tracking-widest text-sm uppercase"><i class="fas fa-tools mr-2"></i> catálogo</span>
+                <h2 class="section-title text-gray-800 mt-3">Nuestros <span class="text-orange">productos</span></h2>
+                <p class="section-subtitle mt-2">Encontrá todo lo que necesitás para tu proyecto</p>
+                <div class="flex flex-wrap justify-center gap-3 mt-8">
+                    <button class="filter-btn active border-2 px-6 py-2.5 rounded-full text-xs font-bold bg-white text-gray-800" data-filter="all">Todos</button>
+                    <button class="filter-btn border-2 px-6 py-2.5 rounded-full text-xs font-bold bg-white text-gray-800" data-filter="herramientas">Herramientas</button>
+                    <button class="filter-btn border-2 px-6 py-2.5 rounded-full text-xs font-bold bg-white text-gray-800" data-filter="construccion">Construcción</button>
+                    <button class="filter-btn border-2 px-6 py-2.5 rounded-full text-xs font-bold bg-white text-gray-800" data-filter="pintura">Pinturas</button>
+                    <button class="filter-btn border-2 px-6 py-2.5 rounded-full text-xs font-bold bg-white text-gray-800" data-filter="seguridad">Seguridad</button>
+                </div>
+            </div>
+
+            <div id="catalogoGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="producto-item bg-white rounded-2xl shadow-xl overflow-hidden hover-scale border border-blue-industrial/10" data-category="herramientas">
+                    <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=400&q=80" alt="taladro" class="w-full h-56 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-800">Taladro percutor</h3>
+                        <p class="text-sm text-gray-500">Bosch · 750W · 13mm</p>
+                        <div class="flex justify-between items-center mt-4">
+                            <span class="text-orange font-bold text-xl">$89.900</span>
+                            <span class="producto-tag">herramientas</span>
+                        </div>
+                        <button class="mt-5 w-full btn-cta py-3 rounded-full text-sm font-bold"><i class="fas fa-cart-plus mr-2"></i> Agregar al carrito</button>
+                    </div>
+                </div>
+                <div class="producto-item bg-white rounded-2xl shadow-xl overflow-hidden hover-scale border border-blue-industrial/10" data-category="construccion">
+                    <img src="https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?w=400&q=80" alt="cemento" class="w-full h-56 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-800">Cemento Portland</h3>
+                        <p class="text-sm text-gray-500">Bolsa x 50kg · resistencia 40</p>
+                        <div class="flex justify-between items-center mt-4">
+                            <span class="text-orange font-bold text-xl">$12.500</span>
+                            <span class="producto-tag">construcción</span>
+                        </div>
+                        <button class="mt-5 w-full btn-cta py-3 rounded-full text-sm font-bold"><i class="fas fa-cart-plus mr-2"></i> Agregar al carrito</button>
+                    </div>
+                </div>
+                <div class="producto-item bg-white rounded-2xl shadow-xl overflow-hidden hover-scale border border-blue-industrial/10" data-category="pintura">
+                    <img src="https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=400&q=80" alt="pintura" class="w-full h-56 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-800">Pintura látex</h3>
+                        <p class="text-sm text-gray-500">Blanco · 20L · interior/exterior</p>
+                        <div class="flex justify-between items-center mt-4">
+                            <span class="text-orange font-bold text-xl">$45.800</span>
+                            <span class="producto-tag">pintura</span>
+                        </div>
+                        <button class="mt-5 w-full btn-cta py-3 rounded-full text-sm font-bold"><i class="fas fa-cart-plus mr-2"></i> Agregar al carrito</button>
+                    </div>
+                </div>
+                <div class="producto-item bg-white rounded-2xl shadow-xl overflow-hidden hover-scale border border-blue-industrial/10" data-category="seguridad">
+                    <img src="https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=400&q=80" alt="casco" class="w-full h-56 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-800">Casco de seguridad</h3>
+                        <p class="text-sm text-gray-500">Con barbuquejo · talla única</p>
+                        <div class="flex justify-between items-center mt-4">
+                            <span class="text-orange font-bold text-xl">$18.200</span>
+                            <span class="producto-tag">seguridad</span>
+                        </div>
+                        <button class="mt-5 w-full btn-cta py-3 rounded-full text-sm font-bold"><i class="fas fa-cart-plus mr-2"></i> Agregar al carrito</button>
+                    </div>
+                </div>
+                <div class="producto-item bg-white rounded-2xl shadow-xl overflow-hidden hover-scale border border-blue-industrial/10" data-category="herramientas">
+                    <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=400&q=80" alt="amoladora" class="w-full h-56 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-800">Amoladora angular</h3>
+                        <p class="text-sm text-gray-500">4.5" · 850W · disco incluido</p>
+                        <div class="flex justify-between items-center mt-4">
+                            <span class="text-orange font-bold text-xl">$65.500</span>
+                            <span class="producto-tag">herramientas</span>
+                        </div>
+                        <button class="mt-5 w-full btn-cta py-3 rounded-full text-sm font-bold"><i class="fas fa-cart-plus mr-2"></i> Agregar al carrito</button>
+                    </div>
+                </div>
+                <div class="producto-item bg-white rounded-2xl shadow-xl overflow-hidden hover-scale border border-blue-industrial/10" data-category="construccion">
+                    <img src="https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?w=400&q=80" alt="ladrillo" class="w-full h-56 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-800">Ladrillo cerámico</h3>
+                        <p class="text-sm text-gray-500">18x12x33 · pallet de 150u</p>
+                        <div class="flex justify-between items-center mt-4">
+                            <span class="text-orange font-bold text-xl">$28.900</span>
+                            <span class="producto-tag">construcción</span>
+                        </div>
+                        <button class="mt-5 w-full btn-cta py-3 rounded-full text-sm font-bold"><i class="fas fa-cart-plus mr-2"></i> Agregar al carrito</button>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-14">
+                <a href="#" class="btn-outline-cta px-10 py-4 rounded-full text-sm font-bold border-2 bg-white shadow-xl"><i class="fas fa-arrow-right mr-2"></i> Ver catálogo completo</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== SERVICIOS ========== -->
+    <section id="servicios" class="py-24 px-6 section-dark border-b border-orange/20 bg-pattern-industrial">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16">
+                <span class="text-orange font-bold tracking-widest text-sm uppercase"><i class="fas fa-truck mr-2"></i> servicios</span>
+                <h2 class="section-title text-white mt-3">Más que una <span class="text-orange">ferretería</span></h2>
+                <p class="section-subtitle text-gray-400 mt-2">Todo lo que necesitás para tu obra o proyecto</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="service-card bg-gray-800/80 p-8 rounded-2xl shadow-2xl border border-orange/20 hover-scale text-center">
+                    <div class="service-icon"><i class="fas fa-truck"></i></div>
+                    <h3 class="text-xl font-bold text-white mt-4">Delivery a domicilio</h3>
+                    <p class="text-gray-400 text-sm mt-2">Recibí tus materiales en la obra o en tu casa</p>
+                </div>
+                <div class="service-card bg-gray-800/80 p-8 rounded-2xl shadow-2xl border border-orange/20 hover-scale text-center">
+                    <div class="service-icon"><i class="fas fa-clipboard-list"></i></div>
+                    <h3 class="text-xl font-bold text-white mt-4">Pedidos especiales</h3>
+                    <p class="text-gray-400 text-sm mt-2">Encargá materiales o herramientas específicas</p>
+                </div>
+                <div class="service-card bg-gray-800/80 p-8 rounded-2xl shadow-2xl border border-orange/20 hover-scale text-center">
+                    <div class="service-icon"><i class="fas fa-comments"></i></div>
+                    <h3 class="text-xl font-bold text-white mt-4">Asesoramiento técnico</h3>
+                    <p class="text-gray-400 text-sm mt-2">Consultá con nuestros especialistas</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== RESEÑAS ========== -->
+    <section class="py-20 px-6 section-light border-b border-blue-industrial/10">
+        <div class="max-w-5xl mx-auto text-center">
+            <i class="fas fa-star text-5xl text-yellow-400"></i>
+            <p class="text-5xl font-black text-gray-800 mt-3">★ 4.7</p>
+            <p class="text-gray-500 text-lg">+120 reseñas · Google</p>
+            <div class="mt-12 grid md:grid-cols-3 gap-8">
+                <div class="review-card"><i class="fas fa-quote-left text-orange text-2xl"></i><p class="mt-3 italic text-gray-600 text-sm">“Excelente atención, siempre encuentro lo que necesito. La mejor ferretería de Neuquén.”</p><span class="block mt-4 text-sm font-bold text-blue-industrial">— Juan P.</span></div>
+                <div class="review-card"><i class="fas fa-quote-left text-orange text-2xl"></i><p class="mt-3 italic text-gray-600 text-sm">“Compré materiales para mi obra y me asesoraron de 10. Muy recomendables.”</p><span class="block mt-4 text-sm font-bold text-blue-industrial">— Marta G.</span></div>
+                <div class="review-card"><i class="fas fa-quote-left text-orange text-2xl"></i><p class="mt-3 italic text-gray-600 text-sm">“El delivery es rápido y los precios son muy competitivos. Confío en Bel-Goy.”</p><span class="block mt-4 text-sm font-bold text-blue-industrial">— Carlos R.</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== COMPRAR / CARRITO ========== -->
+    <section id="comprar" class="py-24 px-6 section-mid bg-pattern-industrial">
+        <div class="max-w-5xl mx-auto">
+            <h2 class="section-title text-center text-gray-800">Tu <span class="text-orange">carrito</span></h2>
+            <p class="text-center text-gray-500 mt-2 section-subtitle">Agregá productos y realizá tu pedido</p>
+            <div class="mt-12 glass-card p-10 rounded-3xl shadow-2xl border border-blue-industrial/10">
+                <div class="flex items-center justify-between border-b border-blue-industrial/10 pb-4 mb-4">
+                    <span class="font-bold text-gray-700">Producto</span>
+                    <span class="font-bold text-gray-700">Precio</span>
+                </div>
+                <div class="text-center py-8 text-gray-400">
+                    <i class="fas fa-shopping-cart text-4xl text-orange/30 mb-3 block"></i>
+                    <p class="text-lg">Tu carrito está vacío</p>
+                    <p class="text-sm">Explorá nuestro catálogo y agregá productos</p>
+                </div>
+                <div class="mt-6 flex flex-wrap justify-center gap-4">
+                    <a href="#catalogo" class="btn-outline-cta px-8 py-3 rounded-full text-sm font-bold border-2"><i class="fas fa-arrow-left mr-2"></i> Seguir comprando</a>
+                    <button class="btn-orange px-8 py-3 rounded-full text-sm font-bold shadow-lg" disabled><i class="fas fa-check mr-2"></i> Finalizar compra</button>
+                </div>
+                <div class="mt-6 text-center text-sm text-gray-500">
+                    <i class="fas fa-lock text-orange mr-1"></i> Compra segura · Envíos a todo Neuquén
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== CONTACTO ========== -->
+    <section id="contacto" class="py-24 px-6 section-light">
+        <div class="max-w-5xl mx-auto">
+            <h2 class="section-title text-center text-gray-800">Contacto</h2>
+            <p class="text-center text-gray-500 mt-2 section-subtitle">Estamos para ayudarte</p>
+            <div class="mt-12 glass-card p-10 rounded-3xl shadow-2xl border border-blue-industrial/10">
+                <div class="grid md:grid-cols-2 gap-10">
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-800">Escribinos</h3>
+                        <form class="mt-4 space-y-4">
+                            <input type="text" placeholder="Nombre" class="w-full p-4 rounded-xl border border-blue-industrial/20 focus:ring-2 focus:ring-orange outline-none">
+                            <input type="email" placeholder="Email" class="w-full p-4 rounded-xl border border-blue-industrial/20 focus:ring-2 focus:ring-orange outline-none">
+                            <textarea placeholder="Mensaje" rows="3" class="w-full p-4 rounded-xl border border-blue-industrial/20 focus:ring-2 focus:ring-orange outline-none"></textarea>
+                            <button type="submit" class="btn-orange w-full py-4 rounded-full text-sm font-bold"><i class="fas fa-paper-plane mr-2"></i> Enviar</button>
+                        </form>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-800">Visitanos</h3>
+                        <p class="text-gray-600 mt-4"><i class="fas fa-map-pin text-orange mr-2"></i> Av. Argentina 123, Neuquén</p>
+                        <p class="text-gray-600 mt-2"><i class="fas fa-clock text-orange mr-2"></i> Lun–Vie 8:00–19:00 · Sáb 9:00–13:00</p>
+                        <p class="text-gray-600 mt-2"><i class="fas fa-phone-alt text-orange mr-2"></i> +54 299 444-5678</p>
+                        <div class="mt-6 flex gap-4">
+                            <a href="#" class="text-2xl text-blue-industrial hover:text-orange transition"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="text-2xl text-blue-industrial hover:text-orange transition"><i class="fab fa-facebook"></i></a>
+                            <a href="#" class="text-2xl text-blue-industrial hover:text-orange transition"><i class="fab fa-youtube"></i></a>
+                        </div>
+                        <div class="mt-8 rounded-2xl overflow-hidden shadow-lg h-48 border border-blue-industrial/10">
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3104.456789!2d-68.123456!3d-38.951234!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x960a3b4c5d6e7f8b%3A0x9a8b7c6d5e4f3a2b!2sNeuqu%C3%A9n%2C%20Argentina!5e0!3m2!1ses!2sar!4v1712345678901" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-gray-900 border-t border-orange/20 py-12 px-6 text-center">
+        <p class="text-gray-400 text-sm font-bold tracking-wide"><i class="fas fa-hard-hat text-orange mr-2"></i> Bel-Goy · Ferretería Neuquén</p>
+        <div class="flex justify-center gap-8 mt-6 text-2xl text-orange">
+            <a href="#" class="hover:text-blue-industrial transition"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="hover:text-blue-industrial transition"><i class="fab fa-facebook"></i></a>
+            <a href="#" class="hover:text-blue-industrial transition"><i class="fab fa-youtube"></i></a>
+        </div>
+        <div class="mt-4 text-xs text-gray-500 tracking-widest">© 2025 · Todos los derechos reservados</div>
+    </footer>
+
+    <!-- ========== JS ========== -->
+    <script>
+        (function() {
+            // hamburguesa
+            const hamburger = document.getElementById('hamburgerBtn');
+            const mobileMenu = document.getElementById('mobileMenu');
+            hamburger.addEventListener('click', () => {
+                mobileMenu.classList.toggle('open');
+            });
+            document.querySelectorAll('#mobileMenu a').forEach(link => {
+                link.addEventListener('click', () => mobileMenu.classList.remove('open'));
+            });
+
+            // filtros catálogo
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const productos = document.querySelectorAll('.producto-item');
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    const filter = this.dataset.filter;
+                    productos.forEach(item => {
+                        const cats = item.dataset.category.split(' ');
+                        if (filter === 'all' || cats.includes(filter)) {
+                            item.style.display = 'block';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                });
+            });
+
+            // slider dots
+            const dots = document.querySelectorAll('.slider-dot');
+            let current = 0;
+            setInterval(() => {
+                dots.forEach(d => d.classList.remove('active'));
+                current = (current + 1) % dots.length;
+                dots[current].classList.add('active');
+            }, 5000);
+        })();
+    </script>
+</body>
+</html>

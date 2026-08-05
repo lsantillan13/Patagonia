@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MK Motopartes · Repuestos y Taller</title>
+    <!-- Tailwind + Font Awesome -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* paleta: negro #0a0a0a, rojo intenso #b22222, gris metálico #6b6b6b, blanco #ffffff */
+        .parallax-bg {
+            background-attachment: fixed;
+            background-position: center;
+            background-size: cover;
+        }
+        .glass-card {
+            background: rgba(10, 10, 10, 0.85);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(178, 34, 34, 0.3);
+        }
+        .hover-scale {
+            transition: transform 0.3s ease, box-shadow 0.4s ease;
+        }
+        .hover-scale:hover {
+            transform: scale(1.03);
+            box-shadow: 0 25px 40px -12px rgba(178, 34, 34, 0.4);
+        }
+        .btn-cta {
+            background: linear-gradient(145deg, #b22222, #8a1a1a);
+            transition: all 0.25s ease;
+            border: none;
+            color: white;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .btn-cta:hover {
+            background: linear-gradient(145deg, #cc3333, #9a2222);
+            transform: translateY(-3px);
+            box-shadow: 0 16px 28px -8px rgba(178, 34, 34, 0.6);
+        }
+        .btn-outline-cta {
+            border: 2px solid #b22222;
+            color: #b22222;
+            transition: all 0.25s ease;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .btn-outline-cta:hover {
+            background: #b22222;
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 12px 24px -8px rgba(178, 34, 34, 0.3);
+        }
+        .filter-btn.active {
+            background: #b22222;
+            color: white;
+            border-color: #b22222;
+        }
+        .filter-btn {
+            transition: all 0.2s ease;
+            border-color: #b22222;
+            color: #b22222;
+            font-weight: 600;
+        }
+        .filter-btn:hover {
+            background: #b22222;
+            color: white;
+        }
+        .bg-pattern-mk {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.02"><path d="M20 40 L40 40 L45 30 L55 30 L60 40 L80 40 L85 50 L80 60 L60 60 L55 70 L45 70 L40 60 L20 60 L15 50 L20 40Z" fill="%23b22222"/><circle cx="35" cy="55" r="8" fill="%23b22222"/><circle cx="65" cy="55" r="8" fill="%23b22222"/></svg>');
+            background-repeat: repeat;
+            background-size: 140px;
+        }
+        .hamburger-line {
+            display: block;
+            width: 28px;
+            height: 3px;
+            margin: 5px auto;
+            background: #b22222;
+            transition: all 0.25s ease;
+        }
+        .mobile-menu {
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateX(100%);
+        }
+        .mobile-menu.open {
+            transform: translateX(0);
+        }
+        .slider-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(178, 34, 34, 0.2);
+            transition: all 0.3s;
+            cursor: pointer;
+            border: 2px solid rgba(178, 34, 34, 0.1);
+        }
+        .slider-dot.active {
+            background: #b22222;
+            border-color: #b22222;
+            box-shadow: 0 0 20px rgba(178, 34, 34, 0.4);
+        }
+        body {
+            background-color: #0a0a0a;
+            color: #e0e0e0;
+        }
+        .section-dark {
+            background-color: #0a0a0a;
+        }
+        .section-light {
+            background-color: #141414;
+        }
+        .section-mid {
+            background-color: #1a1a1a;
+        }
+        .text-red-mk {
+            color: #b22222;
+        }
+        .border-red-mk {
+            border-color: #b22222;
+        }
+        .bg-red-mk-light {
+            background-color: rgba(178, 34, 34, 0.08);
+        }
+        .review-card {
+            background: #141414;
+            border-radius: 1.5rem;
+            padding: 1.75rem;
+            border: 1px solid rgba(178, 34, 34, 0.12);
+            transition: all 0.3s ease;
+        }
+        .review-card:hover {
+            border-color: #b22222;
+            box-shadow: 0 8px 30px rgba(178, 34, 34, 0.08);
+        }
+        .star-filled {
+            color: #f7b731;
+        }
+        .service-icon {
+            font-size: 2.8rem;
+            color: #b22222;
+            transition: all 0.3s ease;
+        }
+        .service-card:hover .service-icon {
+            transform: scale(1.1);
+        }
+        .producto-tag {
+            background: rgba(178, 34, 34, 0.12);
+            border: 1px solid rgba(178, 34, 34, 0.2);
+            padding: 0.2rem 0.9rem;
+            border-radius: 9999px;
+            font-size: 0.65rem;
+            color: #b22222;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .section-title {
+            font-size: 3rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+        .section-subtitle {
+            font-size: 1.1rem;
+            color: #9a9a9a;
+            font-weight: 300;
+        }
+        .hero-title {
+            font-size: 4.5rem;
+            font-weight: 900;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+        }
+        @media (max-width: 768px) {
+            .hero-title { font-size: 2.8rem; }
+            .section-title { font-size: 2.2rem; }
+        }
+        /* animaciones */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in-up {
+            animation: fadeInUp 0.9s ease forwards;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-12px); }
+        }
+        .float-anim {
+            animation: float 5s ease-in-out infinite;
+        }
+        @keyframes glowPulse {
+            0%, 100% { text-shadow: 0 0 20px rgba(178, 34, 34, 0.2); }
+            50% { text-shadow: 0 0 40px rgba(178, 34, 34, 0.6); }
+        }
+        .glow-pulse {
+            animation: glowPulse 3s ease-in-out infinite;
+        }
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 900;
+            color: #b22222;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ========== NAVBAR ========== -->
+    <nav class="fixed top-0 left-0 w-full z-50 bg-black/95 backdrop-blur-md shadow-2xl border-b-2 border-red-mk/30 px-6 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <i class="fas fa-motorcycle text-3xl text-red-mk"></i>
+            <span class="text-2xl font-black tracking-tight text-white">MK<span class="text-red-mk">MOTOPARTES</span></span>
+            <span class="hidden md:inline text-xs font-bold text-gray-400 bg-gray-800 px-3 py-1 rounded-full tracking-wider">REPUESTOS · TALLER</span>
+        </div>
+        <ul class="hidden lg:flex gap-8 text-sm font-bold text-gray-300 uppercase tracking-wider">
+            <li><a href="#inicio" class="hover:text-red-mk transition">Inicio</a></li>
+            <li><a href="#nosotros" class="hover:text-red-mk transition">Nosotros</a></li>
+            <li><a href="#catalogo" class="hover:text-red-mk transition">Catálogo</a></li>
+            <li><a href="#servicios" class="hover:text-red-mk transition">Servicios</a></li>
+            <li><a href="#contacto" class="hover:text-red-mk transition">Contacto</a></li>
+        </ul>
+        <div class="flex items-center gap-4">
+            <a href="#reservar" class="hidden md:inline-block btn-cta px-6 py-2.5 rounded-full text-xs font-bold shadow-lg tracking-wider"><i class="fas fa-calendar-check mr-2"></i> Reservar turno</a>
+            <button id="hamburgerBtn" class="md:hidden flex flex-col items-center justify-center w-10 h-10 rounded-full hover:bg-gray-800 transition" aria-label="menu">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- mobile menu -->
+    <div id="mobileMenu" class="mobile-menu fixed top-0 right-0 w-3/4 max-w-sm h-full bg-black/95 backdrop-blur-md shadow-2xl z-40 p-8 pt-28 flex flex-col gap-6 text-lg border-l-2 border-red-mk/30">
+        <a href="#inicio" class="border-b border-red-mk/20 pb-3 text-red-mk font-bold uppercase tracking-wider">Inicio</a>
+        <a href="#nosotros" class="border-b border-red-mk/20 pb-3 font-bold uppercase tracking-wider">Nosotros</a>
+        <a href="#catalogo" class="border-b border-red-mk/20 pb-3 font-bold uppercase tracking-wider">Catálogo</a>
+        <a href="#servicios" class="border-b border-red-mk/20 pb-3 font-bold uppercase tracking-wider">Servicios</a>
+        <a href="#contacto" class="border-b border-red-mk/20 pb-3 font-bold uppercase tracking-wider">Contacto</a>
+        <a href="#reservar" class="btn-cta text-center py-3.5 rounded-full mt-4 font-bold uppercase tracking-wider"><i class="fas fa-calendar-check mr-2"></i> Reservar turno</a>
+        <a href="#" class="btn-outline-cta text-center py-3.5 rounded-full border-2 font-bold uppercase tracking-wider"><i class="fab fa-whatsapp mr-2"></i> WhatsApp</a>
+    </div>
+
+    <!-- ========== HERO ========== -->
+    <section id="inicio" class="relative w-full min-h-screen overflow-hidden parallax-bg" style="background-image: url('https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=1600&q=80');">
+        <div class="absolute inset-0 bg-black/70"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-black/80"></div>
+        <div class="relative z-10 flex flex-col items-center justify-center h-full min-h-screen text-center px-4 text-white">
+            <div class="float-anim mb-6 text-8xl opacity-80">🏍️</div>
+            <h1 class="hero-title text-white drop-shadow-2xl">MK <span class="text-red-mk glow-pulse">MOTOPARTES</span></h1>
+            <p class="text-xl md:text-3xl max-w-3xl mt-4 font-light tracking-wide drop-shadow-lg">Todo para tu moto en un solo lugar · Neuquén</p>
+            <div class="flex flex-wrap justify-center gap-4 mt-10">
+                <a href="#catalogo" class="btn-cta px-10 py-4 rounded-full text-base font-bold shadow-2xl"><i class="fas fa-tools mr-2"></i> Ver catálogo</a>
+                <a href="#reservar" class="bg-white/10 backdrop-blur-sm border-2 border-white/30 px-10 py-4 rounded-full text-base font-bold hover:bg-white/20 transition shadow-xl"><i class="fas fa-calendar-check mr-2"></i> Reservar turno</a>
+                <a href="#" class="bg-red-mk/30 backdrop-blur-sm border-2 border-red-mk/50 px-10 py-4 rounded-full text-base font-bold hover:bg-red-mk/50 transition shadow-xl"><i class="fab fa-whatsapp mr-2"></i> WhatsApp</a>
+            </div>
+            <div class="mt-12 flex gap-3">
+                <span class="slider-dot active"></span>
+                <span class="slider-dot"></span>
+                <span class="slider-dot"></span>
+            </div>
+            <div class="absolute bottom-10 left-0 right-0 text-center text-gray-500 text-xs tracking-widest font-bold uppercase">▼ Desplazate para explorar ▼</div>
+        </div>
+    </section>
+
+    <!-- ========== NOSOTROS ========== -->
+    <section id="nosotros" class="py-24 px-6 section-dark border-b border-red-mk/10 bg-pattern-mk">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row items-center gap-16">
+                <div class="md:w-1/2 fade-in-up">
+                    <span class="text-red-mk font-bold tracking-widest text-sm uppercase"><i class="fas fa-history mr-2"></i> desde 2010</span>
+                    <h2 class="section-title text-white mt-3">Pasión por las <span class="text-red-mk">motos</span></h2>
+                    <p class="text-gray-400 text-lg mt-6 leading-relaxed">MK Motopartes nació en Neuquén con el sueño de ofrecer un espacio integral para motociclistas. Con más de 15 años de experiencia, somos referentes en venta de repuestos originales, accesorios y servicio mecánico. Nuestra comunidad crece día a día gracias a la confianza de nuestros clientes.</p>
+                    <div class="mt-8 flex flex-wrap gap-8">
+                        <div><i class="fas fa-check-circle text-red-mk mr-2"></i> <span class="font-bold">Repuestos originales</span></div>
+                        <div><i class="fas fa-check-circle text-red-mk mr-2"></i> <span class="font-bold">Taller mecánico</span></div>
+                        <div><i class="fas fa-check-circle text-red-mk mr-2"></i> <span class="font-bold">Atención personalizada</span></div>
+                    </div>
+                    <a href="#catalogo" class="inline-block mt-10 btn-cta px-10 py-3.5 rounded-full text-sm font-bold shadow-xl tracking-wide"><i class="fas fa-tools mr-2"></i> Explorar catálogo</a>
+                </div>
+                <div class="md:w-1/2 grid grid-cols-2 gap-4">
+                    <img src="https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=400&q=80" alt="taller" class="rounded-2xl shadow-2xl hover-scale w-full h-56 object-cover">
+                    <img src="https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=400&q=80" alt="repuestos" class="rounded-2xl shadow-2xl hover-scale w-full h-56 object-cover mt-8">
+                    <img src="https://images.unsplash.com/photo-1558981403-3c9a0a06f7b2?w=400&q=80" alt="moto" class="rounded-2xl shadow-2xl hover-scale w-full h-56 object-cover -mt-6">
+                    <img src="https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=400&q=80" alt="cliente" class="rounded-2xl shadow-2xl hover-scale w-full h-56 object-cover">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== CATÁLOGO ========== -->
+    <section id="catalogo" class="py-24 px-6 section-light border-b border-red-mk/10">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <span class="text-red-mk font-bold tracking-widest text-sm uppercase"><i class="fas fa-tools mr-2"></i> catálogo</span>
+                <h2 class="section-title text-white mt-3">Nuestros <span class="text-red-mk">repuestos</span></h2>
+                <p class="section-subtitle mt-2">Encontrá todo lo que necesitás para tu moto</p>
+                <div class="flex flex-wrap justify-center gap-3 mt-8">
+                    <button class="filter-btn active border-2 px-6 py-2.5 rounded-full text-xs font-bold bg-white text-gray-800" data-filter="all">Todos</button>
+                    <button class="filter-btn border-2 px-6 py-2.5 rounded-full text-xs font-bold bg-white text-gray-800" data-filter="originales">Originales</button>
+                    <button class="filter-btn border-2 px-6 py-2.5 rounded-full text-xs font-bold bg-white text-gray-800" data-filter="accesorios">Accesorios</button>
+                    <button class="filter-btn border-2 px-6 py-2.5 rounded-full text-xs font-bold bg-white text-gray-800" data-filter="rendimiento">Alto rendimiento</button>
+                </div>
+            </div>
+
+            <div id="catalogoGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="producto-item bg-gray-900 rounded-2xl shadow-2xl overflow-hidden hover-scale border border-red-mk/20" data-category="originales">
+                    <img src="https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=400&q=80" alt="filtro" class="w-full h-56 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-white">Filtro de aceite</h3>
+                        <p class="text-sm text-gray-400">Original Honda · CB 250</p>
+                        <div class="flex justify-between items-center mt-4">
+                            <span class="text-red-mk font-bold text-xl">$8.500</span>
+                            <span class="producto-tag">original</span>
+                        </div>
+                        <button class="mt-5 w-full btn-cta py-3 rounded-full text-sm font-bold"><i class="fas fa-plus mr-2"></i> Consultar</button>
+                    </div>
+                </div>
+                <div class="producto-item bg-gray-900 rounded-2xl shadow-2xl overflow-hidden hover-scale border border-red-mk/20" data-category="accesorios">
+                    <img src="https://images.unsplash.com/photo-1558981403-3c9a0a06f7b2?w=400&q=80" alt="casco" class="w-full h-56 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-white">Casco integral LS2</h3>
+                        <p class="text-sm text-gray-400">Homologado · talla M</p>
+                        <div class="flex justify-between items-center mt-4">
+                            <span class="text-red-mk font-bold text-xl">$185.000</span>
+                            <span class="producto-tag">accesorio</span>
+                        </div>
+                        <button class="mt-5 w-full btn-cta py-3 rounded-full text-sm font-bold"><i class="fas fa-plus mr-2"></i> Consultar</button>
+                    </div>
+                </div>
+                <div class="producto-item bg-gray-900 rounded-2xl shadow-2xl overflow-hidden hover-scale border border-red-mk/20" data-category="rendimiento">
+                    <img src="https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=400&q=80" alt="escape" class="w-full h-56 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-white">Escape deportivo</h3>
+                        <p class="text-sm text-gray-400">Acero inoxidable · alto flujo</p>
+                        <div class="flex justify-between items-center mt-4">
+                            <span class="text-red-mk font-bold text-xl">$320.000</span>
+                            <span class="producto-tag">rendimiento</span>
+                        </div>
+                        <button class="mt-5 w-full btn-cta py-3 rounded-full text-sm font-bold"><i class="fas fa-plus mr-2"></i> Consultar</button>
+                    </div>
+                </div>
+                <div class="producto-item bg-gray-900 rounded-2xl shadow-2xl overflow-hidden hover-scale border border-red-mk/20" data-category="originales">
+                    <img src="https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=400&q=80" alt="batería" class="w-full h-56 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-white">Batería 12V</h3>
+                        <p class="text-sm text-gray-400">Yuasa · YTX9-BS</p>
+                        <div class="flex justify-between items-center mt-4">
+                            <span class="text-red-mk font-bold text-xl">$45.000</span>
+                            <span class="producto-tag">original</span>
+                        </div>
+                        <button class="mt-5 w-full btn-cta py-3 rounded-full text-sm font-bold"><i class="fas fa-plus mr-2"></i> Consultar</button>
+                    </div>
+                </div>
+                <div class="producto-item bg-gray-900 rounded-2xl shadow-2xl overflow-hidden hover-scale border border-red-mk/20" data-category="accesorios">
+                    <img src="https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=400&q=80" alt="guantes" class="w-full h-56 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-white">Guantes de cuero</h3>
+                        <p class="text-sm text-gray-400">Alpinestars · talla L</p>
+                        <div class="flex justify-between items-center mt-4">
+                            <span class="text-red-mk font-bold text-xl">$65.000</span>
+                            <span class="producto-tag">accesorio</span>
+                        </div>
+                        <button class="mt-5 w-full btn-cta py-3 rounded-full text-sm font-bold"><i class="fas fa-plus mr-2"></i> Consultar</button>
+                    </div>
+                </div>
+                <div class="producto-item bg-gray-900 rounded-2xl shadow-2xl overflow-hidden hover-scale border border-red-mk/20" data-category="rendimiento">
+                    <img src="https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=400&q=80" alt="kit transmisión" class="w-full h-56 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-white">Kit de transmisión</h3>
+                        <p class="text-sm text-gray-400">Relación corta · racing</p>
+                        <div class="flex justify-between items-center mt-4">
+                            <span class="text-red-mk font-bold text-xl">$210.000</span>
+                            <span class="producto-tag">rendimiento</span>
+                        </div>
+                        <button class="mt-5 w-full btn-cta py-3 rounded-full text-sm font-bold"><i class="fas fa-plus mr-2"></i> Consultar</button>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-14">
+                <a href="#" class="btn-outline-cta px-10 py-4 rounded-full text-sm font-bold border-2 bg-white text-gray-800 shadow-xl"><i class="fas fa-arrow-right mr-2"></i> Ver catálogo completo</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== SERVICIOS ========== -->
+    <section id="servicios" class="py-24 px-6 section-dark border-b border-red-mk/10 bg-pattern-mk">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16">
+                <span class="text-red-mk font-bold tracking-widest text-sm uppercase"><i class="fas fa-tools mr-2"></i> servicios</span>
+                <h2 class="section-title text-white mt-3">Taller <span class="text-red-mk">mecánico</span></h2>
+                <p class="section-subtitle mt-2">Mantenimiento y reparaciones de confianza</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="service-card bg-gray-900 p-8 rounded-2xl shadow-2xl border border-red-mk/20 hover-scale text-center">
+                    <div class="service-icon"><i class="fas fa-oil-can"></i></div>
+                    <h3 class="text-xl font-bold text-white mt-4">Cambio de aceite</h3>
+                    <p class="text-gray-400 text-sm mt-2">Filtros y lubricantes originales</p>
+                </div>
+                <div class="service-card bg-gray-900 p-8 rounded-2xl shadow-2xl border border-red-mk/20 hover-scale text-center">
+                    <div class="service-icon"><i class="fas fa-cogs"></i></div>
+                    <h3 class="text-xl font-bold text-white mt-4">Motor y transmisión</h3>
+                    <p class="text-gray-400 text-sm mt-2">Diagnóstico y reparación integral</p>
+                </div>
+                <div class="service-card bg-gray-900 p-8 rounded-2xl shadow-2xl border border-red-mk/20 hover-scale text-center">
+                    <div class="service-icon"><i class="fas fa-car-battery"></i></div>
+                    <h3 class="text-xl font-bold text-white mt-4">Sistema eléctrico</h3>
+                    <p class="text-gray-400 text-sm mt-2">Batería, luces, arranque</p>
+                </div>
+            </div>
+            <div class="text-center mt-12">
+                <a href="#reservar" class="btn-cta px-10 py-4 rounded-full text-sm font-bold shadow-xl"><i class="fas fa-calendar-check mr-2"></i> Reservar turno</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== RESEÑAS ========== -->
+    <section class="py-20 px-6 section-light border-b border-red-mk/10">
+        <div class="max-w-5xl mx-auto text-center">
+            <i class="fas fa-star text-5xl text-yellow-400"></i>
+            <p class="text-5xl font-black text-white mt-3">★ 4.7</p>
+            <p class="text-gray-400 text-lg">+200 reseñas · Google</p>
+            <div class="mt-12 grid md:grid-cols-3 gap-8">
+                <div class="review-card"><i class="fas fa-quote-left text-red-mk text-2xl"></i><p class="mt-3 italic text-gray-300 text-sm">“Excelente atención, muy profesionales. Siempre confío en MK Motopartes.”</p><span class="block mt-4 text-sm font-bold text-red-mk">— Javier P.</span></div>
+                <div class="review-card"><i class="fas fa-quote-left text-red-mk text-2xl"></i><p class="mt-3 italic text-gray-300 text-sm">“Compré repuestos acá y me asesoraron de 10. Recomiendo ampliamente.”</p><span class="block mt-4 text-sm font-bold text-red-mk">— Sofía L.</span></div>
+                <div class="review-card"><i class="fas fa-quote-left text-red-mk text-2xl"></i><p class="mt-3 italic text-gray-300 text-sm">“El mejor taller de Neuquén. Rápidos, confiables y con precios justos.”</p><span class="block mt-4 text-sm font-bold text-red-mk">— Diego R.</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== RESERVAR TURNO ========== -->
+    <section id="reservar" class="py-24 px-6 section-dark bg-pattern-mk">
+        <div class="max-w-5xl mx-auto">
+            <h2 class="section-title text-center text-white">Reservá tu <span class="text-red-mk">turno</span></h2>
+            <p class="text-center text-gray-400 mt-2 section-subtitle">Dejanos tus datos y nos contactamos</p>
+            <div class="mt-12 glass-card p-10 rounded-3xl shadow-2xl border border-red-mk/20">
+                <form class="grid sm:grid-cols-2 gap-8">
+                    <input type="text" placeholder="Nombre completo" class="p-4 rounded-xl bg-black/60 border-2 border-red-mk/30 focus:ring-2 focus:ring-red-mk outline-none text-white placeholder-gray-400 font-medium">
+                    <input type="tel" placeholder="Teléfono" class="p-4 rounded-xl bg-black/60 border-2 border-red-mk/30 focus:ring-2 focus:ring-red-mk outline-none text-white placeholder-gray-400 font-medium">
+                    <input type="text" placeholder="Moto (marca/modelo)" class="sm:col-span-2 p-4 rounded-xl bg-black/60 border-2 border-red-mk/30 focus:ring-2 focus:ring-red-mk outline-none text-white placeholder-gray-400 font-medium">
+                    <textarea placeholder="Mensaje / servicio requerido" rows="3" class="sm:col-span-2 p-4 rounded-xl bg-black/60 border-2 border-red-mk/30 focus:ring-2 focus:ring-red-mk outline-none text-white placeholder-gray-400 font-medium"></textarea>
+                    <button type="submit" class="sm:col-span-2 btn-cta py-5 rounded-full text-lg font-bold"><i class="fas fa-paper-plane mr-3"></i> Enviar solicitud</button>
+                </form>
+                <div class="flex flex-wrap justify-center gap-8 mt-10 text-center">
+                    <a href="#" class="text-red-mk text-lg font-bold hover:text-red-400 transition"><i class="fab fa-whatsapp mr-2"></i> +54 299 511-3883</a>
+                    <a href="#" class="text-red-mk text-lg font-bold hover:text-red-400 transition"><i class="fas fa-phone-alt mr-2"></i> 0299 445-1200</a>
+                    <a href="#" class="text-red-mk text-lg font-bold hover:text-red-400 transition"><i class="fas fa-envelope mr-2"></i> info@mkmotopartes.com</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== CONTACTO ========== -->
+    <section id="contacto" class="py-24 px-6 section-light">
+        <div class="max-w-5xl mx-auto">
+            <h2 class="section-title text-center text-white">Contacto</h2>
+            <p class="text-center text-gray-400 mt-2 section-subtitle">Estamos para ayudarte</p>
+            <div class="mt-12 glass-card p-10 rounded-3xl shadow-2xl border border-red-mk/20">
+                <div class="grid md:grid-cols-2 gap-10">
+                    <div>
+                        <h3 class="text-xl font-bold text-white">Visitanos</h3>
+                        <p class="text-gray-400 mt-3"><i class="fas fa-map-pin text-red-mk mr-2"></i> Doctor Luis Ramón 4540, Neuquén Capital</p>
+                        <p class="text-gray-400 mt-2"><i class="fas fa-clock text-red-mk mr-2"></i> Lun–Vie 9:00–18:30 · Sáb 9:00–13:00</p>
+                        <p class="text-gray-400 mt-2"><i class="fas fa-phone-alt text-red-mk mr-2"></i> 0299 445-1200</p>
+                        <div class="mt-6 flex gap-4">
+                            <a href="#" class="text-2xl text-red-mk hover:text-red-400 transition"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="text-2xl text-red-mk hover:text-red-400 transition"><i class="fab fa-facebook"></i></a>
+                            <a href="#" class="text-2xl text-red-mk hover:text-red-400 transition"><i class="fab fa-youtube"></i></a>
+                        </div>
+                        <div class="mt-4 text-sm text-gray-500">
+                            <span class="font-bold text-gray-300">2.849</span> seguidores en Facebook · <span class="font-bold text-gray-300">2.649</span> en Instagram
+                        </div>
+                    </div>
+                    <div class="rounded-2xl overflow-hidden shadow-2xl h-64 md:h-auto min-h-[220px] border border-red-mk/20">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3104.456789!2d-68.123456!3d-38.951234!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x960a3b4c5d6e7f8b%3A0x9a8b7c6d5e4f3a2b!2sNeuqu%C3%A9n%2C%20Argentina!5e0!3m2!1ses!2sar!4v1712345678901" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-black border-t-2 border-red-mk/20 py-12 px-6 text-center">
+        <p class="text-gray-400 text-sm font-bold tracking-wide"><i class="fas fa-motorcycle text-red-mk mr-2"></i> MK Motopartes · Repuestos y Taller · Neuquén</p>
+        <div class="flex justify-center gap-8 mt-6 text-2xl text-red-mk">
+            <a href="#" class="hover:text-red-400 transition"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="hover:text-red-400 transition"><i class="fab fa-facebook"></i></a>
+            <a href="#" class="hover:text-red-400 transition"><i class="fab fa-youtube"></i></a>
+        </div>
+        <div class="mt-4 text-xs text-gray-500 tracking-widest">© 2025 · Todos los derechos reservados</div>
+    </footer>
+
+    <!-- ========== JS ========== -->
+    <script>
+        (function() {
+            // hamburguesa
+            const hamburger = document.getElementById('hamburgerBtn');
+            const mobileMenu = document.getElementById('mobileMenu');
+            hamburger.addEventListener('click', () => {
+                mobileMenu.classList.toggle('open');
+            });
+            document.querySelectorAll('#mobileMenu a').forEach(link => {
+                link.addEventListener('click', () => mobileMenu.classList.remove('open'));
+            });
+
+            // filtros catálogo
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const productos = document.querySelectorAll('.producto-item');
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    const filter = this.dataset.filter;
+                    productos.forEach(item => {
+                        const cats = item.dataset.category.split(' ');
+                        if (filter === 'all' || cats.includes(filter)) {
+                            item.style.display = 'block';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                });
+            });
+
+            // slider dots
+            const dots = document.querySelectorAll('.slider-dot');
+            let current = 0;
+            setInterval(() => {
+                dots.forEach(d => d.classList.remove('active'));
+                current = (current + 1) % dots.length;
+                dots[current].classList.add('active');
+            }, 5000);
+        })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Florería Eluney — Flores que hablan por vos</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500;1,600&family=Nunito+Sans:wght@300;400;600;700&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#fbf6ef;
+    --cream2:#f4ecdf;
+    --sage:#5c6a4c;
+    --sage-deep:#414d34;
+    --rose:#e3b7b0;
+    --rose-deep:#c1726f;
+    --ink:#2f2a20;
+    --ink-dim:#6b6455;
+    --gold:#b08d57;
+    --line: rgba(47,42,32,0.14);
+  }
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--cream);
+    color:var(--ink);
+    font-family:'Nunito Sans',sans-serif;
+    overflow-x:hidden;
+  }
+  .font-display{font-family:'Cormorant Garamond',serif;}
+  .font-hand{font-family:'Caveat',cursive;}
+
+  [data-parallax]{ will-change: transform; }
+
+  .reveal{ opacity:0; transform: translateY(26px); transition: opacity .9s ease, transform .9s ease; }
+  .reveal.in{ opacity:1; transform:translateY(0); }
+
+  .underline-grow{ position:relative; display:inline-block; }
+  .underline-grow::after{
+    content:""; position:absolute; left:0; bottom:-3px; height:1.5px; width:0%;
+    background:var(--rose-deep); transition:width .5s ease;
+  }
+  .underline-grow:hover::after{ width:100%; }
+
+  .btn-primary{
+    background:var(--sage); color:var(--cream); font-weight:600;
+    transition: transform .3s ease, box-shadow .3s ease, background .3s ease;
+  }
+  .btn-primary:hover{ transform:translateY(-3px); box-shadow:0 16px 30px -12px rgba(92,106,76,0.45); background:var(--sage-deep); }
+
+  .btn-ghost{
+    border:1px solid var(--ink); color:var(--ink);
+    transition:border-color .3s ease, background .3s ease, color .3s ease;
+  }
+  .btn-ghost:hover{ border-color:var(--rose-deep); background:var(--rose-deep); color:#fff; }
+
+  /* petalos cayendo (signature de fondo) */
+  .petal{
+    position:absolute; top:-40px; will-change:transform, opacity;
+    animation: fall linear infinite;
+    opacity:.85;
+  }
+  @keyframes fall{
+    0%{ transform: translateY(0) translateX(0) rotate(0deg); }
+    100%{ transform: translateY(115vh) translateX(var(--drift,40px)) rotate(340deg); }
+  }
+
+  /* signature: tarjeta colgante tipo etiqueta de ramo */
+  .bloom-card{ position:relative; }
+  .bloom-photo{
+    border-radius: 4px 60px 4px 60px / 4px 30px 4px 30px;
+    overflow:hidden; position:relative;
+    transition: border-radius .6s ease;
+  }
+  .bloom-card:hover .bloom-photo{ border-radius: 60px 4px 60px 4px / 30px 4px 30px 4px; }
+  .bloom-photo img{ transition: transform .8s ease, filter .8s ease; }
+  .bloom-card:hover .bloom-photo img{ transform: scale(1.08); filter:saturate(1.15); }
+
+  .tag{
+    position:absolute; top:-14px; right:22px;
+    background:var(--cream); color:var(--ink);
+    border:1px solid var(--line);
+    border-radius:2px 2px 10px 10px;
+    padding: 10px 14px 8px 14px;
+    transform-origin: top center;
+    transform: rotate(-8deg) translateY(-6px);
+    transition: transform .55s cubic-bezier(.34,1.56,.64,1);
+    box-shadow: 0 10px 20px -12px rgba(47,42,32,0.35);
+    z-index:10;
+  }
+  .tag::before{
+    content:""; position:absolute; top:-9px; left:50%; transform:translateX(-50%);
+    width:1px; height:10px; background:var(--ink-dim);
+  }
+  .tag::after{
+    content:""; position:absolute; top:-11px; left:50%; transform:translateX(-50%);
+    width:6px; height:6px; border-radius:50%; border:1px solid var(--ink-dim); background:var(--cream);
+  }
+  .bloom-card:hover .tag{ transform: rotate(4deg) translateY(4px); }
+
+  .filter-pill{
+    font-family:'Nunito Sans',sans-serif; font-size:.78rem; letter-spacing:.02em;
+    border:1px solid var(--line); transition:all .3s ease;
+  }
+  .filter-pill.active, .filter-pill:hover{ background:var(--sage); color:var(--cream); border-color:var(--sage); }
+
+  .marquee-track{ display:flex; width:200%; animation: marquee 32s linear infinite; }
+  @keyframes marquee{ from{transform:translateX(0);} to{transform:translateX(-50%);} }
+
+  .stem-divider{ position:relative; height:64px; overflow:hidden; }
+
+  ::selection{ background:var(--rose); color:var(--ink); }
+
+  @media (prefers-reduced-motion: reduce){
+    .reveal, .bloom-photo, .bloom-photo img, .tag{ transition:none !important; }
+    .marquee-track, .petal{ animation:none !important; }
+  }
+
+  input:focus-visible, button:focus-visible, a:focus-visible{
+    outline:2px solid var(--rose-deep); outline-offset:3px;
+  }
+</style>
+</head>
+<body class="antialiased">
+
+<!-- NAV -->
+<header class="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-[#fbf6ef]/85 border-b border-[color:var(--line)]">
+  <div class="max-w-7xl mx-auto px-6 md:px-10 h-20 flex items-center justify-between">
+    <a href="#inicio" class="flex items-center gap-2">
+      <span class="font-display italic text-2xl" style="color:var(--sage-deep)">Eluney</span>
+      <span class="text-[10px] tracking-[0.3em] text-[color:var(--ink-dim)] hidden sm:inline uppercase">Florería · Neuquén</span>
+    </a>
+    <nav class="hidden lg:flex items-center gap-8 text-xs tracking-wide uppercase">
+      <a href="#nosotros" class="underline-grow">Nosotros</a>
+      <a href="#catalogo" class="underline-grow">Catálogo</a>
+      <a href="#servicios" class="underline-grow">Servicios</a>
+      <a href="#resenas" class="underline-grow">Reseñas</a>
+      <a href="#contacto" class="underline-grow">Contacto</a>
+    </nav>
+    <a href="https://wa.me/5492990000000" target="_blank" class="btn-primary rounded-full px-5 py-2.5 text-sm">WhatsApp</a>
+  </div>
+</header>
+
+<!-- HERO -->
+<section id="inicio" class="relative min-h-[100svh] flex items-end overflow-hidden pt-24">
+  <div data-parallax data-speed="0.3" class="absolute inset-0 -z-10">
+    <img src="https://images.unsplash.com/photo-1487070183336-b863922373d4?q=80&w=1800&auto=format&fit=crop"
+         alt="Ramo de flores frescas"
+         class="w-full h-[130%] object-cover object-center" />
+    <div class="absolute inset-0" style="background:linear-gradient(180deg, rgba(47,42,32,0.18) 0%, rgba(47,42,32,0.28) 45%, var(--cream) 92%);"></div>
+  </div>
+
+  <!-- petalos -->
+  <div class="absolute inset-0 pointer-events-none overflow-hidden" id="petalLayer"></div>
+
+  <div class="max-w-7xl mx-auto w-full px-6 md:px-10 pb-20 reveal">
+    <p class="text-xs tracking-[0.35em] uppercase text-[color:var(--sage-deep)] mb-5 bg-[color:var(--cream)]/70 inline-block px-3 py-1 rounded-full">Neuquén · Arreglos florales y eventos</p>
+    <h1 class="font-display italic text-5xl sm:text-6xl md:text-7xl leading-[1.02] mb-6 max-w-3xl" style="color:var(--ink)">
+      Flores que <span style="color:var(--rose-deep)">hablan</span> por vos.
+    </h1>
+    <p class="max-w-xl text-[color:var(--ink-dim)] text-lg mb-8">
+      Ramos, arreglos para eventos y plantas, armados a mano para cada ocasión. Cada entrega lleva una tarjeta escrita a mano.
+    </p>
+    <div class="flex flex-wrap gap-4">
+      <a href="#catalogo" class="btn-primary rounded-full px-7 py-3.5">Ver catálogo</a>
+      <a href="https://wa.me/5492990000000" target="_blank" class="btn-ghost rounded-full px-7 py-3.5">Reservar ramo</a>
+    </div>
+  </div>
+</section>
+
+<div class="stem-divider" style="background:var(--cream2)">
+  <svg viewBox="0 0 1200 64" preserveAspectRatio="none" class="w-full h-full">
+    <path d="M0,32 C150,10 300,54 450,32 C600,10 750,54 900,32 C1050,10 1150,40 1200,32" fill="none" stroke="var(--sage)" stroke-width="1.5" opacity="0.5"/>
+  </svg>
+</div>
+
+<!-- NOSOTROS -->
+<section id="nosotros" class="max-w-7xl mx-auto px-6 md:px-10 py-24 grid lg:grid-cols-12 gap-12" style="background:var(--cream2)">
+  <div class="lg:col-span-5 reveal">
+    <p class="text-xs tracking-[0.3em] uppercase text-[color:var(--sage-deep)] mb-4">Quiénes somos</p>
+    <h2 class="font-display italic text-4xl md:text-5xl leading-tight mb-6">Cada ramo, <span style="color:var(--rose-deep)">una historia.</span></h2>
+    <p class="text-[color:var(--ink-dim)] leading-relaxed mb-6">
+      Eluney nació del amor por el arte floral en Neuquén. Elegimos cada tallo a mano, cuidamos la frescura y armamos cada arreglo pensando en lo que esa flor tiene que decir: un cumpleaños, un "gracias", un "te acompaño".
+    </p>
+    <p class="font-hand text-2xl" style="color:var(--sage-deep)">— con cariño, el equipo de Eluney</p>
+  </div>
+  <div class="lg:col-span-7 relative reveal">
+    <div class="rounded-[4px_60px_4px_60px] overflow-hidden h-full min-h-[380px] relative">
+      <img data-parallax data-speed="0.12" src="https://images.unsplash.com/photo-1490750967868-88aa4486c946?q=80&w=1600&auto=format&fit=crop" alt="Florista armando un arreglo" class="w-full h-[120%] object-cover" />
+    </div>
+  </div>
+</section>
+
+<!-- CATALOGO -->
+<section id="catalogo" class="max-w-7xl mx-auto px-6 md:px-10 py-24">
+  <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-14 reveal">
+    <div>
+      <p class="text-xs tracking-[0.3em] uppercase text-[color:var(--sage-deep)] mb-4">Catálogo</p>
+      <h2 class="font-display italic text-4xl md:text-5xl">Un arreglo para cada momento.</h2>
+    </div>
+    <div class="flex flex-wrap gap-2" id="filterPills">
+      <button class="filter-pill active rounded-full px-4 py-2" data-filter="todos">Todos</button>
+      <button class="filter-pill rounded-full px-4 py-2" data-filter="ramos">Ramos</button>
+      <button class="filter-pill rounded-full px-4 py-2" data-filter="eventos">Eventos</button>
+      <button class="filter-pill rounded-full px-4 py-2" data-filter="plantas">Plantas</button>
+      <button class="filter-pill rounded-full px-4 py-2" data-filter="ocasiones">Ocasiones</button>
+    </div>
+  </div>
+
+  <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16" id="productGrid">
+
+    <div class="bloom-card reveal" data-cat="ramos">
+      <div class="bloom-photo h-72">
+        <img src="https://images.unsplash.com/photo-1518895949257-7621c3c786d7?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover" alt="Ramo primaveral">
+        <div class="tag"><p class="font-hand text-lg leading-none">Ramo Primaveral</p></div>
+      </div>
+      <p class="mt-4 text-sm text-[color:var(--ink-dim)]">Mix de flores de estación en tonos cálidos.</p>
+    </div>
+
+    <div class="bloom-card reveal" data-cat="ocasiones">
+      <div class="bloom-photo h-72">
+        <img src="https://images.unsplash.com/photo-1561181286-d3fee7d55364?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover" alt="Ramo de rosas para aniversario">
+        <div class="tag"><p class="font-hand text-lg leading-none">Para vos, siempre</p></div>
+      </div>
+      <p class="mt-4 text-sm text-[color:var(--ink-dim)]">Rosas rojas, ideal para aniversarios.</p>
+    </div>
+
+    <div class="bloom-card reveal" data-cat="eventos">
+      <div class="bloom-photo h-72">
+        <img src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover" alt="Arreglo floral para bodas">
+        <div class="tag"><p class="font-hand text-lg leading-none">Recomendado bodas</p></div>
+      </div>
+      <p class="mt-4 text-sm text-[color:var(--ink-dim)]">Centro de mesa y decoración de ceremonia.</p>
+    </div>
+
+    <div class="bloom-card reveal" data-cat="plantas">
+      <div class="bloom-photo h-72">
+        <img src="https://images.unsplash.com/photo-1463320726281-696a485928c7?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover" alt="Planta de interior en maceta">
+        <div class="tag"><p class="font-hand text-lg leading-none">Verde para tu casa</p></div>
+      </div>
+      <p class="mt-4 text-sm text-[color:var(--ink-dim)]">Plantas de interior fáciles de cuidar.</p>
+    </div>
+
+    <div class="bloom-card reveal" data-cat="ocasiones">
+      <div class="bloom-photo h-72">
+        <img src="https://images.unsplash.com/photo-1520763185298-1b434c919102?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover" alt="Arreglo de cumpleaños">
+        <div class="tag"><p class="font-hand text-lg leading-none">¡Feliz cumple!</p></div>
+      </div>
+      <p class="mt-4 text-sm text-[color:var(--ink-dim)]">Colores vivos para festejar en grande.</p>
+    </div>
+
+    <div class="bloom-card reveal" data-cat="ramos">
+      <div class="bloom-photo h-72">
+        <img src="https://images.unsplash.com/photo-1508610048659-a06b669e3321?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover" alt="Ramo de flores blancas">
+        <div class="tag"><p class="font-hand text-lg leading-none">Simplemente gracias</p></div>
+      </div>
+      <p class="mt-4 text-sm text-[color:var(--ink-dim)]">Blancos y verdes, elegancia minimalista.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- SERVICIOS -->
+<section id="servicios" class="py-24" style="background:var(--sage-deep); color:var(--cream)">
+  <div class="max-w-7xl mx-auto px-6 md:px-10">
+    <p class="text-xs tracking-[0.3em] uppercase mb-4 reveal" style="color:var(--rose)">Servicios</p>
+    <h2 class="font-display italic text-4xl md:text-5xl mb-14 reveal">Acompañamos el momento, no solo entregamos flores.</h2>
+
+    <div class="grid md:grid-cols-3 gap-10">
+      <div class="reveal">
+        <p class="font-display italic text-4xl mb-3" style="color:var(--rose)">Delivery</p>
+        <p class="opacity-90">Entrega el mismo día en Neuquén capital, con horario coordinado por WhatsApp.</p>
+      </div>
+      <div class="reveal">
+        <p class="font-display italic text-4xl mb-3" style="color:var(--rose)">A medida</p>
+        <p class="opacity-90">Contanos la ocasión y armamos un arreglo personalizado, en el color y estilo que buscás.</p>
+      </div>
+      <div class="reveal">
+        <p class="font-display italic text-4xl mb-3" style="color:var(--rose)">Eventos</p>
+        <p class="opacity-90">Decoración floral completa para casamientos, cumpleaños y eventos de empresa.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESEÑAS -->
+<section id="resenas" class="max-w-7xl mx-auto px-6 md:px-10 py-24">
+  <p class="text-xs tracking-[0.3em] uppercase text-[color:var(--sage-deep)] mb-4 reveal">La florería preferida de Neuquén</p>
+  <h2 class="font-display italic text-4xl md:text-5xl mb-14 reveal">Historias que empezaron con un ramo.</h2>
+
+  <div class="grid md:grid-cols-3 gap-8">
+    <div class="rounded-lg p-7 reveal" style="background:var(--cream2); border:1px solid var(--line);">
+      <p style="color:var(--rose-deep)" class="mb-4">★★★★★</p>
+      <p class="text-[color:var(--ink-dim)] mb-5">"Pedí un arreglo para el cumpleaños de mi mamá y llegó exactamente como en la foto, hasta con la tarjetita escrita a mano."</p>
+      <p class="font-hand text-xl" style="color:var(--sage-deep)">— Camila, Neuquén</p>
+    </div>
+    <div class="rounded-lg p-7 reveal" style="background:var(--cream2); border:1px solid var(--line);">
+      <p style="color:var(--rose-deep)" class="mb-4">★★★★★</p>
+      <p class="text-[color:var(--ink-dim)] mb-5">"Hicieron toda la decoración floral de mi casamiento. Superó lo que imaginaba, un equipo hermoso."</p>
+      <p class="font-hand text-xl" style="color:var(--sage-deep)">— Nadia, Cipolletti</p>
+    </div>
+    <div class="rounded-lg p-7 reveal" style="background:var(--cream2); border:1px solid var(--line);">
+      <p style="color:var(--rose-deep)" class="mb-4">★★★★★</p>
+      <p class="text-[color:var(--ink-dim)] mb-5">"El delivery llegó puntual y las flores duraron muchísimo más de lo que esperaba. Ya es mi florería de siempre."</p>
+      <p class="font-hand text-xl" style="color:var(--sage-deep)">— Bruno, Plottier</p>
+    </div>
+  </div>
+</section>
+
+<!-- GALERIA / PROMOS -->
+<section class="py-24" style="background:var(--cream2)">
+  <div class="max-w-7xl mx-auto px-6 md:px-10">
+    <p class="text-xs tracking-[0.3em] uppercase text-[color:var(--sage-deep)] mb-4 reveal">Galería & promociones</p>
+    <h2 class="font-display italic text-4xl md:text-5xl mb-4 reveal">Lo que está floreciendo esta temporada.</h2>
+    <p class="text-[color:var(--ink-dim)] mb-10 reveal">Promo especial para el Día de la Madre — consultanos por WhatsApp.</p>
+  </div>
+  <div class="overflow-hidden relative">
+    <div class="marquee-track gap-6 px-6">
+      <img src="https://images.unsplash.com/photo-1487070183336-b863922373d4?q=80&w=700&auto=format&fit=crop" class="h-64 w-80 object-cover rounded-lg flex-shrink-0" alt="Ramo de flores variadas">
+      <img src="https://images.unsplash.com/photo-1518895949257-7621c3c786d7?q=80&w=700&auto=format&fit=crop" class="h-64 w-80 object-cover rounded-lg flex-shrink-0" alt="Ramo primaveral">
+      <img src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=700&auto=format&fit=crop" class="h-64 w-80 object-cover rounded-lg flex-shrink-0" alt="Decoración floral de evento">
+      <img src="https://images.unsplash.com/photo-1561181286-d3fee7d55364?q=80&w=700&auto=format&fit=crop" class="h-64 w-80 object-cover rounded-lg flex-shrink-0" alt="Ramo de rosas">
+      <img src="https://images.unsplash.com/photo-1487070183336-b863922373d4?q=80&w=700&auto=format&fit=crop" class="h-64 w-80 object-cover rounded-lg flex-shrink-0" alt="Ramo de flores variadas">
+      <img src="https://images.unsplash.com/photo-1518895949257-7621c3c786d7?q=80&w=700&auto=format&fit=crop" class="h-64 w-80 object-cover rounded-lg flex-shrink-0" alt="Ramo primaveral">
+      <img src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=700&auto=format&fit=crop" class="h-64 w-80 object-cover rounded-lg flex-shrink-0" alt="Decoración floral de evento">
+      <img src="https://images.unsplash.com/photo-1561181286-d3fee7d55364?q=80&w=700&auto=format&fit=crop" class="h-64 w-80 object-cover rounded-lg flex-shrink-0" alt="Ramo de rosas">
+    </div>
+  </div>
+</section>
+
+<!-- CONTACTO -->
+<section id="contacto" class="max-w-7xl mx-auto px-6 md:px-10 py-24 grid lg:grid-cols-12 gap-10">
+  <div class="lg:col-span-5 reveal">
+    <p class="text-xs tracking-[0.3em] uppercase text-[color:var(--sage-deep)] mb-4">Ubicación & contacto</p>
+    <h2 class="font-display italic text-4xl md:text-5xl mb-6">Te esperamos en el local o por WhatsApp.</h2>
+    <div class="rounded-lg p-6 space-y-3" style="background:var(--cream2); border:1px solid var(--line);">
+      <p class="flex justify-between border-b pb-2" style="border-color:var(--line)"><span>Dirección</span><span class="text-[color:var(--ink-dim)]">Neuquén Capital, Río Negro</span></p>
+      <p class="flex justify-between border-b pb-2" style="border-color:var(--line)"><span>WhatsApp</span><span class="text-[color:var(--ink-dim)]">+54 9 299 000-0000</span></p>
+      <p class="flex justify-between border-b pb-2" style="border-color:var(--line)"><span>Email</span><span class="text-[color:var(--ink-dim)]">hola@eluneyflores.com.ar</span></p>
+      <p class="flex justify-between"><span>Horario</span><span class="text-[color:var(--ink-dim)]">Lun a Sáb · 9 a 20 hs</span></p>
+    </div>
+    <a href="https://wa.me/5492990000000" target="_blank" class="btn-primary rounded-full px-7 py-3.5 inline-block mt-8">Escribinos ahora</a>
+    <p class="font-hand text-2xl mt-8" style="color:var(--rose-deep)">#EluneyFlores</p>
+  </div>
+  <div class="lg:col-span-7 reveal">
+    <div class="rounded-lg overflow-hidden h-full min-h-[340px] border" style="border-color:var(--line);">
+      <iframe
+        src="https://www.google.com/maps?q=Neuqu%C3%A9n%20Capital&output=embed"
+        class="w-full h-full min-h-[340px]"
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="border-t" style="border-color:var(--line); background:var(--cream2);">
+  <div class="max-w-7xl mx-auto px-6 md:px-10 py-14 grid md:grid-cols-3 gap-10">
+    <div>
+      <span class="font-display italic text-2xl" style="color:var(--sage-deep)">Eluney</span>
+      <p class="text-[color:var(--ink-dim)] mt-3 max-w-xs">Florería en Neuquén: ramos, arreglos para eventos y plantas, armados a mano.</p>
+    </div>
+    <div class="text-sm text-[color:var(--ink-dim)] space-y-2">
+      <p class="text-[color:var(--sage-deep)] tracking-[0.2em] text-xs mb-2 uppercase">Seguinos</p>
+      <a href="#" class="block underline-grow w-fit">Instagram</a>
+      <a href="#" class="block underline-grow w-fit">Facebook</a>
+    </div>
+    <div class="text-sm text-[color:var(--ink-dim)] space-y-2">
+      <p class="text-[color:var(--sage-deep)] tracking-[0.2em] text-xs mb-2 uppercase">Navegación</p>
+      <a href="#catalogo" class="block underline-grow w-fit">Catálogo</a>
+      <a href="#servicios" class="block underline-grow w-fit">Servicios</a>
+      <a href="#contacto" class="block underline-grow w-fit">Contacto</a>
+    </div>
+  </div>
+  <div class="text-center text-[10px] tracking-[0.2em] uppercase text-[color:var(--ink-dim)] pb-8">© 2026 Florería Eluney — hecho con flores en Neuquén</div>
+</footer>
+
+<script>
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el=>io.observe(el));
+
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const parallaxEls = document.querySelectorAll('[data-parallax]');
+  function onScroll(){
+    if(prefersReduced) return;
+    const y = window.scrollY;
+    parallaxEls.forEach(el=>{
+      const speed = parseFloat(el.dataset.speed || 0.2);
+      el.style.transform = `translateY(${y*speed*0.25}px)`;
+    });
+  }
+  window.addEventListener('scroll', onScroll, { passive:true });
+
+  const pills = document.querySelectorAll('#filterPills .filter-pill');
+  const cards = document.querySelectorAll('#productGrid .bloom-card');
+  pills.forEach(p=>{
+    p.addEventListener('click', ()=>{
+      pills.forEach(x=>x.classList.remove('active'));
+      p.classList.add('active');
+      const f = p.dataset.filter;
+      cards.forEach(c=>{
+        c.style.display = (f==='todos' || c.dataset.cat===f) ? '' : 'none';
+      });
+    });
+  });
+
+  // petalos cayendo, solo en el hero
+  if(!prefersReduced){
+    const layer = document.getElementById('petalLayer');
+    const emojis = ['🌸','🌺','🌷'];
+    for(let i=0;i<16;i++){
+      const p = document.createElement('span');
+      p.className = 'petal';
+      p.textContent = emojis[i % emojis.length];
+      p.style.left = (Math.random()*100)+'%';
+      p.style.fontSize = (14 + Math.random()*14)+'px';
+      p.style.setProperty('--drift', (Math.random()*140-70)+'px');
+      p.style.animationDuration = (9 + Math.random()*8)+'s';
+      p.style.animationDelay = (Math.random()*10)+'s';
+      layer.appendChild(p);
+    }
+  }
+</script>
+</body>
+</html>

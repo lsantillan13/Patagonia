@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pro Bike · Neuquén</title>
+    <!-- Tailwind + Font Awesome -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* paleta: verde deportivo #1a7a3a, negro #0a0a0a, gris metálico #6b6b6b */
+        .parallax-bg {
+            background-attachment: fixed;
+            background-position: center;
+            background-size: cover;
+        }
+        .glass-card {
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            border: 1px solid rgba(26, 122, 58, 0.25);
+        }
+        .hover-scale {
+            transition: transform 0.25s ease, box-shadow 0.3s ease;
+        }
+        .hover-scale:hover {
+            transform: scale(1.02);
+            box-shadow: 0 20px 30px -10px rgba(26, 122, 58, 0.3);
+        }
+        .btn-cta {
+            background: linear-gradient(145deg, #1a7a3a, #0f5a2a);
+            transition: all 0.2s ease;
+            border: none;
+            color: white;
+            font-weight: 600;
+        }
+        .btn-cta:hover {
+            background: linear-gradient(145deg, #2a9a4a, #1a6a3a);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 20px -8px rgba(26, 122, 58, 0.5);
+        }
+        .btn-outline-cta {
+            border: 2px solid #1a7a3a;
+            color: #1a7a3a;
+            transition: all 0.2s ease;
+            font-weight: 600;
+        }
+        .btn-outline-cta:hover {
+            background: #1a7a3a;
+            color: white;
+            transform: translateY(-2px);
+        }
+        .filter-btn.active {
+            background: #1a7a3a;
+            color: white;
+            border-color: #1a7a3a;
+        }
+        .filter-btn {
+            transition: all 0.15s ease;
+            border-color: #1a7a3a;
+            color: #1a7a3a;
+        }
+        .filter-btn:hover {
+            background: #1a7a3a;
+            color: white;
+        }
+        .bg-pattern-bike {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.03"><circle cx="20" cy="40" r="12" fill="%231a7a3a"/><circle cx="80" cy="40" r="12" fill="%231a7a3a"/><path d="M35 40 L65 40 M55 40 L60 25 L70 25" stroke="%231a7a3a" stroke-width="3" fill="none"/></svg>');
+            background-repeat: repeat;
+            background-size: 120px;
+        }
+        .hamburger-line {
+            display: block;
+            width: 28px;
+            height: 3px;
+            margin: 5px auto;
+            background: #1a7a3a;
+            transition: all 0.25s ease;
+        }
+        .mobile-menu {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateX(100%);
+        }
+        .mobile-menu.open {
+            transform: translateX(0);
+        }
+        .slider-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(26, 122, 58, 0.2);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .slider-dot.active {
+            background: #1a7a3a;
+        }
+        body {
+            background-color: #0a0a0a;
+            color: #e0e0e0;
+        }
+        .section-dark {
+            background-color: #0a0a0a;
+        }
+        .section-light {
+            background-color: #1a1a1a;
+        }
+        .text-green-bike {
+            color: #1a7a3a;
+        }
+        .border-green-bike {
+            border-color: #1a7a3a;
+        }
+        .bg-green-bike-light {
+            background-color: rgba(26, 122, 58, 0.1);
+        }
+        .review-card {
+            background: #1a1a1a;
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            border: 1px solid rgba(26, 122, 58, 0.15);
+        }
+        .star-filled {
+            color: #f7b731;
+        }
+        /* animaciones */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in-up {
+            animation: fadeInUp 0.8s ease forwards;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+        .float-anim {
+            animation: float 4s ease-in-out infinite;
+        }
+        @keyframes spin-slow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .spin-slow {
+            animation: spin-slow 8s linear infinite;
+        }
+        .service-icon {
+            font-size: 2.5rem;
+            color: #1a7a3a;
+        }
+        .producto-tag {
+            background: rgba(26, 122, 58, 0.15);
+            border: 1px solid rgba(26, 122, 58, 0.3);
+            padding: 0.2rem 0.8rem;
+            border-radius: 9999px;
+            font-size: 0.65rem;
+            color: #1a7a3a;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ========== NAVBAR ========== -->
+    <nav class="fixed top-0 left-0 w-full z-50 bg-black/90 backdrop-blur-md shadow-lg border-b border-green-bike/30 px-6 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+            <i class="fas fa-bicycle text-2xl text-green-bike"></i>
+            <span class="text-2xl font-bold tracking-tight text-white">Pro<span class="text-green-bike">Bike</span></span>
+            <span class="hidden md:inline text-xs font-medium text-gray-400 bg-gray-800 px-2 py-0.5 rounded-full">Neuquén</span>
+        </div>
+        <ul class="hidden md:flex gap-8 text-base font-medium text-gray-300">
+            <li><a href="#inicio" class="hover:text-green-bike transition">Inicio</a></li>
+            <li><a href="#nosotros" class="hover:text-green-bike transition">Nosotros</a></li>
+            <li><a href="#catalogo" class="hover:text-green-bike transition">Catálogo</a></li>
+            <li><a href="#servicios" class="hover:text-green-bike transition">Servicios</a></li>
+            <li><a href="#contacto" class="hover:text-green-bike transition">Contacto</a></li>
+        </ul>
+        <div class="flex items-center gap-3">
+            <a href="#reservar" class="hidden md:inline-block btn-cta px-5 py-2 rounded-full text-sm font-semibold shadow-md"><i class="fas fa-calendar-check mr-1"></i> Turno</a>
+            <button id="hamburgerBtn" class="md:hidden flex flex-col items-center justify-center w-10 h-10 rounded-full hover:bg-gray-800 transition" aria-label="menu">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- mobile menu -->
+    <div id="mobileMenu" class="mobile-menu fixed top-0 right-0 w-3/4 max-w-xs h-full bg-black/95 backdrop-blur-md shadow-2xl z-40 p-8 pt-24 flex flex-col gap-6 text-lg border-l border-green-bike/30">
+        <a href="#inicio" class="border-b border-green-bike/20 pb-3 text-green-bike font-semibold">Inicio</a>
+        <a href="#nosotros" class="border-b border-green-bike/20 pb-3">Nosotros</a>
+        <a href="#catalogo" class="border-b border-green-bike/20 pb-3">Catálogo</a>
+        <a href="#servicios" class="border-b border-green-bike/20 pb-3">Servicios</a>
+        <a href="#contacto" class="border-b border-green-bike/20 pb-3">Contacto</a>
+        <a href="#reservar" class="btn-cta text-center py-3 rounded-full mt-4"><i class="fas fa-calendar-check mr-2"></i> Turno</a>
+        <a href="#" class="btn-outline-cta text-center py-3 rounded-full border-2"><i class="fab fa-whatsapp mr-2"></i> WhatsApp</a>
+    </div>
+
+    <!-- ========== HERO ========== -->
+    <section id="inicio" class="relative w-full h-screen overflow-hidden parallax-bg" style="background-image: url('https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=1600&q=80');">
+        <div class="absolute inset-0 bg-black/60"></div>
+        <div class="relative z-10 flex flex-col items-center justify-center h-full text-center px-4 text-white">
+            <div class="float-anim mb-4 text-7xl">🚴</div>
+            <h1 class="text-5xl md:text-7xl font-bold drop-shadow-lg">Pro<span class="text-green-bike">Bike</span></h1>
+            <p class="text-xl md:text-3xl max-w-2xl mt-4 font-light drop-shadow">Tu pasión sobre ruedas · Neuquén</p>
+            <div class="flex flex-wrap justify-center gap-4 mt-8">
+                <a href="#catalogo" class="btn-cta px-8 py-4 rounded-full text-lg font-semibold shadow-xl"><i class="fas fa-bicycle mr-2"></i> Ver catálogo</a>
+                <a href="#reservar" class="bg-white/10 backdrop-blur-sm border border-white/30 px-8 py-4 rounded-full text-lg font-semibold hover:bg-white/20 transition"><i class="fas fa-tools mr-2"></i> Reservar turno</a>
+                <a href="#" class="bg-green-bike/30 backdrop-blur-sm border border-green-bike/40 px-8 py-4 rounded-full text-lg font-semibold hover:bg-green-bike/40 transition"><i class="fab fa-whatsapp mr-2"></i> WhatsApp</a>
+            </div>
+            <div class="absolute bottom-8 left-0 right-0 flex justify-center gap-2">
+                <span class="slider-dot active"></span>
+                <span class="slider-dot"></span>
+                <span class="slider-dot"></span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== NOSOTROS ========== -->
+    <section id="nosotros" class="py-20 px-6 section-dark border-b border-green-bike/10 bg-pattern-bike">
+        <div class="max-w-6xl mx-auto">
+            <div class="flex flex-col md:flex-row items-center gap-12">
+                <div class="md:w-1/2 fade-in-up">
+                    <span class="text-green-bike font-semibold tracking-wide"><i class="fas fa-history mr-1"></i> desde 2010</span>
+                    <h2 class="text-4xl md:text-5xl font-bold mt-2 text-white">Pasión por el ciclismo</h2>
+                    <p class="text-gray-400 text-lg mt-6 leading-relaxed">Pro Bike nació en Neuquén con el sueño de ofrecer un espacio integral para ciclistas. Con más de 15 años de experiencia, somos referentes en venta de bicicletas, repuestos y servicio mecánico. Nuestra comunidad crece día a día gracias a la confianza de nuestros clientes.</p>
+                    <div class="mt-8 flex flex-wrap gap-6">
+                        <div><i class="fas fa-check-circle text-green-bike mr-2"></i> Venta de bicicletas</div>
+                        <div><i class="fas fa-check-circle text-green-bike mr-2"></i> Taller mecánico</div>
+                        <div><i class="fas fa-check-circle text-green-bike mr-2"></i> Repuestos originales</div>
+                    </div>
+                    <a href="#catalogo" class="inline-block mt-8 btn-cta px-7 py-3 rounded-full text-white font-semibold shadow-lg"><i class="fas fa-bicycle mr-2"></i> Explorar catálogo</a>
+                </div>
+                <div class="md:w-1/2 grid grid-cols-2 gap-3">
+                    <img src="https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=400&q=80" alt="bicicleta" class="rounded-2xl shadow-lg hover-scale w-full h-48 object-cover">
+                    <img src="https://images.unsplash.com/photo-1532298229144-0ec0c57515c7?w=400&q=80" alt="taller" class="rounded-2xl shadow-lg hover-scale w-full h-48 object-cover mt-6">
+                    <img src="https://images.unsplash.com/photo-1511994298241-608e28f14fde?w=400&q=80" alt="bici2" class="rounded-2xl shadow-lg hover-scale w-full h-48 object-cover -mt-4">
+                    <img src="https://images.unsplash.com/photo-1571068316344-75bc76f77890?w=400&q=80" alt="cliente" class="rounded-2xl shadow-lg hover-scale w-full h-48 object-cover">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== CATÁLOGO ========== -->
+    <section id="catalogo" class="py-20 px-6 section-light border-b border-green-bike/10">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-12">
+                <span class="text-green-bike font-semibold tracking-wide"><i class="fas fa-bicycle mr-1"></i> catálogo</span>
+                <h2 class="text-4xl md:text-5xl font-bold mt-2 text-white">Nuestras bicicletas</h2>
+                <p class="text-gray-400 text-lg mt-2">Encontrá la bici que buscás</p>
+                <div class="flex flex-wrap justify-center gap-2 mt-6">
+                    <button class="filter-btn active border-2 px-5 py-2 rounded-full text-sm font-medium bg-white text-gray-800" data-filter="all">Todos</button>
+                    <button class="filter-btn border-2 px-5 py-2 rounded-full text-sm font-medium bg-white text-gray-800" data-filter="mtb">MTB</button>
+                    <button class="filter-btn border-2 px-5 py-2 rounded-full text-sm font-medium bg-white text-gray-800" data-filter="ruta">Ruta</button>
+                    <button class="filter-btn border-2 px-5 py-2 rounded-full text-sm font-medium bg-white text-gray-800" data-filter="urbana">Urbana</button>
+                    <button class="filter-btn border-2 px-5 py-2 rounded-full text-sm font-medium bg-white text-gray-800" data-filter="electrica">Eléctrica</button>
+                    <button class="filter-btn border-2 px-5 py-2 rounded-full text-sm font-medium bg-white text-gray-800" data-filter="accesorio">Accesorios</button>
+                </div>
+            </div>
+
+            <div id="catalogoGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="producto-item bg-gray-900 rounded-2xl shadow-lg overflow-hidden hover-scale border border-green-bike/20" data-category="mtb">
+                    <img src="https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=400&q=80" alt="MTB" class="w-full h-52 object-cover">
+                    <div class="p-5">
+                        <h3 class="text-xl font-bold text-white">MTB 29"</h3>
+                        <p class="text-sm text-gray-400">Suspensión delantera · 21 velocidades</p>
+                        <div class="flex justify-between items-center mt-3">
+                            <span class="text-green-bike font-bold text-lg">$1.200.000</span>
+                            <span class="producto-tag">MTB</span>
+                        </div>
+                        <button class="mt-4 w-full btn-cta py-2 rounded-full text-sm font-semibold"><i class="fas fa-plus mr-1"></i> Cotizar</button>
+                    </div>
+                </div>
+                <div class="producto-item bg-gray-900 rounded-2xl shadow-lg overflow-hidden hover-scale border border-green-bike/20" data-category="ruta">
+                    <img src="https://images.unsplash.com/photo-1532298229144-0ec0c57515c7?w=400&q=80" alt="Ruta" class="w-full h-52 object-cover">
+                    <div class="p-5">
+                        <h3 class="text-xl font-bold text-white">Bicicleta de Ruta</h3>
+                        <p class="text-sm text-gray-400">Cuadro de aluminio · Shimano</p>
+                        <div class="flex justify-between items-center mt-3">
+                            <span class="text-green-bike font-bold text-lg">$1.800.000</span>
+                            <span class="producto-tag">ruta</span>
+                        </div>
+                        <button class="mt-4 w-full btn-cta py-2 rounded-full text-sm font-semibold"><i class="fas fa-plus mr-1"></i> Cotizar</button>
+                    </div>
+                </div>
+                <div class="producto-item bg-gray-900 rounded-2xl shadow-lg overflow-hidden hover-scale border border-green-bike/20" data-category="urbana">
+                    <img src="https://images.unsplash.com/photo-1511994298241-608e28f14fde?w=400&q=80" alt="Urbana" class="w-full h-52 object-cover">
+                    <div class="p-5">
+                        <h3 class="text-xl font-bold text-white">Bicicleta Urbana</h3>
+                        <p class="text-sm text-gray-400">Cuadro bajo · canasto incluido</p>
+                        <div class="flex justify-between items-center mt-3">
+                            <span class="text-green-bike font-bold text-lg">$900.000</span>
+                            <span class="producto-tag">urbana</span>
+                        </div>
+                        <button class="mt-4 w-full btn-cta py-2 rounded-full text-sm font-semibold"><i class="fas fa-plus mr-1"></i> Cotizar</button>
+                    </div>
+                </div>
+                <div class="producto-item bg-gray-900 rounded-2xl shadow-lg overflow-hidden hover-scale border border-green-bike/20" data-category="electrica">
+                    <img src="https://images.unsplash.com/photo-1571068316344-75bc76f77890?w=400&q=80" alt="Eléctrica" class="w-full h-52 object-cover">
+                    <div class="p-5">
+                        <h3 class="text-xl font-bold text-white">Bicicleta Eléctrica</h3>
+                        <p class="text-sm text-gray-400">Motor 250W · autonomía 60km</p>
+                        <div class="flex justify-between items-center mt-3">
+                            <span class="text-green-bike font-bold text-lg">$2.500.000</span>
+                            <span class="producto-tag">eléctrica</span>
+                        </div>
+                        <button class="mt-4 w-full btn-cta py-2 rounded-full text-sm font-semibold"><i class="fas fa-plus mr-1"></i> Cotizar</button>
+                    </div>
+                </div>
+                <div class="producto-item bg-gray-900 rounded-2xl shadow-lg overflow-hidden hover-scale border border-green-bike/20" data-category="accesorio">
+                    <img src="https://images.unsplash.com/photo-1532298229144-0ec0c57515c7?w=400&q=80" alt="Casco" class="w-full h-52 object-cover">
+                    <div class="p-5">
+                        <h3 class="text-xl font-bold text-white">Casco Integral</h3>
+                        <p class="text-sm text-gray-400">Homologado · talla M</p>
+                        <div class="flex justify-between items-center mt-3">
+                            <span class="text-green-bike font-bold text-lg">$85.000</span>
+                            <span class="producto-tag">accesorio</span>
+                        </div>
+                        <button class="mt-4 w-full btn-cta py-2 rounded-full text-sm font-semibold"><i class="fas fa-plus mr-1"></i> Cotizar</button>
+                    </div>
+                </div>
+                <div class="producto-item bg-gray-900 rounded-2xl shadow-lg overflow-hidden hover-scale border border-green-bike/20" data-category="mtb ruta">
+                    <img src="https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=400&q=80" alt="bici híbrida" class="w-full h-52 object-cover">
+                    <div class="p-5">
+                        <h3 class="text-xl font-bold text-white">Bicicleta Híbrida</h3>
+                        <p class="text-sm text-gray-400">MTB/Ruta · 27 velocidades</p>
+                        <div class="flex justify-between items-center mt-3">
+                            <span class="text-green-bike font-bold text-lg">$1.500.000</span>
+                            <span class="producto-tag">MTB · ruta</span>
+                        </div>
+                        <button class="mt-4 w-full btn-cta py-2 rounded-full text-sm font-semibold"><i class="fas fa-plus mr-1"></i> Cotizar</button>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-12">
+                <a href="#" class="btn-outline-cta px-8 py-3 rounded-full text-lg font-semibold border-2 bg-white text-gray-800"><i class="fas fa-arrow-right mr-2"></i> Ver catálogo completo</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== SERVICIOS ========== -->
+    <section id="servicios" class="py-20 px-6 section-dark border-b border-green-bike/10 bg-pattern-bike">
+        <div class="max-w-5xl mx-auto">
+            <div class="text-center mb-10">
+                <span class="text-green-bike font-semibold tracking-wide"><i class="fas fa-tools mr-1"></i> servicios</span>
+                <h2 class="text-4xl md:text-5xl font-bold mt-2 text-white">Taller mecánico</h2>
+                <p class="text-gray-400 text-lg mt-2">Mantenimiento y reparaciones de confianza</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="bg-gray-900 p-6 rounded-2xl shadow-lg border border-green-bike/20 hover-scale text-center">
+                    <div class="service-icon"><i class="fas fa-oil-can"></i></div>
+                    <h3 class="text-xl font-bold text-white mt-3">Mantenimiento general</h3>
+                    <p class="text-gray-400 text-sm">Lubricación, ajuste y limpieza</p>
+                </div>
+                <div class="bg-gray-900 p-6 rounded-2xl shadow-lg border border-green-bike/20 hover-scale text-center">
+                    <div class="service-icon"><i class="fas fa-cogs"></i></div>
+                    <h3 class="text-xl font-bold text-white mt-3">Reparación de cambios</h3>
+                    <p class="text-gray-400 text-sm">Diagnóstico y puesta a punto</p>
+                </div>
+                <div class="bg-gray-900 p-6 rounded-2xl shadow-lg border border-green-bike/20 hover-scale text-center">
+                    <div class="service-icon"><i class="fas fa-car-battery"></i></div>
+                    <h3 class="text-xl font-bold text-white mt-3">Sistema de frenos</h3>
+                    <p class="text-gray-400 text-sm">Cambio de pastillas y ajuste</p>
+                </div>
+            </div>
+            <div class="text-center mt-8">
+                <a href="#reservar" class="btn-cta px-8 py-3 rounded-full text-sm font-semibold"><i class="fas fa-calendar-check mr-2"></i> Reservar turno</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== RESEÑAS ========== -->
+    <section class="py-16 px-6 section-light border-b border-green-bike/10">
+        <div class="max-w-4xl mx-auto text-center">
+            <i class="fas fa-star text-4xl text-yellow-400"></i>
+            <p class="text-4xl font-bold text-white mt-2">★ 4.8</p>
+            <p class="text-gray-400">+150 reseñas · Google</p>
+            <div class="mt-8 grid md:grid-cols-3 gap-6">
+                <div class="review-card"><i class="fas fa-quote-left text-green-bike text-2xl"></i><p class="mt-2 italic text-gray-300">“Excelente atención, muy profesionales. Siempre confío en Pro Bike.”</p><span class="block mt-2 text-sm font-semibold text-green-bike">— Javier P.</span></div>
+                <div class="review-card"><i class="fas fa-quote-left text-green-bike text-2xl"></i><p class="mt-2 italic text-gray-300">“Compré mi primera bici acá y me asesoraron de 10. Recomiendo.”</p><span class="block mt-2 text-sm font-semibold text-green-bike">— Sofía L.</span></div>
+                <div class="review-card"><i class="fas fa-quote-left text-green-bike text-2xl"></i><p class="mt-2 italic text-gray-300">“El mejor taller de Neuquén. Rápidos, confiables y con precios justos.”</p><span class="block mt-2 text-sm font-semibold text-green-bike">— Diego R.</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== RESERVAR TURNO ========== -->
+    <section id="reservar" class="py-20 px-6 section-dark bg-pattern-bike">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="text-4xl font-bold text-center text-white">Reservá tu turno</h2>
+            <p class="text-center text-gray-400 mt-2">Dejanos tus datos y nos contactamos</p>
+            <div class="mt-10 glass-card p-8 rounded-3xl shadow-xl border border-green-bike/20">
+                <form class="grid sm:grid-cols-2 gap-6">
+                    <input type="text" placeholder="Nombre" class="p-4 rounded-xl bg-black/60 border border-green-bike/30 focus:ring-2 focus:ring-green-bike outline-none text-white placeholder-gray-400">
+                    <input type="tel" placeholder="Teléfono" class="p-4 rounded-xl bg-black/60 border border-green-bike/30 focus:ring-2 focus:ring-green-bike outline-none text-white placeholder-gray-400">
+                    <input type="text" placeholder="Bicicleta (marca/modelo)" class="sm:col-span-2 p-4 rounded-xl bg-black/60 border border-green-bike/30 focus:ring-2 focus:ring-green-bike outline-none text-white placeholder-gray-400">
+                    <textarea placeholder="Mensaje / servicio requerido" rows="3" class="sm:col-span-2 p-4 rounded-xl bg-black/60 border border-green-bike/30 focus:ring-2 focus:ring-green-bike outline-none text-white placeholder-gray-400"></textarea>
+                    <button type="submit" class="sm:col-span-2 btn-cta py-4 rounded-full text-lg font-semibold"><i class="fas fa-paper-plane mr-2"></i> Enviar</button>
+                </form>
+                <div class="flex flex-wrap justify-center gap-6 mt-8 text-center">
+                    <a href="#" class="text-green-bike text-lg font-medium hover:text-green-400 transition"><i class="fab fa-whatsapp mr-2"></i> +54 299 511-3883</a>
+                    <a href="#" class="text-green-bike text-lg font-medium hover:text-green-400 transition"><i class="fas fa-phone-alt mr-2"></i> +54 299 444-5678</a>
+                    <a href="#" class="text-green-bike text-lg font-medium hover:text-green-400 transition"><i class="fas fa-envelope mr-2"></i> info@probike.com</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== CONTACTO ========== -->
+    <section id="contacto" class="py-20 px-6 section-light">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="text-4xl font-bold text-center text-white">Contacto</h2>
+            <p class="text-center text-gray-400 mt-2">Estamos para ayudarte</p>
+            <div class="mt-10 glass-card p-8 rounded-3xl shadow-xl border border-green-bike/20">
+                <form class="grid sm:grid-cols-2 gap-6">
+                    <input type="text" placeholder="Nombre" class="p-4 rounded-xl bg-black/60 border border-green-bike/30 focus:ring-2 focus:ring-green-bike outline-none text-white placeholder-gray-400">
+                    <input type="tel" placeholder="Teléfono" class="p-4 rounded-xl bg-black/60 border border-green-bike/30 focus:ring-2 focus:ring-green-bike outline-none text-white placeholder-gray-400">
+                    <textarea placeholder="Mensaje" rows="3" class="sm:col-span-2 p-4 rounded-xl bg-black/60 border border-green-bike/30 focus:ring-2 focus:ring-green-bike outline-none text-white placeholder-gray-400"></textarea>
+                    <button type="submit" class="sm:col-span-2 btn-cta py-4 rounded-full text-lg font-semibold"><i class="fas fa-paper-plane mr-2"></i> Enviar</button>
+                </form>
+                <div class="flex flex-wrap justify-center gap-6 mt-8 text-center">
+                    <a href="#" class="text-green-bike text-lg font-medium hover:text-green-400 transition"><i class="fab fa-whatsapp mr-2"></i> +54 299 511-3883</a>
+                    <a href="#" class="text-green-bike text-lg font-medium hover:text-green-400 transition"><i class="fas fa-phone-alt mr-2"></i> +54 299 444-5678</a>
+                    <a href="#" class="text-green-bike text-lg font-medium hover:text-green-400 transition"><i class="fas fa-envelope mr-2"></i> info@probike.com</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-black border-t border-green-bike/20 py-10 px-6 text-center">
+        <p class="text-gray-400 text-sm"><i class="fas fa-bicycle text-green-bike mr-1"></i> Pro Bike · Neuquén</p>
+        <div class="flex justify-center gap-6 mt-4 text-2xl text-green-bike">
+            <a href="#" class="hover:text-green-400 transition"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="hover:text-green-400 transition"><i class="fab fa-facebook"></i></a>
+            <a href="#" class="hover:text-green-400 transition"><i class="fab fa-youtube"></i></a>
+        </div>
+    </footer>
+
+    <!-- ========== JS ========== -->
+    <script>
+        (function() {
+            // hamburguesa
+            const hamburger = document.getElementById('hamburgerBtn');
+            const mobileMenu = document.getElementById('mobileMenu');
+            hamburger.addEventListener('click', () => {
+                mobileMenu.classList.toggle('open');
+            });
+            document.querySelectorAll('#mobileMenu a').forEach(link => {
+                link.addEventListener('click', () => mobileMenu.classList.remove('open'));
+            });
+
+            // filtros catálogo
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const productos = document.querySelectorAll('.producto-item');
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    const filter = this.dataset.filter;
+                    productos.forEach(item => {
+                        const cats = item.dataset.category.split(' ');
+                        if (filter === 'all' || cats.includes(filter)) {
+                            item.style.display = 'block';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                });
+            });
+
+            // slider dots
+            const dots = document.querySelectorAll('.slider-dot');
+            let current = 0;
+            setInterval(() => {
+                dots.forEach(d => d.classList.remove('active'));
+                current = (current + 1) % dots.length;
+                dots[current].classList.add('active');
+            }, 5000);
+        })();
+    </script>
+</body>
+</html>

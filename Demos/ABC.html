@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Librería ABC Godoy · Neuquén</title>
+  <!-- Tailwind + Font Awesome -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    /* paleta: azul profundo #1a2a4a, beige #f5ede4, verde académico #2a6a3a */
+    .parallax-bg {
+      background-attachment: fixed;
+      background-position: center;
+      background-size: cover;
+    }
+    .glass-card {
+      background: rgba(255, 248, 240, 0.85);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      border: 1px solid rgba(26, 42, 74, 0.15);
+    }
+    .hover-scale {
+      transition: transform 0.25s ease, box-shadow 0.3s ease;
+    }
+    .hover-scale:hover {
+      transform: scale(1.02);
+      box-shadow: 0 20px 30px -10px rgba(26, 42, 74, 0.2);
+    }
+    .btn-cta {
+      background: linear-gradient(145deg, #1a2a4a, #0f1a2f);
+      transition: all 0.2s ease;
+      border: none;
+      color: white;
+      font-weight: 600;
+    }
+    .btn-cta:hover {
+      background: linear-gradient(145deg, #2a3a5a, #1a2a4a);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 20px -8px rgba(26, 42, 74, 0.4);
+    }
+    .btn-outline-cta {
+      border: 2px solid #1a2a4a;
+      color: #1a2a4a;
+      transition: all 0.2s ease;
+      font-weight: 600;
+    }
+    .btn-outline-cta:hover {
+      background: #1a2a4a;
+      color: white;
+      transform: translateY(-2px);
+    }
+    .filter-btn.active {
+      background: #1a2a4a;
+      color: white;
+      border-color: #1a2a4a;
+    }
+    .filter-btn {
+      transition: all 0.15s ease;
+      border-color: #1a2a4a;
+      color: #1a2a4a;
+    }
+    .filter-btn:hover {
+      background: #1a2a4a;
+      color: white;
+    }
+    .bg-books-pattern {
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.03"><rect x="10" y="10" width="15" height="20" fill="%231a2a4a"/><rect x="30" y="20" width="15" height="20" fill="%231a2a4a"/><rect x="55" y="10" width="15" height="20" fill="%231a2a4a"/><rect x="75" y="25" width="15" height="20" fill="%231a2a4a"/></svg>');
+      background-repeat: repeat;
+      background-size: 120px;
+    }
+    .hamburger-line {
+      display: block;
+      width: 28px;
+      height: 3px;
+      margin: 5px auto;
+      background: #1a2a4a;
+      transition: all 0.25s ease;
+    }
+    .mobile-menu {
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transform: translateX(100%);
+    }
+    .mobile-menu.open {
+      transform: translateX(0);
+    }
+    .slider-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(26, 42, 74, 0.2);
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+    .slider-dot.active {
+      background: #1a2a4a;
+    }
+    body {
+      background-color: #f5ede4;
+      color: #1a1a1a;
+    }
+    .section-light {
+      background-color: #f5ede4;
+    }
+    .section-dark {
+      background-color: #1a2a4a;
+      color: #f5ede4;
+    }
+    .text-academic {
+      color: #2a6a3a;
+    }
+    .border-academic {
+      border-color: #2a6a3a;
+    }
+    .bg-academic-light {
+      background-color: #e8f0e6;
+    }
+    .review-card {
+      background: white;
+      border-radius: 1.5rem;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.05);
+      padding: 1.5rem;
+      border: 1px solid rgba(26, 42, 74, 0.08);
+    }
+    .star-filled {
+      color: #f7b731;
+    }
+    /* animaciones */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .fade-in-up {
+      animation: fadeInUp 0.8s ease forwards;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-8px); }
+    }
+    .float-anim {
+      animation: float 4s ease-in-out infinite;
+    }
+    /* parallax interno */
+    .parallax-slow {
+      background-attachment: fixed;
+      background-position: center;
+      background-size: cover;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========== NAVBAR ========== -->
+  <nav class="fixed top-0 left-0 w-full z-50 bg-white/90 backdrop-blur-md shadow-sm border-b border-gray-200/50 px-6 py-3 flex items-center justify-between">
+    <div class="flex items-center gap-2">
+      <i class="fas fa-book-open text-2xl text-academic"></i>
+      <span class="text-2xl font-serif font-bold tracking-tight text-gray-800">ABC</span>
+      <span class="hidden md:inline text-xs font-medium text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">Godoy</span>
+    </div>
+    <ul class="hidden md:flex gap-8 text-base font-medium text-gray-700">
+      <li><a href="#inicio" class="hover:text-academic transition">Inicio</a></li>
+      <li><a href="#nosotros" class="hover:text-academic transition">Nosotros</a></li>
+      <li><a href="#catalogo" class="hover:text-academic transition">Catálogo</a></li>
+      <li><a href="#sucursales" class="hover:text-academic transition">Sucursales</a></li>
+      <li><a href="#contacto" class="hover:text-academic transition">Contacto</a></li>
+    </ul>
+    <div class="flex items-center gap-3">
+      <a href="#reservar" class="hidden md:inline-block btn-cta px-5 py-2 rounded-full text-sm font-semibold shadow-md"><i class="fas fa-shopping-cart mr-1"></i> Reservar</a>
+      <button id="hamburgerBtn" class="md:hidden flex flex-col items-center justify-center w-10 h-10 rounded-full hover:bg-gray-100 transition" aria-label="menu">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- mobile menu -->
+  <div id="mobileMenu" class="mobile-menu fixed top-0 right-0 w-3/4 max-w-xs h-full bg-white/95 backdrop-blur-md shadow-2xl z-40 p-8 pt-24 flex flex-col gap-6 text-lg border-l border-gray-100">
+    <a href="#inicio" class="border-b border-gray-100 pb-3 text-academic font-semibold">Inicio</a>
+    <a href="#nosotros" class="border-b border-gray-100 pb-3">Nosotros</a>
+    <a href="#catalogo" class="border-b border-gray-100 pb-3">Catálogo</a>
+    <a href="#sucursales" class="border-b border-gray-100 pb-3">Sucursales</a>
+    <a href="#contacto" class="border-b border-gray-100 pb-3">Contacto</a>
+    <a href="#reservar" class="btn-cta text-center py-3 rounded-full mt-4"><i class="fas fa-shopping-cart mr-2"></i> Reservar</a>
+    <a href="#" class="btn-outline-cta text-center py-3 rounded-full border-2"><i class="fab fa-whatsapp mr-2"></i> WhatsApp</a>
+  </div>
+
+  <!-- ========== HERO ========== -->
+  <section id="inicio" class="relative w-full h-screen overflow-hidden parallax-bg" style="background-image: url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=1600&q=80');">
+    <div class="absolute inset-0 bg-black/40"></div>
+    <div class="relative z-10 flex flex-col items-center justify-center h-full text-center px-4 text-white">
+      <div class="float-anim mb-4 text-7xl">📚</div>
+      <h1 class="text-5xl md:text-7xl font-serif font-bold drop-shadow-lg">ABC Godoy</h1>
+      <p class="text-xl md:text-3xl max-w-2xl mt-4 font-light drop-shadow">Tu librería de confianza en Neuquén</p>
+      <div class="flex flex-wrap justify-center gap-4 mt-8">
+        <a href="#catalogo" class="btn-cta px-8 py-4 rounded-full text-lg font-semibold shadow-xl" style="background: linear-gradient(145deg, #2a6a3a, #1a4a2a);"><i class="fas fa-book mr-2"></i> Ver catálogo</a>
+        <a href="#reservar" class="bg-white/20 backdrop-blur-sm border border-white/40 px-8 py-4 rounded-full text-lg font-semibold hover:bg-white/30 transition"><i class="fas fa-shopping-cart mr-2"></i> Reservar libro</a>
+        <a href="#" class="bg-academic/60 backdrop-blur-sm border border-academic/40 px-8 py-4 rounded-full text-lg font-semibold hover:bg-academic/70 transition"><i class="fab fa-whatsapp mr-2"></i> WhatsApp</a>
+      </div>
+      <div class="absolute bottom-8 left-0 right-0 flex justify-center gap-2">
+        <span class="slider-dot active"></span>
+        <span class="slider-dot"></span>
+        <span class="slider-dot"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== NOSOTROS ========== -->
+  <section id="nosotros" class="py-20 px-6 section-light bg-books-pattern">
+    <div class="max-w-6xl mx-auto">
+      <div class="flex flex-col md:flex-row items-center gap-12">
+        <div class="md:w-1/2 fade-in-up">
+          <span class="text-academic font-semibold tracking-wide"><i class="fas fa-store mr-1"></i> desde 1985</span>
+          <h2 class="text-4xl md:text-5xl font-serif font-bold mt-2 text-gray-800">Más de 1.000 reseñas positivas nos avalan</h2>
+          <p class="text-gray-600 text-lg mt-6 leading-relaxed">Librería ABC Godoy es un referente en Neuquén desde hace décadas. Ofrecemos libros escolares, literatura, revistas y artículos de oficina con la mejor atención y precios competitivos. Somos parte de la comunidad educativa y cultural de la ciudad.</p>
+          <div class="mt-8 flex flex-wrap gap-6">
+            <div><i class="fas fa-check-circle text-academic mr-2"></i> 4 sucursales</div>
+            <div><i class="fas fa-check-circle text-academic mr-2"></i> Envíos a domicilio</div>
+            <div><i class="fas fa-check-circle text-academic mr-2"></i> Atención personalizada</div>
+          </div>
+          <a href="#catalogo" class="inline-block mt-8 btn-cta px-7 py-3 rounded-full text-white font-semibold shadow-lg"><i class="fas fa-book mr-2"></i> Explorar catálogo</a>
+        </div>
+        <div class="md:w-1/2 grid grid-cols-2 gap-3">
+          <img src="https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=400&q=80" alt="librería" class="rounded-2xl shadow-lg hover-scale w-full h-48 object-cover">
+          <img src="https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=400&q=80" alt="libros" class="rounded-2xl shadow-lg hover-scale w-full h-48 object-cover mt-6">
+          <img src="https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=400&q=80" alt="estantería" class="rounded-2xl shadow-lg hover-scale w-full h-48 object-cover -mt-4">
+          <img src="https://images.unsplash.com/photo-1521587760476-6c12a4b040da?w=400&q=80" alt="clientes" class="rounded-2xl shadow-lg hover-scale w-full h-48 object-cover">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== CATÁLOGO ========== -->
+  <section id="catalogo" class="py-20 px-6 section-dark">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-12">
+        <span class="text-academic font-semibold tracking-wide"><i class="fas fa-book-open mr-1"></i> catálogo</span>
+        <h2 class="text-4xl md:text-5xl font-serif font-bold mt-2 text-white">Nuestros productos</h2>
+        <p class="text-gray-300 text-lg mt-2">Encontrá lo que necesitás</p>
+        <div class="flex flex-wrap justify-center gap-2 mt-6">
+          <button class="filter-btn active border-2 px-5 py-2 rounded-full text-sm font-medium bg-white text-gray-800" data-filter="all">Todos</button>
+          <button class="filter-btn border-2 px-5 py-2 rounded-full text-sm font-medium bg-white text-gray-800" data-filter="escolar">Libros escolares</button>
+          <button class="filter-btn border-2 px-5 py-2 rounded-full text-sm font-medium bg-white text-gray-800" data-filter="literatura">Literatura</button>
+          <button class="filter-btn border-2 px-5 py-2 rounded-full text-sm font-medium bg-white text-gray-800" data-filter="oficina">Artículos de oficina</button>
+        </div>
+      </div>
+
+      <div id="catalogoGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="producto-item bg-white rounded-2xl shadow-lg overflow-hidden hover-scale" data-category="escolar">
+          <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&q=80" alt="libro escolar" class="w-full h-52 object-cover">
+          <div class="p-5">
+            <h3 class="text-xl font-bold text-gray-800">Matemática 5to</h3>
+            <p class="text-sm text-gray-500">Libro de texto para primaria</p>
+            <div class="flex justify-between items-center mt-3">
+              <span class="text-academic font-bold text-lg">$12.900</span>
+              <span class="bg-academic-light text-academic text-xs px-3 py-1 rounded-full">escolar</span>
+            </div>
+            <button class="mt-4 w-full btn-cta py-2 rounded-full text-sm font-semibold"><i class="fas fa-plus mr-1"></i> Reservar</button>
+          </div>
+        </div>
+        <div class="producto-item bg-white rounded-2xl shadow-lg overflow-hidden hover-scale" data-category="literatura">
+          <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&q=80" alt="novela" class="w-full h-52 object-cover">
+          <div class="p-5">
+            <h3 class="text-xl font-bold text-gray-800">Cien años de soledad</h3>
+            <p class="text-sm text-gray-500">Gabriel García Márquez</p>
+            <div class="flex justify-between items-center mt-3">
+              <span class="text-academic font-bold text-lg">$16.500</span>
+              <span class="bg-academic-light text-academic text-xs px-3 py-1 rounded-full">literatura</span>
+            </div>
+            <button class="mt-4 w-full btn-cta py-2 rounded-full text-sm font-semibold"><i class="fas fa-plus mr-1"></i> Reservar</button>
+          </div>
+        </div>
+        <div class="producto-item bg-white rounded-2xl shadow-lg overflow-hidden hover-scale" data-category="oficina">
+          <img src="https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=400&q=80" alt="cuaderno" class="w-full h-52 object-cover">
+          <div class="p-5">
+            <h3 class="text-xl font-bold text-gray-800">Cuaderno tapa dura</h3>
+            <p class="text-sm text-gray-500">A4, rayado, 80 hojas</p>
+            <div class="flex justify-between items-center mt-3">
+              <span class="text-academic font-bold text-lg">$4.200</span>
+              <span class="bg-academic-light text-academic text-xs px-3 py-1 rounded-full">oficina</span>
+            </div>
+            <button class="mt-4 w-full btn-cta py-2 rounded-full text-sm font-semibold"><i class="fas fa-plus mr-1"></i> Reservar</button>
+          </div>
+        </div>
+        <div class="producto-item bg-white rounded-2xl shadow-lg overflow-hidden hover-scale" data-category="escolar literatura">
+          <img src="https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=400&q=80" alt="diccionario" class="w-full h-52 object-cover">
+          <div class="p-5">
+            <h3 class="text-xl font-bold text-gray-800">Diccionario escolar</h3>
+            <p class="text-sm text-gray-500">RAE, ilustrado</p>
+            <div class="flex justify-between items-center mt-3">
+              <span class="text-academic font-bold text-lg">$18.900</span>
+              <span class="bg-academic-light text-academic text-xs px-3 py-1 rounded-full">escolar · literatura</span>
+            </div>
+            <button class="mt-4 w-full btn-cta py-2 rounded-full text-sm font-semibold"><i class="fas fa-plus mr-1"></i> Reservar</button>
+          </div>
+        </div>
+        <div class="producto-item bg-white rounded-2xl shadow-lg overflow-hidden hover-scale" data-category="oficina">
+          <img src="https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=400&q=80" alt="lapicera" class="w-full h-52 object-cover">
+          <div class="p-5">
+            <h3 class="text-xl font-bold text-gray-800">Lapicera gel</h3>
+            <p class="text-sm text-gray-500">0.7 mm, tinta azul</p>
+            <div class="flex justify-between items-center mt-3">
+              <span class="text-academic font-bold text-lg">$1.800</span>
+              <span class="bg-academic-light text-academic text-xs px-3 py-1 rounded-full">oficina</span>
+            </div>
+            <button class="mt-4 w-full btn-cta py-2 rounded-full text-sm font-semibold"><i class="fas fa-plus mr-1"></i> Reservar</button>
+          </div>
+        </div>
+        <div class="producto-item bg-white rounded-2xl shadow-lg overflow-hidden hover-scale" data-category="literatura">
+          <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&q=80" alt="poesía" class="w-full h-52 object-cover">
+          <div class="p-5">
+            <h3 class="text-xl font-bold text-gray-800">Antología poética</h3>
+            <p class="text-sm text-gray-500">Autores argentinos</p>
+            <div class="flex justify-between items-center mt-3">
+              <span class="text-academic font-bold text-lg">$14.200</span>
+              <span class="bg-academic-light text-academic text-xs px-3 py-1 rounded-full">literatura</span>
+            </div>
+            <button class="mt-4 w-full btn-cta py-2 rounded-full text-sm font-semibold"><i class="fas fa-plus mr-1"></i> Reservar</button>
+          </div>
+        </div>
+      </div>
+      <div class="text-center mt-12">
+        <a href="#" class="btn-outline-cta px-8 py-3 rounded-full text-lg font-semibold border-2 bg-white text-gray-800"><i class="fas fa-arrow-right mr-2"></i> Ver catálogo completo</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== SUCURSALES ========== -->
+  <section id="sucursales" class="py-20 px-6 section-light bg-books-pattern">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-10">
+        <span class="text-academic font-semibold tracking-wide"><i class="fas fa-store mr-1"></i> encontrá tu ABC</span>
+        <h2 class="text-4xl md:text-5xl font-serif font-bold mt-2 text-gray-800">Nuestras sucursales</h2>
+      </div>
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover-scale flex items-start gap-4">
+          <i class="fas fa-map-pin text-3xl text-academic mt-1"></i>
+          <div>
+            <h3 class="text-xl font-bold text-gray-800">Sucursal Godoy</h3>
+            <p class="text-gray-600">Av. Godoy 123, Neuquén</p>
+            <p class="text-gray-600"><i class="far fa-clock mr-1"></i> Lun–Vie 09:00–20:00 · Sáb 10:00–18:00</p>
+            <p class="text-gray-600"><i class="fas fa-phone mr-1"></i> +54 299 444-1234</p>
+          </div>
+        </div>
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover-scale flex items-start gap-4">
+          <i class="fas fa-map-pin text-3xl text-academic mt-1"></i>
+          <div>
+            <h3 class="text-xl font-bold text-gray-800">Sucursal Olascoaga</h3>
+            <p class="text-gray-600">Olascoaga 456, Neuquén</p>
+            <p class="text-gray-600"><i class="far fa-clock mr-1"></i> Lun–Vie 09:00–20:00 · Sáb 10:00–18:00</p>
+            <p class="text-gray-600"><i class="fas fa-phone mr-1"></i> +54 299 444-5678</p>
+          </div>
+        </div>
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover-scale flex items-start gap-4">
+          <i class="fas fa-map-pin text-3xl text-academic mt-1"></i>
+          <div>
+            <h3 class="text-xl font-bold text-gray-800">Sucursal Corrientes</h3>
+            <p class="text-gray-600">Corrientes 789, Neuquén</p>
+            <p class="text-gray-600"><i class="far fa-clock mr-1"></i> Lun–Vie 09:00–20:00 · Sáb 10:00–18:00</p>
+            <p class="text-gray-600"><i class="fas fa-phone mr-1"></i> +54 299 444-9012</p>
+          </div>
+        </div>
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover-scale flex items-start gap-4">
+          <i class="fas fa-map-pin text-3xl text-academic mt-1"></i>
+          <div>
+            <h3 class="text-xl font-bold text-gray-800">Sucursal Oeste</h3>
+            <p class="text-gray-600">Ruta 7 km 5, Neuquén</p>
+            <p class="text-gray-600"><i class="far fa-clock mr-1"></i> Lun–Vie 10:00–19:00 · Sáb 10:00–17:00</p>
+            <p class="text-gray-600"><i class="fas fa-phone mr-1"></i> +54 299 444-3456</p>
+          </div>
+        </div>
+      </div>
+      <div class="mt-8 rounded-2xl overflow-hidden shadow-lg h-64">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3104.456789!2d-68.123456!3d-38.951234!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x960a3b4c5d6e7f8b%3A0x9a8b7c6d5e4f3a2b!2sNeuqu%C3%A9n%2C%20Argentina!5e0!3m2!1ses!2sar!4v1712345678901" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== RESEÑAS ========== -->
+  <section class="py-16 px-6 section-dark">
+    <div class="max-w-4xl mx-auto text-center">
+      <i class="fas fa-star text-4xl text-yellow-400"></i>
+      <p class="text-4xl font-bold text-white mt-2">★ 4.8</p>
+      <p class="text-gray-300">+1.000 reseñas · Google</p>
+      <div class="mt-8 grid md:grid-cols-3 gap-6">
+        <div class="review-card"><i class="fas fa-quote-left text-academic text-2xl"></i><p class="mt-2 italic text-gray-700">“Excelente atención, siempre encuentro lo que busco. La mejor librería de Neuquén.”</p><span class="block mt-2 text-sm font-semibold text-gray-800">— María G.</span></div>
+        <div class="review-card"><i class="fas fa-quote-left text-academic text-2xl"></i><p class="mt-2 italic text-gray-700">“Gran variedad de libros y artículos de oficina. Precios competitivos y envíos rápidos.”</p><span class="block mt-2 text-sm font-semibold text-gray-800">— Carlos R.</span></div>
+        <div class="review-card"><i class="fas fa-quote-left text-academic text-2xl"></i><p class="mt-2 italic text-gray-700">“Un clásico de Neuquén. Siempre vuelvo por la calidez de su atención.”</p><span class="block mt-2 text-sm font-semibold text-gray-800">— Lucía F.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== RESERVAS ========== -->
+  <section id="reservar" class="py-20 px-6 section-light bg-books-pattern">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-4xl font-serif font-bold text-center text-gray-800">Reservá tu libro</h2>
+      <p class="text-center text-gray-600 mt-2">Pedinos el título que necesitás</p>
+      <div class="mt-10 glass-card p-8 rounded-3xl shadow-xl border border-gray-200">
+        <form class="grid sm:grid-cols-2 gap-6">
+          <input type="text" placeholder="Nombre" class="p-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-academic outline-none">
+          <input type="tel" placeholder="Teléfono" class="p-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-academic outline-none">
+          <input type="text" placeholder="Título del libro" class="sm:col-span-2 p-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-academic outline-none">
+          <textarea placeholder="Mensaje / edición / autor" rows="3" class="sm:col-span-2 p-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-academic outline-none"></textarea>
+          <button type="submit" class="sm:col-span-2 btn-cta py-4 rounded-full text-lg font-semibold"><i class="fas fa-paper-plane mr-2"></i> Enviar reserva</button>
+        </form>
+        <div class="flex flex-wrap justify-center gap-6 mt-8 text-center">
+          <a href="#" class="text-academic text-lg font-medium"><i class="fab fa-whatsapp mr-2"></i> +54 299 511-3883</a>
+          <a href="#" class="text-academic text-lg font-medium"><i class="fas fa-phone-alt mr-2"></i> +54 299 444-1234</a>
+          <a href="#" class="text-academic text-lg font-medium"><i class="fas fa-envelope mr-2"></i> hola@abcgodoy.com</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== CONTACTO ========== -->
+  <section id="contacto" class="py-20 px-6 section-dark">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-4xl font-serif font-bold text-center text-white">Contacto</h2>
+      <p class="text-center text-gray-300 mt-2">Escribinos, te respondemos rápido</p>
+      <div class="mt-10 glass-card p-8 rounded-3xl shadow-xl border border-white/10" style="background: rgba(26, 42, 74, 0.6); backdrop-filter: blur(6px);">
+        <form class="grid sm:grid-cols-2 gap-6">
+          <input type="text" placeholder="Nombre" class="p-4 rounded-xl bg-white/10 border border-white/20 focus:ring-2 focus:ring-academic outline-none text-white placeholder-gray-300">
+          <input type="tel" placeholder="Teléfono" class="p-4 rounded-xl bg-white/10 border border-white/20 focus:ring-2 focus:ring-academic outline-none text-white placeholder-gray-300">
+          <textarea placeholder="Mensaje" rows="3" class="sm:col-span-2 p-4 rounded-xl bg-white/10 border border-white/20 focus:ring-2 focus:ring-academic outline-none text-white placeholder-gray-300"></textarea>
+          <button type="submit" class="sm:col-span-2 btn-cta py-4 rounded-full text-lg font-semibold" style="background: linear-gradient(145deg, #2a6a3a, #1a4a2a);"><i class="fas fa-paper-plane mr-2"></i> Enviar</button>
+        </form>
+        <div class="flex flex-wrap justify-center gap-6 mt-8 text-center">
+          <a href="#" class="text-academic text-lg font-medium hover:text-yellow-300 transition"><i class="fab fa-whatsapp mr-2"></i> +54 299 511-3883</a>
+          <a href="#" class="text-academic text-lg font-medium hover:text-yellow-300 transition"><i class="fas fa-phone-alt mr-2"></i> +54 299 444-1234</a>
+          <a href="#" class="text-academic text-lg font-medium hover:text-yellow-300 transition"><i class="fas fa-envelope mr-2"></i> hola@abcgodoy.com</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="bg-black/90 border-t border-academic/30 py-10 px-6 text-center">
+    <p class="text-gray-400 text-sm"><i class="fas fa-book-open text-academic mr-1"></i> Librería ABC Godoy · Neuquén</p>
+    <div class="flex justify-center gap-6 mt-4 text-2xl text-academic">
+      <a href="#" class="hover:text-yellow-300 transition"><i class="fab fa-instagram"></i></a>
+      <a href="#" class="hover:text-yellow-300 transition"><i class="fab fa-facebook"></i></a>
+      <a href="#" class="hover:text-yellow-300 transition"><i class="fab fa-twitter"></i></a>
+    </div>
+  </footer>
+
+  <!-- ========== JS ========== -->
+  <script>
+    (function() {
+      // hamburguesa
+      const hamburger = document.getElementById('hamburgerBtn');
+      const mobileMenu = document.getElementById('mobileMenu');
+      hamburger.addEventListener('click', () => {
+        mobileMenu.classList.toggle('open');
+      });
+      document.querySelectorAll('#mobileMenu a').forEach(link => {
+        link.addEventListener('click', () => mobileMenu.classList.remove('open'));
+      });
+
+      // filtros catálogo
+      const filterBtns = document.querySelectorAll('.filter-btn');
+      const productos = document.querySelectorAll('.producto-item');
+      filterBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+          filterBtns.forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          const filter = this.dataset.filter;
+          productos.forEach(item => {
+            const cats = item.dataset.category.split(' ');
+            if (filter === 'all' || cats.includes(filter)) {
+              item.style.display = 'block';
+            } else {
+              item.style.display = 'none';
+            }
+          });
+        });
+      });
+
+      // slider dots
+      const dots = document.querySelectorAll('.slider-dot');
+      let current = 0;
+      setInterval(() => {
+        dots.forEach(d => d.classList.remove('active'));
+        current = (current + 1) % dots.length;
+        dots[current].classList.add('active');
+      }, 5000);
+    })();
+  </script>
+</body>
+</html>

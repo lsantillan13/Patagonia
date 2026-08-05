@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Animalada NQN — Nutrición que se nota</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,600&family=Manrope:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-deep:#152318;
+    --bg-deep2:#0f1a12;
+    --panel:#1f3323;
+    --panel-light:#28402c;
+    --amber:#d29a3e;
+    --amber-soft:#e8c07f;
+    --rust:#8a4433;
+    --cream:#f3eedd;
+    --cream-dim:#cfc7ac;
+    --line: rgba(243,238,221,0.18);
+  }
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg-deep);
+    color:var(--cream);
+    font-family:'Manrope',sans-serif;
+    overflow-x:hidden;
+  }
+  .font-display{font-family:'Fraunces',serif;}
+  .font-mono{font-family:'Space Mono',monospace;}
+
+  /* signature: ficha de analisis garantizado */
+  .analysis-box{
+    border:1px solid var(--line);
+    background:linear-gradient(180deg, rgba(243,238,221,0.04), rgba(243,238,221,0));
+    position:relative;
+  }
+  .analysis-box::before{
+    content:"";
+    position:absolute; inset:5px;
+    border:1px solid rgba(243,238,221,0.12);
+    pointer-events:none;
+  }
+  .analysis-row{
+    display:flex; justify-content:space-between; align-items:baseline;
+    border-top:1px dashed var(--line);
+    padding:.55rem 0;
+    font-family:'Space Mono',monospace;
+  }
+  .analysis-row:first-child{border-top:none;}
+
+  /* parallax layers */
+  .parallax-wrap{ perspective: 1px; height:100vh; overflow-x:hidden; overflow-y:auto; }
+  .parallax-layer{ position:relative; }
+  .layer-back{ transform: translateZ(-1px) scale(2); }
+  .layer-base{ transform: translateZ(0); }
+
+  /* simpler scroll-parallax via JS transform, fallback */
+  [data-parallax]{ will-change: transform; }
+
+  .reveal{ opacity:0; transform: translateY(28px); transition: opacity .8s ease, transform .8s ease; }
+  .reveal.in{ opacity:1; transform:translateY(0); }
+
+  .kibble-divider{
+    height:56px; position:relative; overflow:hidden;
+  }
+  .kibble-dot{
+    position:absolute; border-radius:9999px; background:var(--amber); opacity:.85;
+  }
+
+  .card-flip{ perspective:1400px; }
+  .card-flip-inner{
+    position:relative; width:100%; height:100%;
+    transform-style:preserve-3d;
+    transition: transform .7s cubic-bezier(.2,.8,.2,1);
+  }
+  .card-flip:hover .card-flip-inner{ transform: rotateY(180deg); }
+  .card-face{ position:absolute; inset:0; backface-visibility:hidden; }
+  .card-back{ transform: rotateY(180deg); }
+
+  .underline-grow{ position:relative; display:inline-block; }
+  .underline-grow::after{
+    content:""; position:absolute; left:0; bottom:-4px; height:2px; width:0%;
+    background:var(--amber); transition:width .5s ease;
+  }
+  .underline-grow:hover::after{ width:100%; }
+
+  .btn-primary{
+    background:var(--amber); color:var(--bg-deep2); font-weight:700;
+    transition: transform .25s ease, box-shadow .25s ease, background .25s ease;
+  }
+  .btn-primary:hover{ transform:translateY(-3px); box-shadow:0 14px 30px -10px rgba(210,154,62,0.55); background:var(--amber-soft); }
+
+  .btn-ghost{
+    border:1px solid var(--line); color:var(--cream);
+    transition:border-color .25s ease, background .25s ease;
+  }
+  .btn-ghost:hover{ border-color:var(--amber); background:rgba(210,154,62,0.08); }
+
+  .paw-trail span{ display:inline-block; opacity:0; transform:translateY(10px) rotate(-8deg); transition:opacity .6s ease, transform .6s ease; }
+  .paw-trail.in span{ opacity:1; transform:translateY(0) rotate(0deg); }
+
+  .filter-pill{
+    font-family:'Space Mono',monospace; font-size:.72rem; letter-spacing:.03em;
+    border:1px solid var(--line); transition:all .25s ease;
+  }
+  .filter-pill.active, .filter-pill:hover{ background:var(--amber); color:var(--bg-deep2); border-color:var(--amber); }
+
+  .marquee-track{ display:flex; width:200%; animation: marquee 28s linear infinite; }
+  @keyframes marquee{ from{transform:translateX(0);} to{transform:translateX(-50%);} }
+
+  ::selection{ background:var(--amber); color:var(--bg-deep2); }
+
+  @media (prefers-reduced-motion: reduce){
+    .reveal, .paw-trail span, .card-flip-inner{ transition:none !important; }
+    .marquee-track{ animation:none; }
+  }
+
+  input:focus-visible, button:focus-visible, a:focus-visible{
+    outline:2px solid var(--amber); outline-offset:3px;
+  }
+</style>
+</head>
+<body class="antialiased">
+
+<!-- NAV -->
+<header class="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-[#152318]/80 border-b border-[color:var(--line)]">
+  <div class="max-w-7xl mx-auto px-6 md:px-10 h-20 flex items-center justify-between">
+    <a href="#inicio" class="flex items-center gap-2">
+      <span class="font-display italic text-2xl tracking-tight" style="color:var(--amber)">Animalada</span>
+      <span class="font-mono text-[10px] tracking-[0.25em] text-[color:var(--cream-dim)] hidden sm:inline">NQN · ALIMENTO BALANCEADO</span>
+    </a>
+    <nav class="hidden lg:flex items-center gap-8 font-mono text-xs tracking-wide">
+      <a href="#nosotros" class="underline-grow">NOSOTROS</a>
+      <a href="#catalogo" class="underline-grow">CATÁLOGO</a>
+      <a href="#servicios" class="underline-grow">SERVICIOS</a>
+      <a href="#resenas" class="underline-grow">RESEÑAS</a>
+      <a href="#contacto" class="underline-grow">CONTACTO</a>
+    </nav>
+    <a href="https://wa.me/5492990000000" target="_blank" class="btn-primary rounded-full px-5 py-2.5 text-sm">WhatsApp</a>
+  </div>
+</header>
+
+<!-- HERO -->
+<section id="inicio" class="relative min-h-[100svh] flex items-end overflow-hidden pt-24">
+  <div data-parallax data-speed="0.35" class="absolute inset-0 -z-10">
+    <img src="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?q=80&w=1800&auto=format&fit=crop"
+         alt="Perro feliz comiendo alimento balanceado"
+         class="w-full h-[130%] object-cover object-center" />
+    <div class="absolute inset-0" style="background:linear-gradient(180deg, rgba(15,26,18,0.35) 0%, rgba(15,26,18,0.55) 45%, #152318 92%);"></div>
+  </div>
+
+  <div class="max-w-7xl mx-auto w-full px-6 md:px-10 pb-20 grid lg:grid-cols-12 gap-10 items-end">
+    <div class="lg:col-span-8 reveal">
+      <p class="font-mono text-xs tracking-[0.3em] text-[color:var(--amber-soft)] mb-5">NEUQUÉN · CASA DE ALIMENTO BALANCEADO PARA PERROS</p>
+      <h1 class="font-display text-5xl sm:text-6xl md:text-7xl leading-[0.98] mb-6">
+        Nutrición que <span class="italic" style="color:var(--amber)">se nota</span> en cada cola que se mueve.
+      </h1>
+      <p class="max-w-xl text-[color:var(--cream-dim)] text-lg mb-8">
+        Formulamos y elegimos cada línea de alimento pensando en la etapa de vida real de tu perro: cachorro, adulto o senior. Sin relleno. Sin vueltas.
+      </p>
+      <div class="flex flex-wrap gap-4">
+        <a href="#catalogo" class="btn-primary rounded-full px-7 py-3.5">Ver catálogo</a>
+        <a href="https://wa.me/5492990000000" target="_blank" class="btn-ghost rounded-full px-7 py-3.5">Comprar por WhatsApp</a>
+      </div>
+    </div>
+
+    <!-- signature: ficha de analisis garantizado, como en las bolsas -->
+    <div class="lg:col-span-4 analysis-box rounded-2xl p-6 reveal" style="background:rgba(15,26,18,0.72); backdrop-filter:blur(6px);">
+      <p class="font-mono text-[10px] tracking-[0.25em] text-[color:var(--amber-soft)] mb-3">FICHA · ANÁLISIS GARANTIZADO</p>
+      <div class="analysis-row"><span>Proteína mínima</span><span>26%</span></div>
+      <div class="analysis-row"><span>Grasa mínima</span><span>15%</span></div>
+      <div class="analysis-row"><span>Fibra máxima</span><span>3.5%</span></div>
+      <div class="analysis-row"><span>Humedad máxima</span><span>10%</span></div>
+      <div class="analysis-row"><span>Clientes felices</span><span>+1200 hogares</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- KIBBLE DIVIDER -->
+<div class="kibble-divider" id="kibbleDivider"></div>
+
+<!-- NOSOTROS -->
+<section id="nosotros" class="max-w-7xl mx-auto px-6 md:px-10 py-24 grid lg:grid-cols-12 gap-12">
+  <div class="lg:col-span-5 reveal">
+    <p class="font-mono text-xs tracking-[0.3em] text-[color:var(--amber-soft)] mb-4">QUIÉNES SOMOS</p>
+    <h2 class="font-display text-4xl md:text-5xl leading-tight mb-6">Más que alimento: <span class="italic" style="color:var(--amber)">bienestar</span> que se sirve todos los días.</h2>
+    <p class="text-[color:var(--cream-dim)] leading-relaxed mb-6">
+      Animalada nació en Neuquén de una obsesión simple: que ningún perro coma "cualquier cosa". Seleccionamos marcas y formulamos combinaciones según edad, tamaño de raza y nivel de actividad, y acompañamos a cada familia con asesoramiento real, no de folleto.
+    </p>
+    <div class="paw-trail flex gap-6" id="pawTrail">
+      <span class="font-mono text-sm text-[color:var(--cream-dim)]">🐾 8 años en el barrio</span>
+      <span class="font-mono text-sm text-[color:var(--cream-dim)]">🦴 100% asesoramiento nutricional</span>
+    </div>
+  </div>
+  <div class="lg:col-span-7 relative reveal">
+    <div class="rounded-2xl overflow-hidden h-full min-h-[380px] relative">
+      <img data-parallax data-speed="0.15" src="https://images.unsplash.com/photo-1568640347023-a616a30bc3bd?q=80&w=1600&auto=format&fit=crop" alt="Perro adulto sano" class="w-full h-[120%] object-cover" />
+    </div>
+  </div>
+</section>
+
+<!-- CATALOGO -->
+<section id="catalogo" class="max-w-7xl mx-auto px-6 md:px-10 py-24">
+  <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12 reveal">
+    <div>
+      <p class="font-mono text-xs tracking-[0.3em] text-[color:var(--amber-soft)] mb-4">CATÁLOGO</p>
+      <h2 class="font-display text-4xl md:text-5xl">Elegí por etapa de vida, no por casualidad.</h2>
+    </div>
+    <div class="flex flex-wrap gap-2" id="filterPills">
+      <button class="filter-pill active rounded-full px-4 py-2" data-filter="todos">TODOS</button>
+      <button class="filter-pill rounded-full px-4 py-2" data-filter="cachorro">CACHORROS</button>
+      <button class="filter-pill rounded-full px-4 py-2" data-filter="adulto">ADULTOS</button>
+      <button class="filter-pill rounded-full px-4 py-2" data-filter="senior">SENIORS</button>
+    </div>
+  </div>
+
+  <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8" id="productGrid">
+
+    <div class="product-card card-flip h-96" data-cat="cachorro">
+      <div class="card-flip-inner rounded-2xl">
+        <div class="card-face rounded-2xl overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1601758124510-52d02ddb7cbd?q=80&w=1200&auto=format&fit=crop" class="w-full h-full object-cover" alt="Alimento para cachorros">
+          <div class="absolute inset-0" style="background:linear-gradient(180deg, transparent 40%, rgba(15,26,18,0.92) 100%);"></div>
+          <div class="absolute bottom-0 p-6">
+            <p class="font-mono text-[10px] tracking-[0.2em] text-[color:var(--amber-soft)] mb-1">CACHORROS · 0-12 MESES</p>
+            <h3 class="font-display text-2xl">Crecimiento Pleno</h3>
+          </div>
+        </div>
+        <div class="card-back analysis-box rounded-2xl p-6 flex flex-col justify-center" style="background:var(--panel);">
+          <p class="font-mono text-[10px] tracking-[0.25em] text-[color:var(--amber-soft)] mb-3">ANÁLISIS GARANTIZADO</p>
+          <div class="analysis-row"><span>Proteína</span><span>30% min</span></div>
+          <div class="analysis-row"><span>DHA</span><span>Sí</span></div>
+          <div class="analysis-row"><span>Bolsa</span><span>3 / 8 / 15 kg</span></div>
+          <div class="analysis-row"><span>Ideal para</span><span>Razas mixtas</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card card-flip h-96" data-cat="adulto">
+      <div class="card-flip-inner rounded-2xl">
+        <div class="card-face rounded-2xl overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?q=80&w=1200&auto=format&fit=crop" class="w-full h-full object-cover" alt="Alimento premium para adultos">
+          <div class="absolute inset-0" style="background:linear-gradient(180deg, transparent 40%, rgba(15,26,18,0.92) 100%);"></div>
+          <div class="absolute bottom-0 p-6">
+            <p class="font-mono text-[10px] tracking-[0.2em] text-[color:var(--amber-soft)] mb-1">ADULTOS · PREMIUM</p>
+            <h3 class="font-display text-2xl">Energía Diaria</h3>
+          </div>
+        </div>
+        <div class="card-back analysis-box rounded-2xl p-6 flex flex-col justify-center" style="background:var(--panel);">
+          <p class="font-mono text-[10px] tracking-[0.25em] text-[color:var(--amber-soft)] mb-3">ANÁLISIS GARANTIZADO</p>
+          <div class="analysis-row"><span>Proteína</span><span>26% min</span></div>
+          <div class="analysis-row"><span>Omega 6</span><span>Sí</span></div>
+          <div class="analysis-row"><span>Bolsa</span><span>3 / 8 / 15 / 21 kg</span></div>
+          <div class="analysis-row"><span>Ideal para</span><span>Actividad media-alta</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card card-flip h-96" data-cat="adulto">
+      <div class="card-flip-inner rounded-2xl">
+        <div class="card-face rounded-2xl overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1589941013453-ec89f33b5e95?q=80&w=1200&auto=format&fit=crop" class="w-full h-full object-cover" alt="Alimento económico para adultos">
+          <div class="absolute inset-0" style="background:linear-gradient(180deg, transparent 40%, rgba(15,26,18,0.92) 100%);"></div>
+          <div class="absolute bottom-0 p-6">
+            <p class="font-mono text-[10px] tracking-[0.2em] text-[color:var(--amber-soft)] mb-1">ADULTOS · ECONÓMICO</p>
+            <h3 class="font-display text-2xl">Todos los Días</h3>
+          </div>
+        </div>
+        <div class="card-back analysis-box rounded-2xl p-6 flex flex-col justify-center" style="background:var(--panel);">
+          <p class="font-mono text-[10px] tracking-[0.25em] text-[color:var(--amber-soft)] mb-3">ANÁLISIS GARANTIZADO</p>
+          <div class="analysis-row"><span>Proteína</span><span>21% min</span></div>
+          <div class="analysis-row"><span>Grasa</span><span>10% min</span></div>
+          <div class="analysis-row"><span>Bolsa</span><span>8 / 15 / 21 kg</span></div>
+          <div class="analysis-row"><span>Ideal para</span><span>Uso diario, buen precio</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card card-flip h-96" data-cat="senior">
+      <div class="card-flip-inner rounded-2xl">
+        <div class="card-face rounded-2xl overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1544568100-847a948585b9?q=80&w=1200&auto=format&fit=crop" class="w-full h-full object-cover" alt="Alimento para perros senior">
+          <div class="absolute inset-0" style="background:linear-gradient(180deg, transparent 40%, rgba(15,26,18,0.92) 100%);"></div>
+          <div class="absolute bottom-0 p-6">
+            <p class="font-mono text-[10px] tracking-[0.2em] text-[color:var(--amber-soft)] mb-1">SENIORS · 7+ AÑOS</p>
+            <h3 class="font-display text-2xl">Años Dorados</h3>
+          </div>
+        </div>
+        <div class="card-back analysis-box rounded-2xl p-6 flex flex-col justify-center" style="background:var(--panel);">
+          <p class="font-mono text-[10px] tracking-[0.25em] text-[color:var(--amber-soft)] mb-3">ANÁLISIS GARANTIZADO</p>
+          <div class="analysis-row"><span>Proteína</span><span>24% min</span></div>
+          <div class="analysis-row"><span>Glucosamina</span><span>Sí</span></div>
+          <div class="analysis-row"><span>Bolsa</span><span>3 / 8 / 15 kg</span></div>
+          <div class="analysis-row"><span>Ideal para</span><span>Articulaciones y digestión</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card card-flip h-96" data-cat="cachorro">
+      <div class="card-flip-inner rounded-2xl">
+        <div class="card-face rounded-2xl overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1546975490-a04ea2fddb64?q=80&w=1200&auto=format&fit=crop" class="w-full h-full object-cover" alt="Alimento premium para cachorros de razas grandes">
+          <div class="absolute inset-0" style="background:linear-gradient(180deg, transparent 40%, rgba(15,26,18,0.92) 100%);"></div>
+          <div class="absolute bottom-0 p-6">
+            <p class="font-mono text-[10px] tracking-[0.2em] text-[color:var(--amber-soft)] mb-1">CACHORROS · RAZAS GRANDES</p>
+            <h3 class="font-display text-2xl">Base Fuerte</h3>
+          </div>
+        </div>
+        <div class="card-back analysis-box rounded-2xl p-6 flex flex-col justify-center" style="background:var(--panel);">
+          <p class="font-mono text-[10px] tracking-[0.25em] text-[color:var(--amber-soft)] mb-3">ANÁLISIS GARANTIZADO</p>
+          <div class="analysis-row"><span>Proteína</span><span>28% min</span></div>
+          <div class="analysis-row"><span>Calcio controlado</span><span>Sí</span></div>
+          <div class="analysis-row"><span>Bolsa</span><span>8 / 15 kg</span></div>
+          <div class="analysis-row"><span>Ideal para</span><span>Razas grandes en crecimiento</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card card-flip h-96" data-cat="senior">
+      <div class="card-flip-inner rounded-2xl">
+        <div class="card-face rounded-2xl overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1601758064135-cfcdc94643bd?q=80&w=1200&auto=format&fit=crop" class="w-full h-full object-cover" alt="Alimento senior bajo en grasa">
+          <div class="absolute inset-0" style="background:linear-gradient(180deg, transparent 40%, rgba(15,26,18,0.92) 100%);"></div>
+          <div class="absolute bottom-0 p-6">
+            <p class="font-mono text-[10px] tracking-[0.2em] text-[color:var(--amber-soft)] mb-1">SENIORS · CONTROL DE PESO</p>
+            <h3 class="font-display text-2xl">Paso Liviano</h3>
+          </div>
+        </div>
+        <div class="card-back analysis-box rounded-2xl p-6 flex flex-col justify-center" style="background:var(--panel);">
+          <p class="font-mono text-[10px] tracking-[0.25em] text-[color:var(--amber-soft)] mb-3">ANÁLISIS GARANTIZADO</p>
+          <div class="analysis-row"><span>Proteína</span><span>22% min</span></div>
+          <div class="analysis-row"><span>Grasa</span><span>8% max</span></div>
+          <div class="analysis-row"><span>Bolsa</span><span>3 / 8 kg</span></div>
+          <div class="analysis-row"><span>Ideal para</span><span>Perros con sobrepeso</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- SERVICIOS -->
+<section id="servicios" class="py-24" style="background:var(--bg-deep2);">
+  <div class="max-w-7xl mx-auto px-6 md:px-10">
+    <p class="font-mono text-xs tracking-[0.3em] text-[color:var(--amber-soft)] mb-4 reveal">SERVICIOS</p>
+    <h2 class="font-display text-4xl md:text-5xl mb-14 reveal">Pedís una vez, comés tranquilo el resto del mes.</h2>
+
+    <div class="grid md:grid-cols-3 gap-8">
+      <div class="rounded-2xl p-8 reveal" style="background:var(--panel); border:1px solid var(--line);">
+        <p class="font-mono text-3xl mb-4" style="color:var(--amber);">01</p>
+        <h3 class="font-display text-2xl mb-3">Delivery a domicilio</h3>
+        <p class="text-[color:var(--cream-dim)]">Coordinamos entrega en tu casa el mismo día en Neuquén capital. Vos elegís, nosotros llevamos la bolsa.</p>
+      </div>
+      <div class="rounded-2xl p-8 reveal" style="background:var(--panel); border:1px solid var(--line);">
+        <p class="font-mono text-3xl mb-4" style="color:var(--amber);">02</p>
+        <h3 class="font-display text-2xl mb-3">Suscripción mensual</h3>
+        <p class="text-[color:var(--cream-dim)]">Programá la reposición automática de la marca que ya usás. Sin acordarte, sin quedarte sin comida.</p>
+      </div>
+      <div class="rounded-2xl p-8 reveal" style="background:var(--panel); border:1px solid var(--line);">
+        <p class="font-mono text-3xl mb-4" style="color:var(--amber);">03</p>
+        <h3 class="font-display text-2xl mb-3">Asesoramiento nutricional</h3>
+        <p class="text-[color:var(--cream-dim)]">Contanos la edad, tamaño y actividad de tu perro y te recomendamos la línea que realmente necesita.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESEÑAS -->
+<section id="resenas" class="max-w-7xl mx-auto px-6 md:px-10 py-24">
+  <p class="font-mono text-xs tracking-[0.3em] text-[color:var(--amber-soft)] mb-4 reveal">LA COMUNIDAD ANIMALADA</p>
+  <h2 class="font-display text-4xl md:text-5xl mb-14 reveal">Confían en nosotros hace años.</h2>
+
+  <div class="grid md:grid-cols-3 gap-8">
+    <div class="analysis-box rounded-2xl p-7 reveal" style="background:var(--panel);">
+      <p class="text-[color:var(--amber-soft)] mb-4">★★★★★</p>
+      <p class="text-[color:var(--cream-dim)] mb-5">"Cambiamos a Toby de marca y desde que le dan asesoramiento acá, dejó de tener problemas de piel. Recomendable total."</p>
+      <p class="font-mono text-xs text-[color:var(--cream-dim)]">— Vale, Neuquén Capital</p>
+    </div>
+    <div class="analysis-box rounded-2xl p-7 reveal" style="background:var(--panel);">
+      <p class="text-[color:var(--amber-soft)] mb-4">★★★★★</p>
+      <p class="text-[color:var(--cream-dim)] mb-5">"La suscripción mensual me salvó, ya no me quedo sin alimento a mitad de mes. Y siempre llega puntual."</p>
+      <p class="font-mono text-xs text-[color:var(--cream-dim)]">— Julián, Cipolletti</p>
+    </div>
+    <div class="analysis-box rounded-2xl p-7 reveal" style="background:var(--panel);">
+      <p class="text-[color:var(--amber-soft)] mb-4">★★★★★</p>
+      <p class="text-[color:var(--cream-dim)] mb-5">"Mi golden ya es senior y me ayudaron a elegir una línea para sus articulaciones. Se nota la diferencia caminando."</p>
+      <p class="font-mono text-xs text-[color:var(--cream-dim)]">— Carla, Plottier</p>
+    </div>
+  </div>
+</section>
+
+<!-- GALERIA / PROMOS -->
+<section class="py-24" style="background:var(--bg-deep2);">
+  <div class="max-w-7xl mx-auto px-6 md:px-10">
+    <p class="font-mono text-xs tracking-[0.3em] text-[color:var(--amber-soft)] mb-4 reveal">GALERÍA & PROMOCIONES</p>
+    <h2 class="font-display text-4xl md:text-5xl mb-12 reveal">Lo que se mueve en el local esta temporada.</h2>
+  </div>
+  <div class="overflow-hidden relative">
+    <div class="marquee-track gap-6 px-6">
+      <img src="https://images.unsplash.com/photo-1517849845537-4d257902861a?q=80&w=700&auto=format&fit=crop" class="h-64 w-80 object-cover rounded-2xl flex-shrink-0" alt="Perro esperando su comida">
+      <img src="https://images.unsplash.com/photo-1583512603805-3cc6b41f3edb?q=80&w=700&auto=format&fit=crop" class="h-64 w-80 object-cover rounded-2xl flex-shrink-0" alt="Bolsas de alimento en estantería">
+      <img src="https://images.unsplash.com/photo-1601979031925-424e53b6caaa?q=80&w=700&auto=format&fit=crop" class="h-64 w-80 object-cover rounded-2xl flex-shrink-0" alt="Cachorro comiendo">
+      <img src="https://images.unsplash.com/photo-1552053831-71594a27632d?q=80&w=700&auto=format&fit=crop" class="h-64 w-80 object-cover rounded-2xl flex-shrink-0" alt="Perro senior descansando">
+      <img src="https://images.unsplash.com/photo-1517849845537-4d257902861a?q=80&w=700&auto=format&fit=crop" class="h-64 w-80 object-cover rounded-2xl flex-shrink-0" alt="Perro esperando su comida">
+      <img src="https://images.unsplash.com/photo-1583512603805-3cc6b41f3edb?q=80&w=700&auto=format&fit=crop" class="h-64 w-80 object-cover rounded-2xl flex-shrink-0" alt="Bolsas de alimento en estantería">
+      <img src="https://images.unsplash.com/photo-1601979031925-424e53b6caaa?q=80&w=700&auto=format&fit=crop" class="h-64 w-80 object-cover rounded-2xl flex-shrink-0" alt="Cachorro comiendo">
+      <img src="https://images.unsplash.com/photo-1552053831-71594a27632d?q=80&w=700&auto=format&fit=crop" class="h-64 w-80 object-cover rounded-2xl flex-shrink-0" alt="Perro senior descansando">
+    </div>
+  </div>
+</section>
+
+<!-- CONTACTO -->
+<section id="contacto" class="max-w-7xl mx-auto px-6 md:px-10 py-24 grid lg:grid-cols-12 gap-10">
+  <div class="lg:col-span-5 reveal">
+    <p class="font-mono text-xs tracking-[0.3em] text-[color:var(--amber-soft)] mb-4">UBICACIÓN & CONTACTO</p>
+    <h2 class="font-display text-4xl md:text-5xl mb-6">Te esperamos en el local o por WhatsApp.</h2>
+    <div class="analysis-box rounded-2xl p-6" style="background:var(--panel);">
+      <div class="analysis-row"><span>Dirección</span><span>Neuquén Capital, Río Negro</span></div>
+      <div class="analysis-row"><span>WhatsApp</span><span>+54 9 299 000-0000</span></div>
+      <div class="analysis-row"><span>Email</span><span>hola@animalada.com.ar</span></div>
+      <div class="analysis-row"><span>Horario</span><span>Lun a Sáb · 9 a 20 hs</span></div>
+    </div>
+    <a href="https://wa.me/5492990000000" target="_blank" class="btn-primary rounded-full px-7 py-3.5 inline-block mt-8">Escribinos ahora</a>
+  </div>
+  <div class="lg:col-span-7 reveal">
+    <div class="rounded-2xl overflow-hidden h-full min-h-[340px] border" style="border-color:var(--line);">
+      <iframe
+        src="https://www.google.com/maps?q=Neuqu%C3%A9n%20Capital&output=embed"
+        class="w-full h-full min-h-[340px] grayscale contrast-125"
+        style="filter:invert(90%) hue-rotate(90deg);"
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="border-t" style="border-color:var(--line); background:var(--bg-deep2);">
+  <div class="max-w-7xl mx-auto px-6 md:px-10 py-14 grid md:grid-cols-3 gap-10">
+    <div>
+      <span class="font-display italic text-2xl" style="color:var(--amber)">Animalada</span>
+      <p class="text-[color:var(--cream-dim)] mt-3 max-w-xs">Alimento balanceado para perros en Neuquén. Nutrición que se nota.</p>
+    </div>
+    <div class="font-mono text-sm text-[color:var(--cream-dim)] space-y-2">
+      <p class="text-[color:var(--amber-soft)] tracking-[0.2em] text-xs mb-2">SEGUINOS</p>
+      <a href="#" class="block underline-grow w-fit">Instagram</a>
+      <a href="#" class="block underline-grow w-fit">Facebook</a>
+    </div>
+    <div class="font-mono text-sm text-[color:var(--cream-dim)] space-y-2">
+      <p class="text-[color:var(--amber-soft)] tracking-[0.2em] text-xs mb-2">NAVEGACIÓN</p>
+      <a href="#catalogo" class="block underline-grow w-fit">Catálogo</a>
+      <a href="#servicios" class="block underline-grow w-fit">Servicios</a>
+      <a href="#contacto" class="block underline-grow w-fit">Contacto</a>
+    </div>
+  </div>
+  <div class="text-center font-mono text-[10px] tracking-[0.2em] text-[color:var(--cream-dim)] pb-8">© 2026 ANIMALADA NQN — HECHO CON 🐾 EN NEUQUÉN</div>
+</footer>
+
+<script>
+  // reveal on scroll
+  const revealEls = document.querySelectorAll('.reveal, .paw-trail');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el=>io.observe(el));
+
+  // parallax on scroll (transform-based, respects reduced motion)
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const parallaxEls = document.querySelectorAll('[data-parallax]');
+  function onScroll(){
+    if(prefersReduced) return;
+    const y = window.scrollY;
+    parallaxEls.forEach(el=>{
+      const speed = parseFloat(el.dataset.speed || 0.2);
+      el.style.transform = `translateY(${y*speed*0.25}px)`;
+    });
+  }
+  window.addEventListener('scroll', onScroll, { passive:true });
+
+  // filter pills
+  const pills = document.querySelectorAll('#filterPills .filter-pill');
+  const cards = document.querySelectorAll('#productGrid .product-card');
+  pills.forEach(p=>{
+    p.addEventListener('click', ()=>{
+      pills.forEach(x=>x.classList.remove('active'));
+      p.classList.add('active');
+      const f = p.dataset.filter;
+      cards.forEach(c=>{
+        c.style.display = (f==='todos' || c.dataset.cat===f) ? '' : 'none';
+      });
+    });
+  });
+
+  // kibble divider dots (signature detail)
+  const kd = document.getElementById('kibbleDivider');
+  if(kd){
+    for(let i=0;i<26;i++){
+      const dot = document.createElement('span');
+      dot.className = 'kibble-dot';
+      const size = 4 + Math.random()*6;
+      dot.style.width = size+'px';
+      dot.style.height = size+'px';
+      dot.style.left = (i*(100/26) + Math.random()*2)+'%';
+      dot.style.top = (Math.random()*70)+'%';
+      dot.style.opacity = 0.3 + Math.random()*0.6;
+      kd.appendChild(dot);
+    }
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bel-Goy Ferretería — Todo se construye desde acá</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Barlow+Condensed:wght@500;600;700&family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --steel:#161d24;
+    --steel2:#0f151b;
+    --panel:#212b34;
+    --panel-light:#2b3846;
+    --orange:#e8641c;
+    --orange-soft:#ff8a4c;
+    --yellow:#f2b705;
+    --offwhite:#eef1f3;
+    --dim:#9aa7b1;
+    --line: rgba(238,241,243,0.14);
+  }
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--steel);
+    color:var(--offwhite);
+    font-family:'Work Sans',sans-serif;
+    overflow-x:hidden;
+  }
+  .font-display{font-family:'Barlow Condensed',sans-serif; text-transform:uppercase; letter-spacing:.01em;}
+  .font-black{font-family:'Archivo Black',sans-serif;}
+  .font-mono{font-family:'JetBrains Mono',monospace;}
+
+  /* signature: ficha tecnica con esquinas tipo plaqueta */
+  .spec-box{
+    position:relative;
+    border:1px solid var(--line);
+    background:linear-gradient(180deg, rgba(238,241,243,0.03), rgba(238,241,243,0));
+  }
+  .spec-box::before, .spec-box::after,
+  .spec-corner-tl, .spec-corner-br{ content:""; position:absolute; width:14px; height:14px; }
+  .spec-box::before{ top:-1px; left:-1px; border-top:2px solid var(--orange); border-left:2px solid var(--orange); }
+  .spec-box::after{ bottom:-1px; right:-1px; border-bottom:2px solid var(--orange); border-right:2px solid var(--orange); }
+  .spec-row{
+    display:flex; justify-content:space-between; align-items:baseline;
+    border-top:1px dashed var(--line);
+    padding:.55rem 0;
+    font-family:'JetBrains Mono',monospace;
+  }
+  .spec-row:first-child{border-top:none;}
+
+  /* franja de seguridad (signature divider) */
+  .hazard-divider{
+    height:22px;
+    background: repeating-linear-gradient(135deg, var(--yellow) 0 22px, #161d24 22px 44px);
+    background-size: 62px 100%;
+  }
+
+  [data-parallax]{ will-change: transform; }
+
+  .reveal{ opacity:0; transform: translateY(28px); transition: opacity .8s ease, transform .8s ease; }
+  .reveal.in{ opacity:1; transform:translateY(0); }
+
+  .card-flip{ perspective:1400px; }
+  .card-flip-inner{
+    position:relative; width:100%; height:100%;
+    transform-style:preserve-3d;
+    transition: transform .7s cubic-bezier(.2,.8,.2,1);
+  }
+  .card-flip:hover .card-flip-inner{ transform: rotateY(180deg); }
+  .card-face{ position:absolute; inset:0; backface-visibility:hidden; }
+  .card-back{ transform: rotateY(180deg); }
+
+  .underline-grow{ position:relative; display:inline-block; }
+  .underline-grow::after{
+    content:""; position:absolute; left:0; bottom:-4px; height:2px; width:0%;
+    background:var(--orange); transition:width .5s ease;
+  }
+  .underline-grow:hover::after{ width:100%; }
+
+  .btn-primary{
+    background:var(--orange); color:#161d24; font-weight:700;
+    transition: transform .25s ease, box-shadow .25s ease, background .25s ease;
+  }
+  .btn-primary:hover{ transform:translateY(-3px); box-shadow:0 14px 30px -10px rgba(232,100,28,0.5); background:var(--orange-soft); }
+
+  .btn-ghost{
+    border:1px solid var(--line); color:var(--offwhite);
+    transition:border-color .25s ease, background .25s ease;
+  }
+  .btn-ghost:hover{ border-color:var(--orange); background:rgba(232,100,28,0.08); }
+
+  /* bolt spin icon on hover */
+  .bolt-icon{ display:inline-block; transition: transform .6s ease; }
+  .bolt-hover:hover .bolt-icon{ transform: rotate(180deg); }
+
+  .filter-pill{
+    font-family:'JetBrains Mono',monospace; font-size:.7rem; letter-spacing:.03em;
+    border:1px solid var(--line); transition:all .25s ease;
+  }
+  .filter-pill.active, .filter-pill:hover{ background:var(--orange); color:#161d24; border-color:var(--orange); }
+
+  .marquee-track{ display:flex; width:200%; animation: marquee 30s linear infinite; }
+  @keyframes marquee{ from{transform:translateX(0);} to{transform:translateX(-50%);} }
+
+  ::selection{ background:var(--orange); color:#161d24; }
+
+  @media (prefers-reduced-motion: reduce){
+    .reveal, .card-flip-inner, .bolt-icon{ transition:none !important; }
+    .marquee-track{ animation:none; }
+  }
+
+  input:focus-visible, button:focus-visible, a:focus-visible{
+    outline:2px solid var(--orange); outline-offset:3px;
+  }
+</style>
+</head>
+<body class="antialiased">
+
+<!-- NAV -->
+<header class="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-[#161d24]/85 border-b border-[color:var(--line)]">
+  <div class="max-w-7xl mx-auto px-6 md:px-10 h-20 flex items-center justify-between">
+    <a href="#inicio" class="flex items-center gap-2">
+      <span class="font-black text-xl tracking-tight" style="color:var(--orange)">BEL-GOY</span>
+      <span class="font-mono text-[10px] tracking-[0.25em] text-[color:var(--dim)] hidden sm:inline">FERRETERÍA · NEUQUÉN</span>
+    </a>
+    <nav class="hidden lg:flex items-center gap-8 font-mono text-xs tracking-wide">
+      <a href="#nosotros" class="underline-grow">NOSOTROS</a>
+      <a href="#catalogo" class="underline-grow">CATÁLOGO</a>
+      <a href="#servicios" class="underline-grow">SERVICIOS</a>
+      <a href="#resenas" class="underline-grow">RESEÑAS</a>
+      <a href="#contacto" class="underline-grow">CONTACTO</a>
+    </nav>
+    <a href="https://wa.me/5492990000000" target="_blank" class="btn-primary rounded px-5 py-2.5 text-sm font-display tracking-wide">WhatsApp</a>
+  </div>
+</header>
+
+<!-- HERO -->
+<section id="inicio" class="relative min-h-[100svh] flex items-end overflow-hidden pt-24">
+  <div data-parallax data-speed="0.35" class="absolute inset-0 -z-10">
+    <img src="https://images.unsplash.com/photo-1581147036324-c1c88bb6eaa9?q=80&w=1800&auto=format&fit=crop"
+         alt="Estantería de herramientas en ferretería"
+         class="w-full h-[130%] object-cover object-center" />
+    <div class="absolute inset-0" style="background:linear-gradient(180deg, rgba(15,21,27,0.4) 0%, rgba(15,21,27,0.6) 45%, #161d24 92%);"></div>
+  </div>
+
+  <div class="max-w-7xl mx-auto w-full px-6 md:px-10 pb-20 grid lg:grid-cols-12 gap-10 items-end">
+    <div class="lg:col-span-8 reveal">
+      <p class="font-mono text-xs tracking-[0.3em] text-[color:var(--orange-soft)] mb-5">NEUQUÉN · HERRAMIENTAS Y MATERIALES DE CONSTRUCCIÓN</p>
+      <h1 class="font-display font-bold text-5xl sm:text-6xl md:text-7xl leading-[0.95] mb-6">
+        Todo se construye <span style="color:var(--orange)">desde acá.</span>
+      </h1>
+      <p class="max-w-xl text-[color:var(--dim)] text-lg mb-8">
+        Herramientas manuales y eléctricas, materiales de obra, pinturas y seguridad laboral. Stock real, precio claro y gente que sabe lo que vende.
+      </p>
+      <div class="flex flex-wrap gap-4">
+        <a href="#catalogo" class="btn-primary rounded px-7 py-3.5 font-display tracking-wide">Ver catálogo</a>
+        <a href="https://wa.me/5492990000000" target="_blank" class="btn-ghost rounded px-7 py-3.5 font-display tracking-wide">Consultar stock</a>
+      </div>
+    </div>
+
+    <!-- signature: ficha tecnica -->
+    <div class="lg:col-span-4 spec-box rounded-lg p-6 reveal" style="background:rgba(15,21,27,0.75); backdrop-filter:blur(6px);">
+      <p class="font-mono text-[10px] tracking-[0.25em] text-[color:var(--orange-soft)] mb-3">FICHA TÉCNICA · BEL-GOY</p>
+      <div class="spec-row"><span>Rubros</span><span>5 categorías</span></div>
+      <div class="spec-row"><span>Marcas</span><span>+30 proveedores</span></div>
+      <div class="spec-row"><span>Entrega</span><span>Mismo día</span></div>
+      <div class="spec-row"><span>Trayectoria</span><span>En el barrio hace años</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="hazard-divider"></div>
+
+<!-- NOSOTROS -->
+<section id="nosotros" class="max-w-7xl mx-auto px-6 md:px-10 py-24 grid lg:grid-cols-12 gap-12">
+  <div class="lg:col-span-5 reveal">
+    <p class="font-mono text-xs tracking-[0.3em] text-[color:var(--orange-soft)] mb-4">QUIÉNES SOMOS</p>
+    <h2 class="font-display font-bold text-4xl md:text-5xl leading-tight mb-6">La ferretería de confianza <span style="color:var(--orange)">del barrio.</span></h2>
+    <p class="text-[color:var(--dim)] leading-relaxed mb-6">
+      Bel-Goy acompaña proyectos de hogar y de obra en Neuquén con stock real y asesoramiento técnico de verdad: si no sabemos, preguntamos; si no tenemos, lo conseguimos. Nada de vender por vender.
+    </p>
+    <div class="flex gap-8">
+      <div class="bolt-hover flex items-center gap-2">
+        <span class="bolt-icon text-2xl">🔩</span>
+        <span class="font-mono text-sm text-[color:var(--dim)]">Uso profesional</span>
+      </div>
+      <div class="bolt-hover flex items-center gap-2">
+        <span class="bolt-icon text-2xl">🛠️</span>
+        <span class="font-mono text-sm text-[color:var(--dim)]">Asesoramiento técnico</span>
+      </div>
+    </div>
+  </div>
+  <div class="lg:col-span-7 relative reveal">
+    <div class="rounded-lg overflow-hidden h-full min-h-[380px] relative">
+      <img data-parallax data-speed="0.15" src="https://images.unsplash.com/photo-1504148455328-c376907d081c?q=80&w=1600&auto=format&fit=crop" alt="Herramientas eléctricas y manuales" class="w-full h-[120%] object-cover" />
+    </div>
+  </div>
+</section>
+
+<!-- CATALOGO -->
+<section id="catalogo" class="max-w-7xl mx-auto px-6 md:px-10 py-24">
+  <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12 reveal">
+    <div>
+      <p class="font-mono text-xs tracking-[0.3em] text-[color:var(--orange-soft)] mb-4">CATÁLOGO</p>
+      <h2 class="font-display font-bold text-4xl md:text-5xl">Buscá por rubro, no por pasillo.</h2>
+    </div>
+    <div class="flex flex-wrap gap-2" id="filterPills">
+      <button class="filter-pill active rounded px-4 py-2" data-filter="todos">TODOS</button>
+      <button class="filter-pill rounded px-4 py-2" data-filter="manual">MANUALES</button>
+      <button class="filter-pill rounded px-4 py-2" data-filter="electrica">ELÉCTRICAS</button>
+      <button class="filter-pill rounded px-4 py-2" data-filter="construccion">CONSTRUCCIÓN</button>
+      <button class="filter-pill rounded px-4 py-2" data-filter="pintura">PINTURA</button>
+      <button class="filter-pill rounded px-4 py-2" data-filter="seguridad">SEGURIDAD</button>
+    </div>
+  </div>
+
+  <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8" id="productGrid">
+
+    <div class="product-card card-flip h-96" data-cat="manual">
+      <div class="card-flip-inner rounded-lg">
+        <div class="card-face rounded-lg overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1572981779307-38b8cabb2407?q=80&w=1200&auto=format&fit=crop" class="w-full h-full object-cover" alt="Juego de herramientas manuales">
+          <div class="absolute inset-0" style="background:linear-gradient(180deg, transparent 40%, rgba(15,21,27,0.92) 100%);"></div>
+          <div class="absolute bottom-0 p-6">
+            <p class="font-mono text-[10px] tracking-[0.2em] text-[color:var(--orange-soft)] mb-1">MANUALES</p>
+            <h3 class="font-display font-bold text-2xl">Juego de Llaves Combinadas</h3>
+          </div>
+        </div>
+        <div class="card-back spec-box rounded-lg p-6 flex flex-col justify-center" style="background:var(--panel);">
+          <p class="font-mono text-[10px] tracking-[0.25em] text-[color:var(--orange-soft)] mb-3">FICHA TÉCNICA</p>
+          <div class="spec-row"><span>Material</span><span>Acero al cromo vanadio</span></div>
+          <div class="spec-row"><span>Piezas</span><span>8, 12 o 20 unidades</span></div>
+          <div class="spec-row"><span>Garantía</span><span>12 meses</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card card-flip h-96" data-cat="electrica">
+      <div class="card-flip-inner rounded-lg">
+        <div class="card-face rounded-lg overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1504148455328-c376907d081c?q=80&w=1200&auto=format&fit=crop" class="w-full h-full object-cover" alt="Taladro percutor">
+          <div class="absolute inset-0" style="background:linear-gradient(180deg, transparent 40%, rgba(15,21,27,0.92) 100%);"></div>
+          <div class="absolute bottom-0 p-6">
+            <p class="font-mono text-[10px] tracking-[0.2em] text-[color:var(--orange-soft)] mb-1">ELÉCTRICAS</p>
+            <h3 class="font-display font-bold text-2xl">Taladro Percutor 750W</h3>
+          </div>
+        </div>
+        <div class="card-back spec-box rounded-lg p-6 flex flex-col justify-center" style="background:var(--panel);">
+          <p class="font-mono text-[10px] tracking-[0.25em] text-[color:var(--orange-soft)] mb-3">FICHA TÉCNICA</p>
+          <div class="spec-row"><span>Potencia</span><span>750 W</span></div>
+          <div class="spec-row"><span>Mandril</span><span>13 mm</span></div>
+          <div class="spec-row"><span>Incluye</span><span>Maletín + brocas</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card card-flip h-96" data-cat="construccion">
+      <div class="card-flip-inner rounded-lg">
+        <div class="card-face rounded-lg overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1600585152220-90363fe7e115?q=80&w=1200&auto=format&fit=crop" class="w-full h-full object-cover" alt="Materiales de construcción">
+          <div class="absolute inset-0" style="background:linear-gradient(180deg, transparent 40%, rgba(15,21,27,0.92) 100%);"></div>
+          <div class="absolute bottom-0 p-6">
+            <p class="font-mono text-[10px] tracking-[0.2em] text-[color:var(--orange-soft)] mb-1">CONSTRUCCIÓN</p>
+            <h3 class="font-display font-bold text-2xl">Cemento de Uso General</h3>
+          </div>
+        </div>
+        <div class="card-back spec-box rounded-lg p-6 flex flex-col justify-center" style="background:var(--panel);">
+          <p class="font-mono text-[10px] tracking-[0.25em] text-[color:var(--orange-soft)] mb-3">FICHA TÉCNICA</p>
+          <div class="spec-row"><span>Presentación</span><span>Bolsa 50 kg</span></div>
+          <div class="spec-row"><span>Uso</span><span>Estructural y albañilería</span></div>
+          <div class="spec-row"><span>Entrega</span><span>Retiro o delivery</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card card-flip h-96" data-cat="pintura">
+      <div class="card-flip-inner rounded-lg">
+        <div class="card-face rounded-lg overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1562259949-e8e7689d7828?q=80&w=1200&auto=format&fit=crop" class="w-full h-full object-cover" alt="Latas de pintura">
+          <div class="absolute inset-0" style="background:linear-gradient(180deg, transparent 40%, rgba(15,21,27,0.92) 100%);"></div>
+          <div class="absolute bottom-0 p-6">
+            <p class="font-mono text-[10px] tracking-[0.2em] text-[color:var(--orange-soft)] mb-1">PINTURA</p>
+            <h3 class="font-display font-bold text-2xl">Látex Interior Premium</h3>
+          </div>
+        </div>
+        <div class="card-back spec-box rounded-lg p-6 flex flex-col justify-center" style="background:var(--panel);">
+          <p class="font-mono text-[10px] tracking-[0.25em] text-[color:var(--orange-soft)] mb-3">FICHA TÉCNICA</p>
+          <div class="spec-row"><span>Rendimiento</span><span>~10 m² por litro</span></div>
+          <div class="spec-row"><span>Presentación</span><span>1L / 4L / 20L</span></div>
+          <div class="spec-row"><span>Acabado</span><span>Mate lavable</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card card-flip h-96" data-cat="seguridad">
+      <div class="card-flip-inner rounded-lg">
+        <div class="card-face rounded-lg overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1618424181438-9deac9315bb8?q=80&w=1200&auto=format&fit=crop" class="w-full h-full object-cover" alt="Elementos de seguridad laboral">
+          <div class="absolute inset-0" style="background:linear-gradient(180deg, transparent 40%, rgba(15,21,27,0.92) 100%);"></div>
+          <div class="absolute bottom-0 p-6">
+            <p class="font-mono text-[10px] tracking-[0.2em] text-[color:var(--orange-soft)] mb-1">SEGURIDAD LABORAL</p>
+            <h3 class="font-display font-bold text-2xl">Kit de Protección Básica</h3>
+          </div>
+        </div>
+        <div class="card-back spec-box rounded-lg p-6 flex flex-col justify-center" style="background:var(--panel);">
+          <p class="font-mono text-[10px] tracking-[0.25em] text-[color:var(--orange-soft)] mb-3">FICHA TÉCNICA</p>
+          <div class="spec-row"><span>Incluye</span><span>Casco, guantes, antiparras</span></div>
+          <div class="spec-row"><span>Norma</span><span>IRAM vigente</span></div>
+          <div class="spec-row"><span>Uso</span><span>Obra y taller</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card card-flip h-96" data-cat="manual">
+      <div class="card-flip-inner rounded-lg">
+        <div class="card-face rounded-lg overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1530124566582-a618bc2615dc?q=80&w=1200&auto=format&fit=crop" class="w-full h-full object-cover" alt="Caja de herramientas completa">
+          <div class="absolute inset-0" style="background:linear-gradient(180deg, transparent 40%, rgba(15,21,27,0.92) 100%);"></div>
+          <div class="absolute bottom-0 p-6">
+            <p class="font-mono text-[10px] tracking-[0.2em] text-[color:var(--orange-soft)] mb-1">MANUALES</p>
+            <h3 class="font-display font-bold text-2xl">Caja de Herramientas 65 pzs</h3>
+          </div>
+        </div>
+        <div class="card-back spec-box rounded-lg p-6 flex flex-col justify-center" style="background:var(--panel);">
+          <p class="font-mono text-[10px] tracking-[0.25em] text-[color:var(--orange-soft)] mb-3">FICHA TÉCNICA</p>
+          <div class="spec-row"><span>Piezas</span><span>65 unidades</span></div>
+          <div class="spec-row"><span>Estuche</span><span>Rígido con bandeja</span></div>
+          <div class="spec-row"><span>Ideal para</span><span>Hogar y taller</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- SERVICIOS -->
+<section id="servicios" class="py-24" style="background:var(--steel2);">
+  <div class="max-w-7xl mx-auto px-6 md:px-10">
+    <p class="font-mono text-xs tracking-[0.3em] text-[color:var(--orange-soft)] mb-4 reveal">SERVICIOS</p>
+    <h2 class="font-display font-bold text-4xl md:text-5xl mb-14 reveal">De la consulta a la obra, sin vueltas.</h2>
+
+    <div class="grid md:grid-cols-3 gap-8">
+      <div class="rounded-lg p-8 reveal" style="background:var(--panel); border:1px solid var(--line);">
+        <p class="font-mono text-3xl mb-4" style="color:var(--orange);">01</p>
+        <h3 class="font-display font-bold text-2xl mb-3">Delivery a domicilio</h3>
+        <p class="text-[color:var(--dim)]">Coordinamos entrega el mismo día en Neuquén capital, incluso materiales pesados de obra.</p>
+      </div>
+      <div class="rounded-lg p-8 reveal" style="background:var(--panel); border:1px solid var(--line);">
+        <p class="font-mono text-3xl mb-4" style="color:var(--orange);">02</p>
+        <h3 class="font-display font-bold text-2xl mb-3">Pedidos especiales</h3>
+        <p class="text-[color:var(--dim)]">¿No está en el local? Lo encargamos con nuestros proveedores y te avisamos cuando llega.</p>
+      </div>
+      <div class="rounded-lg p-8 reveal" style="background:var(--panel); border:1px solid var(--line);">
+        <p class="font-mono text-3xl mb-4" style="color:var(--orange);">03</p>
+        <h3 class="font-display font-bold text-2xl mb-3">Asesoramiento técnico</h3>
+        <p class="text-[color:var(--dim)]">Contanos el proyecto y te decimos exactamente qué producto y cantidad necesitás.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESEÑAS -->
+<section id="resenas" class="max-w-7xl mx-auto px-6 md:px-10 py-24">
+  <p class="font-mono text-xs tracking-[0.3em] text-[color:var(--orange-soft)] mb-4 reveal">LA FERRETERÍA PREFERIDA DE NEUQUÉN</p>
+  <h2 class="font-display font-bold text-4xl md:text-5xl mb-14 reveal">Lo que dicen los que ya construyeron con nosotros.</h2>
+
+  <div class="grid md:grid-cols-3 gap-8">
+    <div class="spec-box rounded-lg p-7 reveal" style="background:var(--panel);">
+      <p class="text-[color:var(--orange-soft)] mb-4">★★★★★</p>
+      <p class="text-[color:var(--dim)] mb-5">"Me asesoraron con el cemento y la cantidad justa para la vereda. No me sobró ni me faltó una bolsa."</p>
+      <p class="font-mono text-xs text-[color:var(--dim)]">— Rodrigo, Neuquén Capital</p>
+    </div>
+    <div class="spec-box rounded-lg p-7 reveal" style="background:var(--panel);">
+      <p class="text-[color:var(--orange-soft)] mb-4">★★★★★</p>
+      <p class="text-[color:var(--dim)] mb-5">"Pedí un taladro que no tenían en el local y en dos días lo tenía. Buena onda y cumplen."</p>
+      <p class="font-mono text-xs text-[color:var(--dim)]">— Fernanda, Plottier</p>
+    </div>
+    <div class="spec-box rounded-lg p-7 reveal" style="background:var(--panel);">
+      <p class="text-[color:var(--orange-soft)] mb-4">★★★★★</p>
+      <p class="text-[color:var(--dim)] mb-5">"Trabajo de albañil independiente y ya solo compro acá. Precio justo y stock real, no como en otros lados."</p>
+      <p class="font-mono text-xs text-[color:var(--dim)]">— Marcelo, Cipolletti</p>
+    </div>
+  </div>
+</section>
+
+<!-- GALERIA / PROMOS -->
+<section class="py-24" style="background:var(--steel2);">
+  <div class="max-w-7xl mx-auto px-6 md:px-10">
+    <p class="font-mono text-xs tracking-[0.3em] text-[color:var(--orange-soft)] mb-4 reveal">GALERÍA & PROMOCIONES</p>
+    <h2 class="font-display font-bold text-4xl md:text-5xl mb-12 reveal">Lo que entra y sale del local esta temporada.</h2>
+  </div>
+  <div class="overflow-hidden relative">
+    <div class="marquee-track gap-6 px-6">
+      <img src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?q=80&w=700&auto=format&fit=crop" class="h-64 w-80 object-cover rounded-lg flex-shrink-0" alt="Estantería de tornillos y bulones">
+      <img src="https://images.unsplash.com/photo-1572981779307-38b8cabb2407?q=80&w=700&auto=format&fit=crop" class="h-64 w-80 object-cover rounded-lg flex-shrink-0" alt="Herramientas manuales ordenadas">
+      <img src="https://images.unsplash.com/photo-1581147036324-c1c88bb6eaa9?q=80&w=700&auto=format&fit=crop" class="h-64 w-80 object-cover rounded-lg flex-shrink-0" alt="Local de ferretería">
+      <img src="https://images.unsplash.com/photo-1504148455328-c376907d081c?q=80&w=700&auto=format&fit=crop" class="h-64 w-80 object-cover rounded-lg flex-shrink-0" alt="Herramienta eléctrica en uso">
+      <img src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?q=80&w=700&auto=format&fit=crop" class="h-64 w-80 object-cover rounded-lg flex-shrink-0" alt="Estantería de tornillos y bulones">
+      <img src="https://images.unsplash.com/photo-1572981779307-38b8cabb2407?q=80&w=700&auto=format&fit=crop" class="h-64 w-80 object-cover rounded-lg flex-shrink-0" alt="Herramientas manuales ordenadas">
+      <img src="https://images.unsplash.com/photo-1581147036324-c1c88bb6eaa9?q=80&w=700&auto=format&fit=crop" class="h-64 w-80 object-cover rounded-lg flex-shrink-0" alt="Local de ferretería">
+      <img src="https://images.unsplash.com/photo-1504148455328-c376907d081c?q=80&w=700&auto=format&fit=crop" class="h-64 w-80 object-cover rounded-lg flex-shrink-0" alt="Herramienta eléctrica en uso">
+    </div>
+  </div>
+</section>
+
+<!-- CONTACTO -->
+<section id="contacto" class="max-w-7xl mx-auto px-6 md:px-10 py-24 grid lg:grid-cols-12 gap-10">
+  <div class="lg:col-span-5 reveal">
+    <p class="font-mono text-xs tracking-[0.3em] text-[color:var(--orange-soft)] mb-4">UBICACIÓN & CONTACTO</p>
+    <h2 class="font-display font-bold text-4xl md:text-5xl mb-6">Te esperamos en el local o por WhatsApp.</h2>
+    <div class="spec-box rounded-lg p-6" style="background:var(--panel);">
+      <div class="spec-row"><span>Dirección</span><span>Neuquén Capital, Río Negro</span></div>
+      <div class="spec-row"><span>WhatsApp</span><span>+54 9 299 000-0000</span></div>
+      <div class="spec-row"><span>Email</span><span>hola@belgoy.com.ar</span></div>
+      <div class="spec-row"><span>Horario</span><span>Lun a Sáb · 8 a 19 hs</span></div>
+    </div>
+    <a href="https://wa.me/5492990000000" target="_blank" class="btn-primary rounded px-7 py-3.5 inline-block mt-8 font-display tracking-wide">Escribinos ahora</a>
+  </div>
+  <div class="lg:col-span-7 reveal">
+    <div class="rounded-lg overflow-hidden h-full min-h-[340px] border" style="border-color:var(--line);">
+      <iframe
+        src="https://www.google.com/maps?q=Neuqu%C3%A9n%20Capital&output=embed"
+        class="w-full h-full min-h-[340px] grayscale contrast-125"
+        style="filter:invert(90%) hue-rotate(180deg);"
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="border-t" style="border-color:var(--line); background:var(--steel2);">
+  <div class="max-w-7xl mx-auto px-6 md:px-10 py-14 grid md:grid-cols-3 gap-10">
+    <div>
+      <span class="font-black text-xl" style="color:var(--orange)">BEL-GOY</span>
+      <p class="text-[color:var(--dim)] mt-3 max-w-xs">Ferretería en Neuquén: herramientas, materiales de construcción, pinturas y seguridad laboral.</p>
+    </div>
+    <div class="font-mono text-sm text-[color:var(--dim)] space-y-2">
+      <p class="text-[color:var(--orange-soft)] tracking-[0.2em] text-xs mb-2">SEGUINOS</p>
+      <a href="#" class="block underline-grow w-fit">Instagram</a>
+      <a href="#" class="block underline-grow w-fit">Facebook</a>
+    </div>
+    <div class="font-mono text-sm text-[color:var(--dim)] space-y-2">
+      <p class="text-[color:var(--orange-soft)] tracking-[0.2em] text-xs mb-2">NAVEGACIÓN</p>
+      <a href="#catalogo" class="block underline-grow w-fit">Catálogo</a>
+      <a href="#servicios" class="block underline-grow w-fit">Servicios</a>
+      <a href="#contacto" class="block underline-grow w-fit">Contacto</a>
+    </div>
+  </div>
+  <div class="text-center font-mono text-[10px] tracking-[0.2em] text-[color:var(--dim)] pb-8">© 2026 BEL-GOY FERRETERÍA — HECHO EN NEUQUÉN</div>
+</footer>
+
+<script>
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el=>io.observe(el));
+
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const parallaxEls = document.querySelectorAll('[data-parallax]');
+  function onScroll(){
+    if(prefersReduced) return;
+    const y = window.scrollY;
+    parallaxEls.forEach(el=>{
+      const speed = parseFloat(el.dataset.speed || 0.2);
+      el.style.transform = `translateY(${y*speed*0.25}px)`;
+    });
+  }
+  window.addEventListener('scroll', onScroll, { passive:true });
+
+  const pills = document.querySelectorAll('#filterPills .filter-pill');
+  const cards = document.querySelectorAll('#productGrid .product-card');
+  pills.forEach(p=>{
+    p.addEventListener('click', ()=>{
+      pills.forEach(x=>x.classList.remove('active'));
+      p.classList.add('active');
+      const f = p.dataset.filter;
+      cards.forEach(c=>{
+        c.style.display = (f==='todos' || c.dataset.cat===f) ? '' : 'none';
+      });
+    });
+  });
+</script>
+</body>
+</html>
