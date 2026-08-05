@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La Posada — Restaurante & Bodegón en Neuquén</title>
+<meta name="description" content="La Posada Neuquén: restaurante bodegón con tradición, carnes, pastas y vinos. Sabores que te acompañan siempre.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500;1,600&family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          vino: '#5C1620',
+          vinodeep: '#3A0D14',
+          ink: '#241012',
+          beige: '#F1E4CE',
+          beigelight: '#FAF3E4',
+          dorado: '#B8892B',
+          doradolight: '#D9B15C',
+          verde: '#5B6B4C',
+        },
+        fontFamily: {
+          display: ['"Playfair Display"', 'serif'],
+          body: ['"Jost"', 'sans-serif'],
+        },
+      }
+    }
+  }
+</script>
+
+<style>
+  :root{
+    --vino:#5C1620; --vinodeep:#3A0D14; --ink:#241012;
+    --beige:#F1E4CE; --beigelight:#FAF3E4; --dorado:#B8892B; --doradolight:#D9B15C;
+  }
+  *{ scroll-behavior:smooth; }
+  body{ background:var(--beigelight); color:var(--ink); font-family:'Jost',sans-serif; overflow-x:hidden; }
+  h1,h2,h3,h4,.font-display{ font-family:'Playfair Display',serif; }
+
+  .grain{
+    position:fixed; inset:0; pointer-events:none; z-index:60; opacity:.035; mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .reveal{ opacity:0; transform:translateY(28px); transition:opacity .9s cubic-bezier(.22,1,.36,1), transform .9s cubic-bezier(.22,1,.36,1); }
+  .reveal.in{ opacity:1; transform:translateY(0); }
+  .reveal-scale{ opacity:0; transform:scale(.94); transition:opacity 1s ease, transform 1s cubic-bezier(.22,1,.36,1); }
+  .reveal-scale.in{ opacity:1; transform:scale(1); }
+
+  /* Ornamental double-rule frame — signature motif of La Posada (wine-label border) */
+  .label-frame{ position:relative; }
+  .label-frame::before, .label-frame::after{
+    content:''; position:absolute; border:1px solid rgba(217,177,92,.55); pointer-events:none;
+  }
+  .label-frame::before{ inset:0; }
+  .label-frame::after{ inset:9px; }
+
+  .nav-glass{
+    backdrop-filter: blur(14px);
+    background: rgba(36,16,18,0.82);
+    border-bottom: 1px solid rgba(217,177,92,.18);
+  }
+  .nav-link{ position:relative; }
+  .nav-link::after{ content:''; position:absolute; left:0; bottom:-4px; width:0; height:1.5px; background:var(--doradolight); transition:width .35s ease; }
+  .nav-link:hover::after{ width:100%; }
+
+  .btn-primary{ background:var(--vino); color:var(--beige); transition:all .4s cubic-bezier(.22,1,.36,1); border:1px solid transparent; }
+  .btn-primary:hover{ background:var(--dorado); color:var(--ink); transform:translateY(-2px); box-shadow:0 12px 24px -8px rgba(184,137,43,.55); }
+  .btn-outline{ border:1.5px solid var(--doradolight); color:var(--beige); transition:all .4s cubic-bezier(.22,1,.36,1); }
+  .btn-outline:hover{ background:var(--doradolight); color:var(--ink); transform:translateY(-2px); }
+  .btn-whatsapp{ background:#2f5c3d; color:#F1E4CE; transition:all .35s ease; }
+  .btn-whatsapp:hover{ background:#264c32; transform:translateY(-2px); box-shadow:0 10px 20px -8px rgba(38,76,50,.6); }
+
+  .hero-bg{
+    background-image: linear-gradient(180deg, rgba(36,16,18,.4), rgba(36,16,18,.82) 90%), url('https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1800&q=80');
+    background-size:cover; background-position:center; will-change:transform;
+  }
+
+  .fade-rise{ opacity:0; transform:translateY(18px); animation:fadeRise 1.2s ease forwards; }
+  @keyframes fadeRise{ to{ opacity:1; transform:translateY(0);} }
+
+  .float-slow{ animation: floatSlow 7s ease-in-out infinite; }
+  @keyframes floatSlow{ 0%,100%{ transform:translateY(0) rotate(0deg);} 50%{ transform:translateY(-14px) rotate(-6deg);} }
+
+  .scroll-cue{ width:22px; height:36px; border:1.5px solid rgba(241,228,206,.75); border-radius:14px; }
+  .scroll-cue::before{ content:''; display:block; width:3px; height:7px; border-radius:2px; background:#D9B15C; margin:6px auto; animation:cueMove 1.8s ease-in-out infinite; }
+  @keyframes cueMove{ 0%{transform:translateY(0); opacity:1;} 70%{transform:translateY(10px); opacity:0;} 100%{opacity:0;} }
+
+  /* Ticker */
+  .ticker-track{ display:flex; width:max-content; animation:ticker 34s linear infinite; }
+  @keyframes ticker{ from{transform:translateX(0);} to{transform:translateX(-50%);} }
+
+  /* Menu cards - "chalkboard ticket" style */
+  .menu-card{
+    background:var(--beigelight); border:1px solid rgba(92,22,32,.12);
+    transition:transform .5s cubic-bezier(.22,1,.36,1), box-shadow .5s ease, border-color .5s ease;
+  }
+  .menu-card:hover{ transform:translateY(-8px); box-shadow:0 26px 40px -20px rgba(36,16,18,.35); border-color:rgba(184,137,43,.5); }
+  .menu-card .ingredients{ max-height:0; overflow:hidden; opacity:0; transition:max-height .5s ease, opacity .4s ease, margin .4s ease; }
+  .menu-card:hover .ingredients{ max-height:80px; opacity:1; margin-top:.5rem; }
+  .menu-card .img-wrap img{ transition:transform .7s cubic-bezier(.22,1,.36,1); }
+  .menu-card:hover .img-wrap img{ transform:scale(1.08); }
+
+  .tab-btn{ position:relative; transition:color .3s ease; }
+  .tab-btn.active{ color:var(--beige); }
+  .tab-btn .dot{ width:6px; height:6px; border-radius:50%; background:var(--doradolight); opacity:0; transition:opacity .3s ease; }
+  .tab-btn.active .dot{ opacity:1; }
+
+  /* Wine-fill button (signature interaction, replaces coffee-fill) */
+  .fill-btn{ position:relative; overflow:hidden; isolation:isolate; }
+  .fill-btn .fill{ position:absolute; inset:0; background:linear-gradient(180deg,#7A2230,#4A121B); transform:translateY(101%); transition:transform 1.1s cubic-bezier(.65,0,.35,1); z-index:-1; }
+  .fill-btn.filled .fill{ transform:translateY(0); }
+
+  .pillar-card{ transition:transform .5s cubic-bezier(.22,1,.36,1), box-shadow .5s ease; }
+  .pillar-card:hover{ transform:translateY(-6px); box-shadow:0 22px 40px -22px rgba(36,16,18,.3); }
+
+  .parallax-img{ will-change:transform; }
+
+  @keyframes starPop{ 0%{transform:scale(0) rotate(-20deg); opacity:0;} 60%{transform:scale(1.2) rotate(6deg); opacity:1;} 100%{transform:scale(1) rotate(0deg);} }
+  .star-anim{ animation:starPop .5s cubic-bezier(.34,1.56,.64,1) both; }
+
+  .link-swipe{ background-image:linear-gradient(var(--dorado),var(--dorado)); background-repeat:no-repeat; background-size:0% 1.5px; background-position:0 100%; transition:background-size .4s ease; }
+  .link-swipe:hover{ background-size:100% 1.5px; }
+
+  #cartPill{ transition:transform .4s cubic-bezier(.34,1.56,.64,1), opacity .3s ease; }
+
+  ::-webkit-scrollbar{ width:10px; }
+  ::-webkit-scrollbar-track{ background:var(--beigelight); }
+  ::-webkit-scrollbar-thumb{ background:var(--dorado); border-radius:10px; }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; scroll-behavior:auto !important; }
+  }
+  :focus-visible{ outline:2.5px solid var(--dorado); outline-offset:3px; }
+</style>
+</head>
+<body class="antialiased">
+<div class="grain"></div>
+
+<!-- ============ NAV ============ -->
+<header id="siteNav" class="fixed top-0 inset-x-0 z-50 transition-colors duration-500">
+  <nav class="nav-glass">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10 flex items-center justify-between h-20">
+      <a href="#inicio" class="flex items-center gap-3">
+        <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+          <circle cx="20" cy="20" r="18.5" stroke="#D9B15C" stroke-width="1.2"/>
+          <circle cx="20" cy="20" r="14.5" stroke="#D9B15C" stroke-width="0.6"/>
+          <text x="20" y="26" text-anchor="middle" font-family="Playfair Display, serif" font-size="15" fill="#F1E4CE" font-style="italic">LP</text>
+        </svg>
+        <span class="font-display text-2xl tracking-wide text-beige">La Posada</span>
+      </a>
+
+      <div class="hidden lg:flex items-center gap-9 text-sm font-medium text-beige/85">
+        <a href="#nosotros" class="nav-link">Nosotros</a>
+        <a href="#menu" class="nav-link">Menú</a>
+        <a href="#reservas" class="nav-link">Reservas</a>
+        <a href="#ubicacion" class="nav-link">Ubicación</a>
+        <a href="#resenas" class="nav-link">Reseñas</a>
+        <a href="#galeria" class="nav-link">Galería</a>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <a href="https://wa.me/5492990000001" target="_blank" rel="noopener" class="hidden sm:inline-flex btn-whatsapp text-sm font-semibold px-5 py-2.5 rounded-full items-center gap-2">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.39 1.26 4.81L2 22l5.42-1.35a9.9 9.9 0 0 0 4.62 1.14h.01c5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2Zm5.8 14.13c-.24.68-1.4 1.3-1.93 1.36-.5.06-1.06.28-3.54-.74-2.98-1.23-4.89-4.24-5.04-4.44-.15-.2-1.2-1.6-1.2-3.05 0-1.45.76-2.16 1.03-2.46.26-.3.58-.37.77-.37.2 0 .38 0 .55.01.18.01.42-.07.65.5.24.58.82 2 .89 2.15.07.15.12.32.02.52-.1.2-.15.32-.3.5-.15.17-.31.38-.44.51-.15.15-.3.31-.13.6.17.3.76 1.26 1.64 2.04 1.13 1 2.08 1.32 2.38 1.47.3.15.48.13.65-.08.18-.2.75-.87.95-1.17.2-.3.4-.25.66-.15.27.1 1.7.8 1.99.95.3.15.5.22.57.35.07.13.07.75-.17 1.43Z"/></svg>
+          WhatsApp
+        </a>
+        <button id="menuToggle" class="lg:hidden w-10 h-10 flex flex-col items-center justify-center gap-1.5" aria-label="Abrir menú">
+          <span class="w-6 h-[1.5px] bg-beige"></span>
+          <span class="w-6 h-[1.5px] bg-beige"></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div id="mobileMenu" class="hidden lg:hidden bg-vinodeep border-b border-dorado/20 px-6 py-6 flex flex-col gap-5 text-beige font-medium">
+    <a href="#nosotros">Nosotros</a>
+    <a href="#menu">Menú</a>
+    <a href="#reservas">Reservas</a>
+    <a href="#ubicacion">Ubicación</a>
+    <a href="#resenas">Reseñas</a>
+    <a href="#galeria">Galería</a>
+    <a href="https://wa.me/5492990000001" class="btn-whatsapp text-sm font-semibold px-5 py-3 rounded-full text-center">Escribir por WhatsApp</a>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<section id="inicio" class="relative h-[100svh] min-h-[640px] flex items-center overflow-hidden">
+  <div id="heroBg" class="hero-bg absolute inset-0 scale-110"></div>
+
+  <div class="bean float-slow absolute top-[20%] right-[10%] hidden md:block" style="animation-delay:0s;">
+    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#D9B15C" stroke-width="1.2" opacity=".7"><path d="M8 21V9a4 4 0 0 1 8 0v12"/><path d="M6 21h12"/><path d="M8 5c0-1.5 1-2.5 1-4M16 5c0-1.5-1-2.5-1-4"/></svg>
+  </div>
+  <div class="bean float-slow absolute top-[55%] right-[18%] hidden md:block" style="animation-delay:1.4s;">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#D9B15C" stroke-width="1.2" opacity=".55"><path d="M18.5 3 12 9l-6.5-6M12 9v12M8 21h8"/></svg>
+  </div>
+
+  <div class="relative z-10 max-w-7xl mx-auto px-6 lg:px-10 w-full">
+    <div class="label-frame max-w-2xl px-8 py-10 md:px-12 md:py-14">
+      <p class="fade-rise text-doradolight uppercase tracking-[0.3em] text-xs md:text-sm font-semibold mb-5" style="animation-delay:.1s">Restaurante & bodegón · Neuquén</p>
+      <h1 class="fade-rise font-display text-5xl sm:text-6xl md:text-7xl leading-[1] text-beige mb-6" style="animation-delay:.25s">
+        La Posada
+      </h1>
+      <p class="fade-rise font-display italic text-xl md:text-2xl text-beige/90 mb-9" style="animation-delay:.4s">
+        Sabores que te acompañan siempre.
+      </p>
+      <div class="fade-rise flex flex-wrap gap-4" style="animation-delay:.55s">
+        <a href="#menu" class="btn-primary px-7 py-3.5 rounded-full text-sm font-semibold tracking-wide">Ver menú</a>
+        <a href="#reservas" class="btn-outline px-7 py-3.5 rounded-full text-sm font-semibold tracking-wide">Reservar mesa</a>
+        <a href="https://wa.me/5492990000001" target="_blank" rel="noopener" class="btn-whatsapp px-7 py-3.5 rounded-full text-sm font-semibold tracking-wide inline-flex items-center gap-2">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.39 1.26 4.81L2 22l5.42-1.35a9.9 9.9 0 0 0 4.62 1.14h.01c5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2Z"/></svg>
+          WhatsApp directo
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="absolute bottom-7 left-1/2 -translate-x-1/2 z-10"><div class="scroll-cue"></div></div>
+</section>
+
+<!-- ============ TICKER ============ -->
+<div class="bg-vinodeep text-beige py-3 overflow-hidden border-y border-dorado/15">
+  <div class="ticker-track font-display italic text-sm md:text-base tracking-wide">
+    <div class="flex items-center gap-6 pr-6">
+      <span>Cocina de bodegón</span><span class="text-doradolight">✦</span>
+      <span>Vinos seleccionados</span><span class="text-doradolight">✦</span>
+      <span>Carnes a la parrilla</span><span class="text-doradolight">✦</span>
+      <span>Tradición neuquina desde siempre</span><span class="text-doradolight">✦</span>
+    </div>
+    <div class="flex items-center gap-6 pr-6" aria-hidden="true">
+      <span>Cocina de bodegón</span><span class="text-doradolight">✦</span>
+      <span>Vinos seleccionados</span><span class="text-doradolight">✦</span>
+      <span>Carnes a la parrilla</span><span class="text-doradolight">✦</span>
+      <span>Tradición neuquina desde siempre</span><span class="text-doradolight">✦</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============ QUIÉNES SOMOS ============ -->
+<section id="nosotros" class="py-24 md:py-32 px-6 lg:px-10 bg-beigelight relative overflow-hidden">
+  <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
+    <div class="reveal order-2 lg:order-1">
+      <p class="text-vino uppercase tracking-[0.3em] text-xs font-bold mb-4">Quiénes somos</p>
+      <h2 class="font-display text-4xl md:text-5xl text-ink mb-7 leading-tight">Un lugar para <span class="italic text-vino">compartir</span>, disfrutar y volver.</h2>
+      <p class="text-ink/75 leading-relaxed text-lg mb-5">
+        La Posada es un restaurante con estilo bodegón en el corazón de Neuquén: mesas largas, mantel de siempre y platos que se preparan con el mismo cariño desde el primer día.
+      </p>
+      <p class="text-ink/75 leading-relaxed text-lg mb-9">
+        Carnes a la parrilla, pastas caseras y una carta de vinos pensada para acompañar cada comida. Acá se viene a comer bien, a quedarse charlando y a volver la semana que viene.
+      </p>
+      <a href="#menu" class="link-swipe font-semibold text-ink inline-flex items-center gap-2">
+        Conocer el menú
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+    </div>
+
+    <div class="order-1 lg:order-2 reveal-scale">
+      <div class="relative">
+        <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=1000&q=80" alt="Interior de La Posada" class="rounded-sm w-full h-[460px] object-cover shadow-2xl shadow-ink/25 border-4 border-beigelight ring-1 ring-dorado/30">
+        <div class="absolute -bottom-8 -left-8 bg-vino text-beige rounded-sm p-6 max-w-[230px] shadow-xl hidden sm:block border border-dorado/30">
+          <p class="font-display italic text-lg leading-snug">"Cercanía, tradición y calidad en cada mesa."</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filosofía -->
+  <div class="max-w-7xl mx-auto mt-28 grid sm:grid-cols-3 gap-6">
+    <div class="pillar-card reveal bg-beige/60 border border-vino/10 rounded-sm p-8" style="transition-delay:.05s">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#B8892B" stroke-width="1.4" class="mb-5"><path d="M12 21s-7-4.6-9.5-9C.5 8 3 4 7 4c2 0 3.7 1.2 5 3 1.3-1.8 3-3 5-3 4 0 6.5 4 4.5 8-2.5 4.4-9.5 9-9.5 9Z"/></svg>
+      <h3 class="font-display text-2xl text-ink mb-2">Cercanía</h3>
+      <p class="text-ink/70 leading-relaxed">Te recibimos como en casa. Acá el mozo se acuerda cómo te gusta el asado.</p>
+    </div>
+    <div class="pillar-card reveal bg-beige/60 border border-vino/10 rounded-sm p-8" style="transition-delay:.15s">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#B8892B" stroke-width="1.4" class="mb-5"><path d="M12 2v20M6 8l6-6 6 6M6 16l6 6 6-6"/></svg>
+      <h3 class="font-display text-2xl text-ink mb-2">Tradición</h3>
+      <p class="text-ink/70 leading-relaxed">Recetas de siempre, las mismas que hicieron de La Posada un clásico de Neuquén.</p>
+    </div>
+    <div class="pillar-card reveal bg-beige/60 border border-vino/10 rounded-sm p-8" style="transition-delay:.25s">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#B8892B" stroke-width="1.4" class="mb-5"><path d="M8 21h8M12 17v4M6 3h12l-1 8a5 5 0 0 1-10 0L6 3Z"/><path d="M6 6H4a2 2 0 0 0 0 4h2M18 6h2a2 2 0 0 1 0 4h-2"/></svg>
+      <h3 class="font-display text-2xl text-ink mb-2">Calidad</h3>
+      <p class="text-ink/70 leading-relaxed">Producto seleccionado, cocción a fuego real y una carta de vinos a la altura de cada plato.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MENÚ DIGITAL ============ -->
+<section id="menu" class="py-24 md:py-32 px-6 lg:px-10 bg-vinodeep text-beige relative">
+  <div class="max-w-7xl mx-auto">
+    <div class="reveal text-center max-w-2xl mx-auto mb-14">
+      <p class="text-doradolight uppercase tracking-[0.3em] text-xs font-bold mb-4">Menú digital</p>
+      <h2 class="font-display text-4xl md:text-5xl mb-5">La carta de La Posada</h2>
+      <p class="text-beige/70 text-lg">Pasá el mouse sobre cada plato para ver sus ingredientes. Armá tu pedido y confirmalo por WhatsApp en un toque.</p>
+    </div>
+
+    <div class="reveal flex justify-center gap-3 md:gap-6 mb-14 flex-wrap">
+      <button data-tab="comidas" class="tab-btn active flex items-center gap-2 px-5 py-2.5 rounded-full border border-dorado/25 text-beige/70 font-semibold text-sm">
+        <span class="dot"></span>🍲 Comidas
+      </button>
+      <button data-tab="bebidas" class="tab-btn flex items-center gap-2 px-5 py-2.5 rounded-full border border-dorado/25 text-beige/70 font-semibold text-sm">
+        <span class="dot"></span>🍷 Bebidas
+      </button>
+      <button data-tab="postres" class="tab-btn flex items-center gap-2 px-5 py-2.5 rounded-full border border-dorado/25 text-beige/70 font-semibold text-sm">
+        <span class="dot"></span>🍮 Postres
+      </button>
+    </div>
+
+    <!-- COMIDAS -->
+    <div class="tab-panel grid sm:grid-cols-2 lg:grid-cols-3 gap-6" data-panel="comidas">
+      <div class="menu-card rounded-sm overflow-hidden" data-name="Bife de chorizo" data-price="9800">
+        <div class="img-wrap h-44 overflow-hidden"><img src="https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=700&q=80" class="w-full h-full object-cover" alt="Bife de chorizo"></div>
+        <div class="p-5">
+          <div class="flex justify-between items-start gap-2"><h4 class="font-display text-xl text-ink">Bife de chorizo</h4><span class="text-vino font-bold whitespace-nowrap">$9.800</span></div>
+          <p class="text-ink/60 text-sm mt-1">A la parrilla, punto a elección.</p>
+          <p class="ingredients text-ink/55 text-xs">Novillo argentino, sal parrillera, guarnición del día.</p>
+          <button class="add-btn mt-4 text-xs font-bold uppercase tracking-wider text-vino">+ Añadir al pedido</button>
+        </div>
+      </div>
+      <div class="menu-card rounded-sm overflow-hidden" data-name="Sorrentinos de la casa" data-price="6200">
+        <div class="img-wrap h-44 overflow-hidden"><img src="https://images.unsplash.com/photo-1551183053-bf91a1d81141?auto=format&fit=crop&w=700&q=80" class="w-full h-full object-cover" alt="Pastas caseras"></div>
+        <div class="p-5">
+          <div class="flex justify-between items-start gap-2"><h4 class="font-display text-xl text-ink">Sorrentinos de la casa</h4><span class="text-vino font-bold whitespace-nowrap">$6.200</span></div>
+          <p class="text-ink/60 text-sm mt-1">Pasta fresca rellena, salsa a elección.</p>
+          <p class="ingredients text-ink/55 text-xs">Jamón y muzzarella, salsa rosa o fileto casero.</p>
+          <button class="add-btn mt-4 text-xs font-bold uppercase tracking-wider text-vino">+ Añadir al pedido</button>
+        </div>
+      </div>
+      <div class="menu-card rounded-sm overflow-hidden" data-name="Milanesa a la napolitana" data-price="7400">
+        <div class="img-wrap h-44 overflow-hidden"><img src="https://images.unsplash.com/photo-1544148103-0773bf10d330?auto=format&fit=crop&w=700&q=80" class="w-full h-full object-cover" alt="Milanesa napolitana"></div>
+        <div class="p-5">
+          <div class="flex justify-between items-start gap-2"><h4 class="font-display text-xl text-ink">Milanesa napolitana</h4><span class="text-vino font-bold whitespace-nowrap">$7.400</span></div>
+          <p class="text-ink/60 text-sm mt-1">Clásica de bodegón, con papas fritas.</p>
+          <p class="ingredients text-ink/55 text-xs">Jamón, muzzarella, salsa de tomate casera.</p>
+          <button class="add-btn mt-4 text-xs font-bold uppercase tracking-wider text-vino">+ Añadir al pedido</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- BEBIDAS -->
+    <div class="tab-panel hidden grid sm:grid-cols-2 lg:grid-cols-3 gap-6" data-panel="bebidas">
+      <div class="menu-card rounded-sm overflow-hidden" data-name="Malbec Reserva (copa)" data-price="3100">
+        <div class="img-wrap h-44 overflow-hidden"><img src="https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=700&q=80" class="w-full h-full object-cover" alt="Copa de vino Malbec"></div>
+        <div class="p-5">
+          <div class="flex justify-between items-start gap-2"><h4 class="font-display text-xl text-ink">Malbec Reserva</h4><span class="text-vino font-bold whitespace-nowrap">$3.100</span></div>
+          <p class="text-ink/60 text-sm mt-1">Copa, bodega patagónica.</p>
+          <p class="ingredients text-ink/55 text-xs">Cuerpo medio, notas a fruta madura y roble.</p>
+          <button class="add-btn mt-4 text-xs font-bold uppercase tracking-wider text-vino">+ Añadir al pedido</button>
+        </div>
+      </div>
+      <div class="menu-card rounded-sm overflow-hidden" data-name="Cerveza artesanal" data-price="2400">
+        <div class="img-wrap h-44 overflow-hidden"><img src="https://images.unsplash.com/photo-1608270586620-248524c67de9?auto=format&fit=crop&w=700&q=80" class="w-full h-full object-cover" alt="Cerveza artesanal"></div>
+        <div class="p-5">
+          <div class="flex justify-between items-start gap-2"><h4 class="font-display text-xl text-ink">Cerveza artesanal</h4><span class="text-vino font-bold whitespace-nowrap">$2.400</span></div>
+          <p class="text-ink/60 text-sm mt-1">Pinta, producción local.</p>
+          <p class="ingredients text-ink/55 text-xs">Rubia o IPA, servida bien fría.</p>
+          <button class="add-btn mt-4 text-xs font-bold uppercase tracking-wider text-vino">+ Añadir al pedido</button>
+        </div>
+      </div>
+      <div class="menu-card rounded-sm overflow-hidden" data-name="Aperitivo de la casa" data-price="3400">
+        <div class="img-wrap h-44 overflow-hidden"><img src="https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=700&q=80" class="w-full h-full object-cover" alt="Trago aperitivo"></div>
+        <div class="p-5">
+          <div class="flex justify-between items-start gap-2"><h4 class="font-display text-xl text-ink">Aperitivo de la casa</h4><span class="text-vino font-bold whitespace-nowrap">$3.400</span></div>
+          <p class="text-ink/60 text-sm mt-1">Trago de autor, receta de La Posada.</p>
+          <p class="ingredients text-ink/55 text-xs">Vermut, cítricos, soda, hielo.</p>
+          <button class="add-btn mt-4 text-xs font-bold uppercase tracking-wider text-vino">+ Añadir al pedido</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- POSTRES -->
+    <div class="tab-panel hidden grid sm:grid-cols-2 lg:grid-cols-3 gap-6" data-panel="postres">
+      <div class="menu-card rounded-sm overflow-hidden" data-name="Flan casero" data-price="2600">
+        <div class="img-wrap h-44 overflow-hidden"><img src="https://images.unsplash.com/photo-1470124182917-cc6e71b22ecc?auto=format&fit=crop&w=700&q=80" class="w-full h-full object-cover" alt="Flan casero"></div>
+        <div class="p-5">
+          <div class="flex justify-between items-start gap-2"><h4 class="font-display text-xl text-ink">Flan casero</h4><span class="text-vino font-bold whitespace-nowrap">$2.600</span></div>
+          <p class="text-ink/60 text-sm mt-1">Receta de siempre, con dulce de leche.</p>
+          <p class="ingredients text-ink/55 text-xs">Huevo, leche, caramelo a fuego lento.</p>
+          <button class="add-btn mt-4 text-xs font-bold uppercase tracking-wider text-vino">+ Añadir al pedido</button>
+        </div>
+      </div>
+      <div class="menu-card rounded-sm overflow-hidden" data-name="Volcán de chocolate" data-price="3200">
+        <div class="img-wrap h-44 overflow-hidden"><img src="https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=700&q=80" class="w-full h-full object-cover" alt="Volcán de chocolate"></div>
+        <div class="p-5">
+          <div class="flex justify-between items-start gap-2"><h4 class="font-display text-xl text-ink">Volcán de chocolate</h4><span class="text-vino font-bold whitespace-nowrap">$3.200</span></div>
+          <p class="text-ink/60 text-sm mt-1">Centro fundido, servido tibio.</p>
+          <p class="ingredients text-ink/55 text-xs">Chocolate 60%, helado de crema americana.</p>
+          <button class="add-btn mt-4 text-xs font-bold uppercase tracking-wider text-vino">+ Añadir al pedido</button>
+        </div>
+      </div>
+      <div class="menu-card rounded-sm overflow-hidden" data-name="Panqueques con dulce de leche" data-price="2800">
+        <div class="img-wrap h-44 overflow-hidden"><img src="https://images.unsplash.com/photo-1519676867240-f03562e64548?auto=format&fit=crop&w=700&q=80" class="w-full h-full object-cover" alt="Panqueques con dulce de leche"></div>
+        <div class="p-5">
+          <div class="flex justify-between items-start gap-2"><h4 class="font-display text-xl text-ink">Panqueques con DDL</h4><span class="text-vino font-bold whitespace-nowrap">$2.800</span></div>
+          <p class="text-ink/60 text-sm mt-1">Clásico bodegón, porción generosa.</p>
+          <p class="ingredients text-ink/55 text-xs">Masa casera, dulce de leche repostero.</p>
+          <button class="add-btn mt-4 text-xs font-bold uppercase tracking-wider text-vino">+ Añadir al pedido</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- floating cart -->
+  <div id="cartPill" class="fixed bottom-6 right-6 z-40 opacity-0 translate-y-6 scale-90 pointer-events-none">
+    <button id="cartBtn" class="btn-primary flex items-center gap-3 pl-5 pr-6 py-3.5 rounded-full shadow-2xl shadow-ink/40">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></svg>
+      <span class="text-sm font-semibold"><span id="cartCount">0</span> productos · $<span id="cartTotal">0</span></span>
+    </button>
+  </div>
+</section>
+
+<!-- ============ RESERVAS & DELIVERY ============ -->
+<section id="reservas" class="py-24 md:py-32 px-6 lg:px-10 bg-beigelight">
+  <div class="max-w-7xl mx-auto">
+    <div class="reveal text-center max-w-2xl mx-auto mb-16">
+      <p class="text-vino uppercase tracking-[0.3em] text-xs font-bold mb-4">Reservas & delivery</p>
+      <h2 class="font-display text-4xl md:text-5xl text-ink">Tu mesa, o tu pedido, a un mensaje de distancia</h2>
+    </div>
+
+    <div class="grid lg:grid-cols-2 gap-10">
+      <div class="reveal bg-beige/50 border border-vino/10 rounded-sm p-8 md:p-10">
+        <h3 class="font-display text-2xl text-ink mb-2">Reservar una mesa</h3>
+        <p class="text-ink/60 mb-8">Confirmamos tu lugar al instante por WhatsApp.</p>
+
+        <form id="reserveForm" class="space-y-4">
+          <div class="grid sm:grid-cols-2 gap-4">
+            <input required type="text" placeholder="Nombre y apellido" class="w-full px-4 py-3 rounded-sm border border-vino/20 bg-beigelight focus:border-dorado outline-none transition-colors">
+            <input required type="tel" placeholder="Teléfono" class="w-full px-4 py-3 rounded-sm border border-vino/20 bg-beigelight focus:border-dorado outline-none transition-colors">
+          </div>
+          <div class="grid sm:grid-cols-2 gap-4">
+            <input required type="date" class="w-full px-4 py-3 rounded-sm border border-vino/20 bg-beigelight focus:border-dorado outline-none transition-colors text-ink/70">
+            <select required class="w-full px-4 py-3 rounded-sm border border-vino/20 bg-beigelight focus:border-dorado outline-none transition-colors text-ink/70">
+              <option value="">Personas</option>
+              <option>1-2 personas</option>
+              <option>3-4 personas</option>
+              <option>5-6 personas</option>
+              <option>7 o más</option>
+            </select>
+          </div>
+          <button type="submit" class="fill-btn btn-primary w-full py-4 rounded-sm font-semibold flex items-center justify-center gap-3">
+            <span class="fill"></span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 21V9a4 4 0 0 1 8 0v12"/><path d="M6 21h12"/></svg>
+            <span id="reserveLabel">Confirmar reserva</span>
+          </button>
+        </form>
+      </div>
+
+      <div class="reveal grid gap-6" style="transition-delay:.1s">
+        <div class="bg-vinodeep text-beige rounded-sm p-8 md:p-10">
+          <h3 class="font-display text-2xl mb-3">Pedí por WhatsApp</h3>
+          <p class="text-beige/70 mb-6">Elegí de la carta y te confirmamos tiempos y forma de entrega.</p>
+          <a href="https://wa.me/5492990000001" target="_blank" rel="noopener" class="btn-whatsapp inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-semibold">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.39 1.26 4.81L2 22l5.42-1.35a9.9 9.9 0 0 0 4.62 1.14h.01c5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2Z"/></svg>
+            Escribir ahora
+          </a>
+        </div>
+
+        <div class="grid sm:grid-cols-2 gap-6">
+          <a href="#" class="pillar-card bg-beige/50 border border-vino/10 rounded-sm p-7 flex flex-col items-start gap-3">
+            <span class="w-11 h-11 rounded-full bg-vino/15 flex items-center justify-center font-display italic text-lg text-vino">P</span>
+            <span class="font-semibold text-ink">Pedí por PedidosYa</span>
+            <span class="text-ink/55 text-sm">Entrega a domicilio en Neuquén Capital.</span>
+          </a>
+          <a href="#" class="pillar-card bg-beige/50 border border-vino/10 rounded-sm p-7 flex flex-col items-start gap-3">
+            <span class="w-11 h-11 rounded-full bg-vino/15 flex items-center justify-center font-display italic text-lg text-vino">R</span>
+            <span class="font-semibold text-ink">Pedí por Rappi</span>
+            <span class="text-ink/55 text-sm">Delivery rápido en horario de local.</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ UBICACIÓN ============ -->
+<section id="ubicacion" class="py-24 md:py-32 px-6 lg:px-10 bg-vinodeep text-beige">
+  <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-10 items-stretch">
+    <div class="reveal rounded-sm overflow-hidden min-h-[420px] border border-dorado/20">
+      <iframe
+        src="https://www.google.com/maps?q=Las+Madreselvas+84,+Neuqu%C3%A9n+Capital,+Argentina&output=embed"
+        class="w-full h-full min-h-[420px] grayscale-[15%]"
+        style="border:0;" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+        title="Ubicación de La Posada en Neuquén">
+      </iframe>
+    </div>
+
+    <div class="reveal" style="transition-delay:.1s">
+      <p class="text-doradolight uppercase tracking-[0.3em] text-xs font-bold mb-4">Ubicación & contacto</p>
+      <h2 class="font-display text-4xl md:text-5xl mb-8">Te esperamos en Neuquén</h2>
+
+      <div class="space-y-6">
+        <div class="flex gap-4">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#D9B15C" stroke-width="1.6" class="mt-1 shrink-0"><path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 0 1 18 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+          <div>
+            <p class="font-semibold">Las Madreselvas 84, Neuquén Capital</p>
+            <p class="text-beige/55 text-sm">Fácil acceso y estacionamiento en la cuadra.</p>
+          </div>
+        </div>
+        <div class="flex gap-4">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#D9B15C" stroke-width="1.6" class="mt-1 shrink-0"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          <div>
+            <p class="font-semibold">Martes a domingo · 12:00 a 16:00</p>
+            <p class="font-semibold">Martes a domingo · 20:00 a 00:00</p>
+          </div>
+        </div>
+        <div class="flex gap-4">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#D9B15C" stroke-width="1.6" class="mt-1 shrink-0"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.98.36 1.94.68 2.86a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.22-1.22a2 2 0 0 1 2.11-.45c.92.32 1.88.55 2.86.68A2 2 0 0 1 22 16.92Z"/></svg>
+          <div>
+            <p class="font-semibold">+54 9 299 000-0001</p>
+            <p class="text-beige/55 text-sm">Reservas, pedidos y consultas.</p>
+          </div>
+        </div>
+      </div>
+
+      <a href="https://www.google.com/maps?q=Las+Madreselvas+84,+Neuqu%C3%A9n+Capital,+Argentina" target="_blank" rel="noopener" class="mt-9 inline-flex btn-primary px-7 py-3.5 rounded-full text-sm font-semibold items-center gap-2">
+        Cómo llegar
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ RESEÑAS ============ -->
+<section id="resenas" class="py-24 md:py-32 px-6 lg:px-10 bg-beigelight overflow-hidden">
+  <div class="max-w-7xl mx-auto">
+    <div class="reveal text-center max-w-2xl mx-auto mb-16">
+      <p class="text-vino uppercase tracking-[0.3em] text-xs font-bold mb-4">Comunidad</p>
+      <h2 class="font-display text-4xl md:text-5xl text-ink">La Posada, tu lugar en Neuquén</h2>
+    </div>
+
+    <div class="relative max-w-3xl mx-auto">
+      <div id="testimonialTrack" class="overflow-hidden">
+        <div id="testimonialInner" class="flex transition-transform duration-700 ease-[cubic-bezier(.22,1,.36,1)]">
+
+          <div class="min-w-full px-2">
+            <div class="bg-beige/50 border border-vino/10 rounded-sm p-10 text-center">
+              <div class="flex justify-center gap-1 mb-5" data-stars>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#B8892B"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8 5.8 21l1.2-6.9-5-4.9 6.9-1z"/></svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#B8892B"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8 5.8 21l1.2-6.9-5-4.9 6.9-1z"/></svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#B8892B"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8 5.8 21l1.2-6.9-5-4.9 6.9-1z"/></svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#B8892B"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8 5.8 21l1.2-6.9-5-4.9 6.9-1z"/></svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#B8892B"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8 5.8 21l1.2-6.9-5-4.9 6.9-1z"/></svg>
+              </div>
+              <p class="font-display italic text-2xl text-ink leading-relaxed mb-6">"El bife de chorizo es una institución. Vengo con la familia todos los meses, siempre impecable."</p>
+              <p class="font-semibold text-ink">Roberto D.</p>
+              <p class="text-ink/50 text-sm">Cliente frecuente</p>
+            </div>
+          </div>
+
+          <div class="min-w-full px-2">
+            <div class="bg-beige/50 border border-vino/10 rounded-sm p-10 text-center">
+              <div class="flex justify-center gap-1 mb-5" data-stars>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#B8892B"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8 5.8 21l1.2-6.9-5-4.9 6.9-1z"/></svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#B8892B"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8 5.8 21l1.2-6.9-5-4.9 6.9-1z"/></svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#B8892B"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8 5.8 21l1.2-6.9-5-4.9 6.9-1z"/></svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#B8892B"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8 5.8 21l1.2-6.9-5-4.9 6.9-1z"/></svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#B8892B"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8 5.8 21l1.2-6.9-5-4.9 6.9-1z"/></svg>
+              </div>
+              <p class="font-display italic text-2xl text-ink leading-relaxed mb-6">"La carta de vinos está muy bien pensada, y el volcán de chocolate no se puede pasar."</p>
+              <p class="font-semibold text-ink">Mariana C.</p>
+              <p class="text-ink/50 text-sm">Cliente frecuente</p>
+            </div>
+          </div>
+
+          <div class="min-w-full px-2">
+            <div class="bg-beige/50 border border-vino/10 rounded-sm p-10 text-center">
+              <div class="flex justify-center gap-1 mb-5" data-stars>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#B8892B"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8 5.8 21l1.2-6.9-5-4.9 6.9-1z"/></svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#B8892B"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8 5.8 21l1.2-6.9-5-4.9 6.9-1z"/></svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#B8892B"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8 5.8 21l1.2-6.9-5-4.9 6.9-1z"/></svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#B8892B"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8 5.8 21l1.2-6.9-5-4.9 6.9-1z"/></svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#B8892B" opacity=".35"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8 5.8 21l1.2-6.9-5-4.9 6.9-1z"/></svg>
+              </div>
+              <p class="font-display italic text-2xl text-ink leading-relaxed mb-6">"Pedimos el menú ejecutivo para la oficina y llegó puntual, caliente y con la calidad de siempre."</p>
+              <p class="font-semibold text-ink">Gonzalo P.</p>
+              <p class="text-ink/50 text-sm">Cliente frecuente</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="flex justify-center items-center gap-6 mt-8">
+        <button id="prevTest" class="w-11 h-11 rounded-full border border-vino/20 flex items-center justify-center hover:bg-vino hover:text-beige transition-colors">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div id="testDots" class="flex gap-2"></div>
+        <button id="nextTest" class="w-11 h-11 rounded-full border border-vino/20 flex items-center justify-center hover:bg-vino hover:text-beige transition-colors">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="reveal grid grid-cols-2 sm:grid-cols-4 gap-4 mt-16">
+      <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=400&q=80" class="rounded-sm h-36 w-full object-cover" alt="Clientes disfrutando en La Posada">
+      <img src="https://images.unsplash.com/photo-1544148103-0773bf10d330?auto=format&fit=crop&w=400&q=80" class="rounded-sm h-36 w-full object-cover" alt="Clientes disfrutando en La Posada">
+      <img src="https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=400&q=80" class="rounded-sm h-36 w-full object-cover" alt="Clientes disfrutando en La Posada">
+      <img src="https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=400&q=80" class="rounded-sm h-36 w-full object-cover" alt="Clientes disfrutando en La Posada">
+    </div>
+  </div>
+</section>
+
+<!-- ============ GALERÍA & PROMOCIONES ============ -->
+<section id="galeria" class="py-24 md:py-32 bg-vinodeep text-beige overflow-hidden">
+  <div class="max-w-7xl mx-auto px-6 lg:px-10">
+    <div class="reveal text-center max-w-2xl mx-auto mb-16">
+      <p class="text-doradolight uppercase tracking-[0.3em] text-xs font-bold mb-4">Galería</p>
+      <h2 class="font-display text-4xl md:text-5xl">Un vistazo a La Posada</h2>
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16">
+      <div class="reveal-scale col-span-2 row-span-2 overflow-hidden rounded-sm h-full">
+        <img data-parallax src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=1000&q=80" class="parallax-img w-full h-full object-cover min-h-[300px]" alt="Interior de La Posada">
+      </div>
+      <div class="reveal-scale overflow-hidden rounded-sm" style="transition-delay:.1s">
+        <img data-parallax src="https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=600&q=80" class="parallax-img w-full h-40 md:h-full object-cover" alt="Vinos">
+      </div>
+      <div class="reveal-scale overflow-hidden rounded-sm" style="transition-delay:.2s">
+        <img data-parallax src="https://images.unsplash.com/photo-1544148103-0773bf10d330?auto=format&fit=crop&w=600&q=80" class="parallax-img w-full h-40 md:h-full object-cover" alt="Plato destacado">
+      </div>
+      <div class="reveal-scale overflow-hidden rounded-sm" style="transition-delay:.15s">
+        <img data-parallax src="https://images.unsplash.com/photo-1551183053-bf91a1d81141?auto=format&fit=crop&w=600&q=80" class="parallax-img w-full h-40 object-cover" alt="Pastas caseras">
+      </div>
+      <div class="reveal-scale overflow-hidden rounded-sm" style="transition-delay:.25s">
+        <img data-parallax src="https://images.unsplash.com/photo-1470124182917-cc6e71b22ecc?auto=format&fit=crop&w=600&q=80" class="parallax-img w-full h-40 object-cover" alt="Postres">
+      </div>
+    </div>
+
+    <div class="reveal bg-gradient-to-r from-dorado to-doradolight rounded-sm p-10 md:p-14 grid md:grid-cols-2 gap-8 items-center text-ink">
+      <div>
+        <p class="uppercase tracking-[0.25em] text-xs font-bold mb-3">Promo de la semana</p>
+        <h3 class="font-display text-3xl md:text-4xl mb-4">Menú ejecutivo de mediodía</h3>
+        <p class="text-ink/75 mb-6">Entrada, plato principal y postre. De martes a viernes al mediodía.</p>
+        <a href="https://wa.me/5492990000001" target="_blank" rel="noopener" class="btn-primary inline-flex px-6 py-3 rounded-full text-sm font-semibold">Quiero la promo</a>
+      </div>
+      <div class="flex justify-center md:justify-end">
+        <div class="font-display text-7xl md:text-8xl italic">$6.500</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ REDES SOCIALES ============ -->
+<section class="py-24 md:py-32 px-6 lg:px-10 bg-beigelight">
+  <div class="max-w-7xl mx-auto">
+    <div class="reveal text-center max-w-2xl mx-auto mb-14">
+      <p class="text-vino uppercase tracking-[0.3em] text-xs font-bold mb-4">Comunidad digital</p>
+      <h2 class="font-display text-4xl md:text-5xl text-ink">Seguinos en redes</h2>
+      <p class="text-ink/65 text-lg mt-4">Platos del día, promos y eventos especiales de La Posada.</p>
+    </div>
+
+    <div class="reveal grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+      <a href="#" class="group relative rounded-sm overflow-hidden"><img src="https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=400&q=80" class="w-full h-40 object-cover group-hover:scale-110 transition-transform duration-700" alt="Instagram La Posada"><span class="absolute inset-0 bg-vinodeep/0 group-hover:bg-vinodeep/50 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F1E4CE" stroke-width="1.6"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></span></a>
+      <a href="#" class="group relative rounded-sm overflow-hidden"><img src="https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=400&q=80" class="w-full h-40 object-cover group-hover:scale-110 transition-transform duration-700" alt="Instagram La Posada"><span class="absolute inset-0 bg-vinodeep/0 group-hover:bg-vinodeep/50 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F1E4CE" stroke-width="1.6"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></span></a>
+      <a href="#" class="group relative rounded-sm overflow-hidden"><img src="https://images.unsplash.com/photo-1551183053-bf91a1d81141?auto=format&fit=crop&w=400&q=80" class="w-full h-40 object-cover group-hover:scale-110 transition-transform duration-700" alt="Instagram La Posada"><span class="absolute inset-0 bg-vinodeep/0 group-hover:bg-vinodeep/50 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F1E4CE" stroke-width="1.6"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></span></a>
+      <a href="#" class="group relative rounded-sm overflow-hidden"><img src="https://images.unsplash.com/photo-1470124182917-cc6e71b22ecc?auto=format&fit=crop&w=400&q=80" class="w-full h-40 object-cover group-hover:scale-110 transition-transform duration-700" alt="Instagram La Posada"><span class="absolute inset-0 bg-vinodeep/0 group-hover:bg-vinodeep/50 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F1E4CE" stroke-width="1.6"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></span></a>
+    </div>
+
+    <div class="reveal flex justify-center gap-4">
+      <a href="#" target="_blank" rel="noopener" class="border border-vino text-vino hover:bg-vino hover:text-beige transition-all duration-400 px-6 py-3 rounded-full text-sm font-semibold inline-flex items-center gap-2">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 21v-8h2.7l.4-3.2h-3.1V7.7c0-.9.3-1.5 1.6-1.5h1.6V3.3C15.9 3.2 15 3.1 14 3.1c-2.4 0-4 1.4-4 4v2.7H7.3V13H10v8h3.5Z"/></svg>
+        Seguir en Facebook
+      </a>
+      <a href="#" target="_blank" rel="noopener" class="btn-primary px-6 py-3 rounded-full text-sm font-semibold inline-flex items-center gap-2">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c2.7 0 3.1 0 4.1.06 1 .05 1.7.2 2.3.45.6.24 1.1.55 1.6 1.05.5.5.8 1 1.05 1.6.25.6.4 1.3.45 2.3.06 1 .06 1.4.06 4.1s0 3.1-.06 4.1c-.05 1-.2 1.7-.45 2.3-.24.6-.55 1.1-1.05 1.6-.5.5-1 .8-1.6 1.05-.6.25-1.3.4-2.3.45-1 .06-1.4.06-4.1.06s-3.1 0-4.1-.06c-1-.05-1.7-.2-2.3-.45-.6-.24-1.1-.55-1.6-1.05-.5-.5-.8-1-1.05-1.6-.25-.6-.4-1.3-.45-2.3C2 15.1 2 14.7 2 12s0-3.1.06-4.1c.05-1 .2-1.7.45-2.3.24-.6.55-1.1 1.05-1.6.5-.5 1-.8 1.6-1.05.6-.25 1.3-.4 2.3-.45C8.9 2 9.3 2 12 2Zm0 2.7c-2.6 0-3 0-4 .06-.9.04-1.4.18-1.7.3-.4.16-.7.36-1 .66-.3.3-.5.6-.66 1-.12.3-.26.8-.3 1.7-.06 1-.06 1.4-.06 4s0 3 .06 4c.04.9.18 1.4.3 1.7.16.4.36.7.66 1 .3.3.6.5 1 .66.3.12.8.26 1.7.3 1 .06 1.4.06 4 .06s3 0 4-.06c.9-.04 1.4-.18 1.7-.3.4-.16.7-.36 1-.66.3-.3.5-.6.66-1 .12-.3.26-.8.3-1.7.06-1 .06-1.4.06-4s0-3-.06-4c-.04-.9-.18-1.4-.3-1.7-.16-.4-.36-.7-.66-1-.3-.3-.6-.5-1-.66-.3-.12-.8-.26-1.7-.3-1-.06-1.4-.06-4-.06Zm0 3.8a5.5 5.5 0 1 1 0 11 5.5 5.5 0 0 1 0-11Zm0 2.7a2.8 2.8 0 1 0 0 5.6 2.8 2.8 0 0 0 0-5.6Zm5.7-3a1.3 1.3 0 1 1-2.6 0 1.3 1.3 0 0 1 2.6 0Z"/></svg>
+        Seguir en Instagram
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="bg-ink text-beige/70 pt-20 pb-10 px-6 lg:px-10">
+  <div class="max-w-7xl mx-auto grid md:grid-cols-4 gap-12 mb-14">
+    <div>
+      <div class="flex items-center gap-3 mb-5">
+        <svg width="34" height="34" viewBox="0 0 40 40" fill="none">
+          <circle cx="20" cy="20" r="18.5" stroke="#D9B15C" stroke-width="1.2"/>
+          <text x="20" y="26" text-anchor="middle" font-family="Playfair Display, serif" font-size="13" fill="#F1E4CE" font-style="italic">LP</text>
+        </svg>
+        <span class="font-display text-2xl text-beige">La Posada</span>
+      </div>
+      <p class="text-sm leading-relaxed">Restaurante bodegón en Neuquén. Sabores que te acompañan siempre.</p>
+    </div>
+    <div>
+      <h4 class="text-beige font-semibold mb-4 text-sm uppercase tracking-wider">Navegación</h4>
+      <ul class="space-y-2.5 text-sm">
+        <li><a href="#nosotros" class="hover:text-doradolight transition-colors">Nosotros</a></li>
+        <li><a href="#menu" class="hover:text-doradolight transition-colors">Menú</a></li>
+        <li><a href="#reservas" class="hover:text-doradolight transition-colors">Reservas</a></li>
+        <li><a href="#galeria" class="hover:text-doradolight transition-colors">Galería</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4 class="text-beige font-semibold mb-4 text-sm uppercase tracking-wider">Contacto</h4>
+      <ul class="space-y-2.5 text-sm">
+        <li>Las Madreselvas 84, Neuquén</li>
+        <li>+54 9 299 000-0001</li>
+        <li>hola@laposadaneuquen.com.ar</li>
+      </ul>
+    </div>
+    <div>
+      <h4 class="text-beige font-semibold mb-4 text-sm uppercase tracking-wider">Horarios</h4>
+      <ul class="space-y-2.5 text-sm">
+        <li>Mar a dom · 12:00 – 16:00</li>
+        <li>Mar a dom · 20:00 – 00:00</li>
+      </ul>
+    </div>
+  </div>
+  <div class="max-w-7xl mx-auto border-t border-dorado/15 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-beige/45">
+    <p>© 2026 La Posada — Restaurante & Bodegón. Todos los derechos reservados.</p>
+    <p>Neuquén, Argentina</p>
+  </div>
+</footer>
+
+<a href="https://wa.me/5492990000001" target="_blank" rel="noopener" aria-label="Escribinos por WhatsApp"
+   class="fixed bottom-6 left-6 z-40 btn-whatsapp w-14 h-14 rounded-full flex items-center justify-center shadow-2xl shadow-ink/30">
+  <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.39 1.26 4.81L2 22l5.42-1.35a9.9 9.9 0 0 0 4.62 1.14h.01c5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2Zm5.8 14.13c-.24.68-1.4 1.3-1.93 1.36-.5.06-1.06.28-3.54-.74-2.98-1.23-4.89-4.24-5.04-4.44-.15-.2-1.2-1.6-1.2-3.05 0-1.45.76-2.16 1.03-2.46.26-.3.58-.37.77-.37.2 0 .38 0 .55.01.18.01.42-.07.65.5.24.58.82 2 .89 2.15.07.15.12.32.02.52-.1.2-.15.32-.3.5-.15.17-.31.38-.44.51-.15.15-.3.31-.13.6.17.3.76 1.26 1.64 2.04 1.13 1 2.08 1.32 2.38 1.47.3.15.48.13.65-.08.18-.2.75-.87.95-1.17.2-.3.4-.25.66-.15.27.1 1.7.8 1.99.95.3.15.5.22.57.35.07.13.07.75-.17 1.43Z"/></svg>
+</a>
+
+<script>
+(function(){
+  const nav = document.getElementById('siteNav');
+  const menuToggle = document.getElementById('menuToggle');
+  const mobileMenu = document.getElementById('mobileMenu');
+  menuToggle.addEventListener('click', ()=> mobileMenu.classList.toggle('hidden'));
+  mobileMenu.querySelectorAll('a').forEach(a=> a.addEventListener('click', ()=> mobileMenu.classList.add('hidden')));
+
+  const revealEls = document.querySelectorAll('.reveal, .reveal-scale');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold:.15 });
+  revealEls.forEach(el=> io.observe(el));
+
+  const heroBg = document.getElementById('heroBg');
+  const parallaxImgs = document.querySelectorAll('[data-parallax]');
+  let ticking = false;
+  function onScroll(){
+    const y = window.scrollY;
+    if(heroBg){ heroBg.style.transform = `translateY(${y*0.25}px) scale(1.1)`; }
+    parallaxImgs.forEach(img=>{
+      const rect = img.getBoundingClientRect();
+      const center = rect.top + rect.height/2 - window.innerHeight/2;
+      img.style.transform = `translateY(${center * -0.06}px) scale(1.12)`;
+    });
+    ticking = false;
+  }
+  window.addEventListener('scroll', ()=>{ if(!ticking){ requestAnimationFrame(onScroll); ticking = true; } });
+  onScroll();
+
+  window.addEventListener('scroll', ()=>{
+    if(window.scrollY > 40){ nav.classList.add('shadow-md'); } else { nav.classList.remove('shadow-md'); }
+  });
+
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  const panels = document.querySelectorAll('.tab-panel');
+  tabBtns.forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      tabBtns.forEach(b=> b.classList.remove('active'));
+      btn.classList.add('active');
+      const target = btn.dataset.tab;
+      panels.forEach(p=>{ if(p.dataset.panel === target){ p.classList.remove('hidden'); } else { p.classList.add('hidden'); } });
+    });
+  });
+
+  let cart = [];
+  const cartPill = document.getElementById('cartPill');
+  const cartCount = document.getElementById('cartCount');
+  const cartTotal = document.getElementById('cartTotal');
+
+  function updateCart(){
+    const count = cart.length;
+    const total = cart.reduce((s,i)=> s + i.price, 0);
+    cartCount.textContent = count;
+    cartTotal.textContent = total.toLocaleString('es-AR');
+    if(count > 0){ cartPill.classList.remove('opacity-0','translate-y-6','scale-90','pointer-events-none'); }
+    else { cartPill.classList.add('opacity-0','translate-y-6','scale-90','pointer-events-none'); }
+  }
+
+  document.querySelectorAll('.add-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const card = btn.closest('.menu-card');
+      cart.push({ name: card.dataset.name, price: parseInt(card.dataset.price,10) });
+      updateCart();
+      const original = btn.textContent;
+      btn.textContent = '✓ Añadido';
+      setTimeout(()=> btn.textContent = original, 1200);
+    });
+  });
+
+  document.getElementById('cartBtn').addEventListener('click', ()=>{
+    if(cart.length === 0) return;
+    const lines = cart.map(i=> `• ${i.name} — $${i.price.toLocaleString('es-AR')}`).join('%0A');
+    const total = cart.reduce((s,i)=> s + i.price, 0);
+    const msg = `Hola La Posada! Quiero hacer este pedido:%0A${lines}%0A%0ATotal: $${total.toLocaleString('es-AR')}`;
+    window.open(`https://wa.me/5492990000001?text=${msg}`, '_blank');
+  });
+
+  const reserveForm = document.getElementById('reserveForm');
+  const fillBtn = reserveForm.querySelector('.fill-btn');
+  const reserveLabel = document.getElementById('reserveLabel');
+  reserveForm.addEventListener('submit', function(e){
+    e.preventDefault();
+    if(fillBtn.classList.contains('filled')) return;
+    fillBtn.classList.add('filled');
+    reserveLabel.textContent = 'Reserva confirmada ✓';
+    setTimeout(()=>{
+      window.open('https://wa.me/5492990000001?text=Hola%20La%20Posada!%20Quiero%20reservar%20una%20mesa.', '_blank');
+    }, 900);
+  });
+
+  const track = document.getElementById('testimonialInner');
+  const slides = track.children.length;
+  const dotsWrap = document.getElementById('testDots');
+  let current = 0;
+  for(let i=0;i<slides;i++){
+    const d = document.createElement('button');
+    d.className = 'w-2.5 h-2.5 rounded-full transition-colors ' + (i===0 ? 'bg-dorado' : 'bg-vino/20');
+    d.addEventListener('click', ()=> goTo(i));
+    dotsWrap.appendChild(d);
+  }
+  function goTo(i){
+    current = (i + slides) % slides;
+    track.style.transform = `translateX(-${current*100}%)`;
+    [...dotsWrap.children].forEach((d,idx)=>{
+      d.className = 'w-2.5 h-2.5 rounded-full transition-colors ' + (idx===current ? 'bg-dorado' : 'bg-vino/20');
+    });
+  }
+  document.getElementById('prevTest').addEventListener('click', ()=> goTo(current-1));
+  document.getElementById('nextTest').addEventListener('click', ()=> goTo(current+1));
+  let autoTest = setInterval(()=> goTo(current+1), 6000);
+  document.getElementById('testimonialTrack').addEventListener('mouseenter', ()=> clearInterval(autoTest));
+
+  const starGroups = document.querySelectorAll('[data-stars]');
+  const starIo = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        [...entry.target.children].forEach((star,i)=>{ star.style.animationDelay = (i*0.08)+'s'; star.classList.add('star-anim'); });
+        starIo.unobserve(entry.target);
+      }
+    });
+  }, {threshold:.5});
+  starGroups.forEach(g=> starIo.observe(g));
+})();
+</script>
+</body>
+</html>

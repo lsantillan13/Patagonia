@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Amora — Cafetería & Pastelería Boutique en Neuquén</title>
+<meta name="description" content="Amora Cafetería & Pastelería: café de especialidad y repostería artesanal en Neuquén. Sabor y detalle en cada momento.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          espresso: '#2B1810',
+          ink: '#241611',
+          crema: '#F6EEE1',
+          cremalight: '#FBF6ED',
+          blush: '#D9A6A0',
+          blushdeep: '#C08782',
+          caramel: '#B9803F',
+          caramellight: '#D6A968',
+          moss: '#6B7A57',
+        },
+        fontFamily: {
+          display: ['"Fraunces"', 'serif'],
+          body: ['"Manrope"', 'sans-serif'],
+        },
+      }
+    }
+  }
+</script>
+
+<style>
+  :root{
+    --espresso:#2B1810;
+    --ink:#241611;
+    --crema:#F6EEE1;
+    --blush:#D9A6A0;
+    --caramel:#B9803F;
+  }
+  *{ scroll-behavior: smooth; }
+  body{
+    background:var(--crema);
+    color:var(--ink);
+    font-family:'Manrope', sans-serif;
+    overflow-x:hidden;
+  }
+  h1,h2,h3,h4, .font-display{ font-family:'Fraunces', serif; }
+
+  /* ---------- Grain texture overlay ---------- */
+  .grain{
+    position:fixed; inset:0; pointer-events:none; z-index:60; opacity:.035; mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ---------- Reveal on scroll ---------- */
+  .reveal{ opacity:0; transform:translateY(28px); transition:opacity .9s cubic-bezier(.22,1,.36,1), transform .9s cubic-bezier(.22,1,.36,1); }
+  .reveal.in{ opacity:1; transform:translateY(0); }
+  .reveal-scale{ opacity:0; transform:scale(.94); transition:opacity 1s ease, transform 1s cubic-bezier(.22,1,.36,1); }
+  .reveal-scale.in{ opacity:1; transform:scale(1); }
+  .stagger.in > *{ transition-delay: calc(var(--i,0) * 90ms); }
+
+  /* ---------- Nav ---------- */
+  .nav-glass{
+    backdrop-filter: blur(14px);
+    background: rgba(246,238,225,0.72);
+    border-bottom: 1px solid rgba(43,24,16,0.06);
+  }
+  .nav-link{ position:relative; }
+  .nav-link::after{
+    content:''; position:absolute; left:0; bottom:-4px; width:0; height:1.5px; background:var(--caramel);
+    transition: width .35s ease;
+  }
+  .nav-link:hover::after{ width:100%; }
+
+  /* ---------- Buttons ---------- */
+  .btn-primary{
+    background: var(--espresso); color: var(--crema);
+    transition: all .4s cubic-bezier(.22,1,.36,1);
+    box-shadow: 0 1px 0 rgba(0,0,0,0.05);
+  }
+  .btn-primary:hover{ background: var(--caramel); transform: translateY(-2px); box-shadow: 0 12px 24px -8px rgba(185,128,63,.55); }
+  .btn-outline{
+    border:1.5px solid var(--espresso); color: var(--espresso);
+    transition: all .4s cubic-bezier(.22,1,.36,1);
+  }
+  .btn-outline:hover{ background: var(--espresso); color: var(--crema); transform: translateY(-2px); }
+  .btn-whatsapp{
+    background:#2f5c3d; color:#F6EEE1; transition:all .35s ease;
+  }
+  .btn-whatsapp:hover{ background:#264c32; transform: translateY(-2px); box-shadow:0 10px 20px -8px rgba(38,76,50,.6);}
+
+  /* ---------- Hero parallax ---------- */
+  .hero-bg{
+    background-image: linear-gradient(180deg, rgba(36,22,17,.35), rgba(36,22,17,.72) 88%), url('https://images.unsplash.com/photo-1509785307050-d4066910ec1e?auto=format&fit=crop&w=1800&q=80');
+    background-size: cover; background-position: center;
+    will-change: transform;
+  }
+  .steam-line{
+    stroke-dasharray: 6 10; stroke-linecap:round;
+    animation: steamRise 6s linear infinite;
+  }
+  @keyframes steamRise{ to{ stroke-dashoffset: -160; } }
+
+  .bean{ position:absolute; opacity:.9; will-change: transform; }
+  @keyframes floatSlow{ 0%,100%{ transform: translateY(0) rotate(0deg);} 50%{ transform: translateY(-14px) rotate(8deg);} }
+  .float-slow{ animation: floatSlow 7s ease-in-out infinite; }
+
+  .scroll-cue{
+    width:22px; height:36px; border:1.5px solid rgba(246,238,225,.75); border-radius:14px;
+  }
+  .scroll-cue::before{
+    content:''; display:block; width:3px; height:7px; border-radius:2px; background:#F6EEE1;
+    margin: 6px auto; animation: cueMove 1.8s ease-in-out infinite;
+  }
+  @keyframes cueMove{ 0%{ transform:translateY(0); opacity:1;} 70%{ transform:translateY(10px); opacity:0;} 100%{opacity:0;} }
+
+  /* ---------- Ticker ---------- */
+  .ticker-track{ display:flex; width: max-content; animation: ticker 32s linear infinite; }
+  @keyframes ticker{ from{ transform: translateX(0);} to{ transform: translateX(-50%);} }
+
+  /* ---------- Menu cards ---------- */
+  .menu-card{
+    background: var(--cremalight, #FBF6ED);
+    border:1px solid rgba(43,24,16,.08);
+    transition: transform .5s cubic-bezier(.22,1,.36,1), box-shadow .5s ease, border-color .5s ease;
+  }
+  .menu-card:hover{
+    transform: translateY(-8px);
+    box-shadow: 0 26px 40px -20px rgba(43,24,16,.35);
+    border-color: rgba(185,128,63,.4);
+  }
+  .menu-card .ingredients{
+    max-height:0; overflow:hidden; opacity:0;
+    transition: max-height .5s ease, opacity .4s ease, margin .4s ease;
+  }
+  .menu-card:hover .ingredients{ max-height:80px; opacity:1; margin-top:.5rem; }
+  .menu-card .img-wrap img{ transition: transform .7s cubic-bezier(.22,1,.36,1), filter .5s ease; }
+  .menu-card:hover .img-wrap img{ transform: scale(1.08); }
+
+  .tab-btn{ position:relative; transition: color .3s ease; }
+  .tab-btn.active{ color: var(--espresso); }
+  .tab-btn .dot{ width:6px; height:6px; border-radius:50%; background:var(--caramel); opacity:0; transition:opacity .3s ease; }
+  .tab-btn.active .dot{ opacity:1; }
+
+  /* ---------- Coffee fill button ---------- */
+  .fill-btn{ position:relative; overflow:hidden; isolation:isolate; }
+  .fill-btn .fill{
+    position:absolute; inset:0; background: var(--caramel); transform: translateX(-101%);
+    transition: transform 1.1s cubic-bezier(.65,0,.35,1); z-index:-1;
+  }
+  .fill-btn.filled .fill{ transform: translateX(0); }
+
+  /* ---------- Cards / pillars ---------- */
+  .pillar-card{
+    transition: transform .5s cubic-bezier(.22,1,.36,1), box-shadow .5s ease;
+  }
+  .pillar-card:hover{ transform: translateY(-6px); box-shadow: 0 22px 40px -22px rgba(43,24,16,.3); }
+
+  /* ---------- Gallery parallax ---------- */
+  .parallax-img{ will-change: transform; }
+
+  /* ---------- Stars ---------- */
+  @keyframes starPop{ 0%{ transform: scale(0) rotate(-20deg); opacity:0;} 60%{ transform: scale(1.2) rotate(6deg); opacity:1;} 100%{ transform: scale(1) rotate(0deg);} }
+  .star-anim{ animation: starPop .5s cubic-bezier(.34,1.56,.64,1) both; }
+
+  /* ---------- Marquee promo ---------- */
+  .promo-fade{ animation: fadeInPromo 1.4s ease both; }
+  @keyframes fadeInPromo{ from{ opacity:0; transform: translateY(16px);} to{opacity:1; transform:translateY(0);} }
+
+  /* ---------- Underline swipe ---------- */
+  .link-swipe{ background-image: linear-gradient(var(--caramel), var(--caramel)); background-repeat:no-repeat; background-size: 0% 1.5px; background-position: 0 100%; transition: background-size .4s ease; }
+  .link-swipe:hover{ background-size: 100% 1.5px; }
+
+  /* ---------- Cart pill ---------- */
+  #cartPill{ transition: transform .4s cubic-bezier(.34,1.56,.64,1), opacity .3s ease; }
+
+  /* scrollbar */
+  ::-webkit-scrollbar{ width:10px; }
+  ::-webkit-scrollbar-track{ background:var(--crema); }
+  ::-webkit-scrollbar-thumb{ background:var(--blushdeep,#C08782); border-radius:10px; }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration: .001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; scroll-behavior:auto !important; }
+  }
+
+  :focus-visible{ outline: 2.5px solid var(--caramel); outline-offset:3px; }
+</style>
+</head>
+<body class="antialiased">
+<div class="grain"></div>
+
+<!-- ============ NAV ============ -->
+<header id="siteNav" class="fixed top-0 inset-x-0 z-50 transition-colors duration-500">
+  <nav class="nav-glass">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10 flex items-center justify-between h-20">
+      <a href="#inicio" class="flex items-center gap-3 group">
+        <svg width="38" height="38" viewBox="0 0 40 40" fill="none">
+          <circle cx="20" cy="20" r="19" stroke="#B9803F" stroke-width="1.2"/>
+          <path d="M13 26c0-7 3.5-12 7-12s7 5 7 12" stroke="#2B1810" stroke-width="1.4" stroke-linecap="round"/>
+          <path d="M13.5 26h13" stroke="#2B1810" stroke-width="1.4" stroke-linecap="round"/>
+          <path d="M20 14c1.5-2 .5-3.5 0-4.5" stroke="#B9803F" stroke-width="1.2" stroke-linecap="round"/>
+        </svg>
+        <span class="font-display text-2xl tracking-wide text-espresso">Amora</span>
+      </a>
+
+      <div class="hidden lg:flex items-center gap-9 text-sm font-medium text-espresso/85">
+        <a href="#nosotros" class="nav-link">Nosotros</a>
+        <a href="#menu" class="nav-link">Menú</a>
+        <a href="#reservas" class="nav-link">Reservas</a>
+        <a href="#ubicacion" class="nav-link">Ubicación</a>
+        <a href="#resenas" class="nav-link">Reseñas</a>
+        <a href="#galeria" class="nav-link">Galería</a>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <a href="https://wa.me/5492990000000" target="_blank" rel="noopener" class="hidden sm:inline-flex btn-whatsapp text-sm font-semibold px-5 py-2.5 rounded-full items-center gap-2">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.39 1.26 4.81L2 22l5.42-1.35a9.9 9.9 0 0 0 4.62 1.14h.01c5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2Zm5.8 14.13c-.24.68-1.4 1.3-1.93 1.36-.5.06-1.06.28-3.54-.74-2.98-1.23-4.89-4.24-5.04-4.44-.15-.2-1.2-1.6-1.2-3.05 0-1.45.76-2.16 1.03-2.46.26-.3.58-.37.77-.37.2 0 .38 0 .55.01.18.01.42-.07.65.5.24.58.82 2 .89 2.15.07.15.12.32.02.52-.1.2-.15.32-.3.5-.15.17-.31.38-.44.51-.15.15-.3.31-.13.6.17.3.76 1.26 1.64 2.04 1.13 1 2.08 1.32 2.38 1.47.3.15.48.13.65-.08.18-.2.75-.87.95-1.17.2-.3.4-.25.66-.15.27.1 1.7.8 1.99.95.3.15.5.22.57.35.07.13.07.75-.17 1.43Z"/></svg>
+          WhatsApp
+        </a>
+        <button id="menuToggle" class="lg:hidden w-10 h-10 flex flex-col items-center justify-center gap-1.5" aria-label="Abrir menú">
+          <span class="w-6 h-[1.5px] bg-espresso"></span>
+          <span class="w-6 h-[1.5px] bg-espresso"></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div id="mobileMenu" class="hidden lg:hidden bg-crema border-b border-espresso/10 px-6 py-6 flex flex-col gap-5 text-espresso font-medium">
+    <a href="#nosotros">Nosotros</a>
+    <a href="#menu">Menú</a>
+    <a href="#reservas">Reservas</a>
+    <a href="#ubicacion">Ubicación</a>
+    <a href="#resenas">Reseñas</a>
+    <a href="#galeria">Galería</a>
+    <a href="https://wa.me/5492990000000" class="btn-whatsapp text-sm font-semibold px-5 py-3 rounded-full text-center">Escribir por WhatsApp</a>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<section id="inicio" class="relative h-[100svh] min-h-[640px] flex items-end overflow-hidden">
+  <div id="heroBg" class="hero-bg absolute inset-0 scale-110"></div>
+
+  <!-- floating beans -->
+  <div class="bean float-slow" style="top:18%; left:8%; animation-delay:0s;">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><ellipse cx="12" cy="12" rx="9" ry="11" fill="#3C2415" opacity=".55"/><path d="M12 1c-3 5-3 17 0 22" stroke="#F6EEE1" stroke-width="1" opacity=".5"/></svg>
+  </div>
+  <div class="bean float-slow" style="top:32%; right:12%; animation-delay:1.2s;">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><ellipse cx="12" cy="12" rx="9" ry="11" fill="#3C2415" opacity=".45"/><path d="M12 1c-3 5-3 17 0 22" stroke="#F6EEE1" stroke-width="1" opacity=".5"/></svg>
+  </div>
+  <div class="bean float-slow" style="top:60%; right:6%; animation-delay:2.4s;">
+    <svg width="30" height="30" viewBox="0 0 24 24" fill="none"><ellipse cx="12" cy="12" rx="9" ry="11" fill="#3C2415" opacity=".4"/><path d="M12 1c-3 5-3 17 0 22" stroke="#F6EEE1" stroke-width="1" opacity=".5"/></svg>
+  </div>
+
+  <!-- steam svg accent -->
+  <svg class="absolute right-[8%] top-[14%] hidden md:block" width="70" height="140" viewBox="0 0 70 140" fill="none">
+    <path class="steam-line" d="M20 130C10 110 40 95 30 75C20 55 45 40 35 20" stroke="#F6EEE1" stroke-width="1.4" opacity=".55"/>
+    <path class="steam-line" d="M45 130C35 112 60 98 50 78C40 58 60 42 52 22" stroke="#F6EEE1" stroke-width="1.2" opacity=".4" style="animation-delay:1s"/>
+  </svg>
+
+  <div class="relative z-10 max-w-7xl mx-auto px-6 lg:px-10 pb-20 md:pb-24 w-full">
+    <p class="promo-fade text-blush uppercase tracking-[0.3em] text-xs md:text-sm font-semibold mb-5" style="animation-delay:.1s">Cafetería boutique · Neuquén</p>
+    <h1 class="promo-fade font-display text-6xl sm:text-7xl md:text-8xl leading-[0.95] text-crema mb-6" style="animation-delay:.25s">
+      Amora
+    </h1>
+    <p class="promo-fade font-display italic text-2xl md:text-3xl text-crema/90 max-w-xl mb-10" style="animation-delay:.4s">
+      Sabor y detalle en cada momento.
+    </p>
+    <div class="promo-fade flex flex-wrap gap-4" style="animation-delay:.55s">
+      <a href="#menu" class="btn-primary px-7 py-3.5 rounded-full text-sm font-semibold tracking-wide">Ver menú</a>
+      <a href="#reservas" class="border border-crema/60 text-crema hover:bg-crema hover:text-espresso transition-all duration-400 px-7 py-3.5 rounded-full text-sm font-semibold tracking-wide">Reservar mesa</a>
+      <a href="https://wa.me/5492990000000" target="_blank" rel="noopener" class="btn-whatsapp px-7 py-3.5 rounded-full text-sm font-semibold tracking-wide inline-flex items-center gap-2">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.39 1.26 4.81L2 22l5.42-1.35a9.9 9.9 0 0 0 4.62 1.14h.01c5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2Z"/></svg>
+        WhatsApp directo
+      </a>
+    </div>
+  </div>
+
+  <div class="absolute bottom-7 left-1/2 -translate-x-1/2 z-10">
+    <div class="scroll-cue"></div>
+  </div>
+</section>
+
+<!-- ============ TICKER ============ -->
+<div class="bg-espresso text-crema py-3 overflow-hidden border-y border-crema/10">
+  <div class="ticker-track font-display italic text-sm md:text-base tracking-wide">
+    <div class="flex items-center gap-6 pr-6">
+      <span>Café de especialidad</span><span class="text-caramellight">✦</span>
+      <span>Pastelería artesanal</span><span class="text-caramellight">✦</span>
+      <span>Brunch de fin de semana</span><span class="text-caramellight">✦</span>
+      <span>Hecho a mano, todos los días</span><span class="text-caramellight">✦</span>
+    </div>
+    <div class="flex items-center gap-6 pr-6" aria-hidden="true">
+      <span>Café de especialidad</span><span class="text-caramellight">✦</span>
+      <span>Pastelería artesanal</span><span class="text-caramellight">✦</span>
+      <span>Brunch de fin de semana</span><span class="text-caramellight">✦</span>
+      <span>Hecho a mano, todos los días</span><span class="text-caramellight">✦</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============ QUIÉNES SOMOS ============ -->
+<section id="nosotros" class="py-24 md:py-32 px-6 lg:px-10 bg-crema relative overflow-hidden">
+  <svg class="absolute -left-10 top-10 opacity-[0.06] pointer-events-none" width="300" height="300" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#2B1810" stroke-width="1"/></svg>
+
+  <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
+    <div class="reveal order-2 lg:order-1">
+      <p class="text-caramel uppercase tracking-[0.3em] text-xs font-bold mb-4">Quiénes somos</p>
+      <h2 class="font-display text-4xl md:text-5xl text-espresso mb-7 leading-tight">Un espacio para<br><span class="italic text-blushdeep">disfrutar</span> sabores auténticos.</h2>
+      <p class="text-espresso/75 leading-relaxed text-lg mb-5">
+        Amora nació de una idea simple: que cada taza y cada bocado merecen tiempo. Somos una cafetería boutique en el corazón de Neuquén, donde el café de especialidad se encuentra con la repostería artesanal, hecha a mano cada mañana.
+      </p>
+      <p class="text-espresso/75 leading-relaxed text-lg mb-9">
+        No apuramos nada. Elegimos los granos, probamos las recetas y cuidamos cada detalle de la mesa para que quien cruza la puerta sienta que llegó a un lugar propio.
+      </p>
+      <a href="#menu" class="link-swipe font-semibold text-espresso inline-flex items-center gap-2">
+        Conocer el menú
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+    </div>
+
+    <div class="order-1 lg:order-2 reveal-scale">
+      <div class="relative">
+        <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=1000&q=80" alt="Barista preparando café de especialidad en Amora" class="rounded-[2rem] w-full h-[460px] object-cover shadow-2xl shadow-espresso/20">
+        <div class="absolute -bottom-8 -left-8 bg-blush/95 rounded-2xl p-6 max-w-[220px] shadow-xl hidden sm:block">
+          <p class="font-display italic text-espresso text-lg leading-snug">"Detalle, calidez y experiencia gourmet, en cada visita."</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filosofía -->
+  <div class="max-w-7xl mx-auto mt-28 grid sm:grid-cols-3 gap-6">
+    <div class="pillar-card reveal bg-cremalight border border-espresso/8 rounded-2xl p-8" style="transition-delay:.05s">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#B9803F" stroke-width="1.4" class="mb-5"><path d="M4 21v-7a8 8 0 0 1 16 0v7"/><path d="M2 21h20"/><circle cx="12" cy="9" r="3"/></svg>
+      <h3 class="font-display text-2xl text-espresso mb-2">Detalle</h3>
+      <p class="text-espresso/70 leading-relaxed">Cada plato se piensa como si fuera para un invitado en casa. Nada sale sin revisión, nada se sirve apurado.</p>
+    </div>
+    <div class="pillar-card reveal bg-cremalight border border-espresso/8 rounded-2xl p-8" style="transition-delay:.15s">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#B9803F" stroke-width="1.4" class="mb-5"><path d="M12 21s-7-4.6-9.5-9C.5 8 3 4 7 4c2 0 3.7 1.2 5 3 1.3-1.8 3-3 5-3 4 0 6.5 4 4.5 8-2.5 4.4-9.5 9-9.5 9Z"/></svg>
+      <h3 class="font-display text-2xl text-espresso mb-2">Calidez</h3>
+      <p class="text-espresso/70 leading-relaxed">Un espacio boutique pensado para quedarse: luz suave, madera cálida y una mesa siempre lista para vos.</p>
+    </div>
+    <div class="pillar-card reveal bg-cremalight border border-espresso/8 rounded-2xl p-8" style="transition-delay:.25s">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#B9803F" stroke-width="1.4" class="mb-5"><path d="M8 21h8M12 17v4M6 3h12l-1 8a5 5 0 0 1-10 0L6 3Z"/><path d="M6 6H4a2 2 0 0 0 0 4h2M18 6h2a2 2 0 0 1 0 4h-2"/></svg>
+      <h3 class="font-display text-2xl text-espresso mb-2">Experiencia gourmet</h3>
+      <p class="text-espresso/70 leading-relaxed">Café de especialidad, técnicas de pastelería francesa y producto de estación, sin perder la calidez de lo casero.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MENÚ DIGITAL ============ -->
+<section id="menu" class="py-24 md:py-32 px-6 lg:px-10 bg-espresso text-crema relative">
+  <div class="max-w-7xl mx-auto">
+    <div class="reveal text-center max-w-2xl mx-auto mb-14">
+      <p class="text-caramellight uppercase tracking-[0.3em] text-xs font-bold mb-4">Menú digital</p>
+      <h2 class="font-display text-4xl md:text-5xl mb-5">Elegí, mirá y pedí</h2>
+      <p class="text-crema/70 text-lg">Pasá el mouse sobre cada producto para ver sus ingredientes, o tocalo si estás desde el celular. Armá tu pedido y confirmalo por WhatsApp en un toque.</p>
+    </div>
+
+    <!-- tabs -->
+    <div class="reveal flex justify-center gap-3 md:gap-6 mb-14 flex-wrap">
+      <button data-tab="cafeteria" class="tab-btn active flex items-center gap-2 px-5 py-2.5 rounded-full border border-crema/20 text-crema/70 font-semibold text-sm">
+        <span class="dot"></span>☕ Cafetería
+      </button>
+      <button data-tab="pasteleria" class="tab-btn flex items-center gap-2 px-5 py-2.5 rounded-full border border-crema/20 text-crema/70 font-semibold text-sm">
+        <span class="dot"></span>🍰 Pastelería
+      </button>
+      <button data-tab="brunch" class="tab-btn flex items-center gap-2 px-5 py-2.5 rounded-full border border-crema/20 text-crema/70 font-semibold text-sm">
+        <span class="dot"></span>🥐 Desayunos & Brunch
+      </button>
+    </div>
+
+    <!-- CAFETERIA -->
+    <div class="tab-panel grid sm:grid-cols-2 lg:grid-cols-3 gap-6" data-panel="cafeteria">
+      <div class="menu-card rounded-2xl overflow-hidden" data-name="Espresso Amora" data-price="2200">
+        <div class="img-wrap h-44 overflow-hidden"><img src="https://images.unsplash.com/photo-1497935586351-b67a49e012bf?auto=format&fit=crop&w=700&q=80" class="w-full h-full object-cover" alt="Espresso Amora"></div>
+        <div class="p-5">
+          <div class="flex justify-between items-start gap-2"><h4 class="font-display text-xl text-espresso">Espresso Amora</h4><span class="text-caramel font-bold whitespace-nowrap">$2.200</span></div>
+          <p class="text-espresso/60 text-sm mt-1">Blend propio de origen sudamericano.</p>
+          <p class="ingredients text-espresso/55 text-xs">Café de especialidad, tueste medio, notas a cacao y frutos rojos.</p>
+          <button class="add-btn mt-4 text-xs font-bold uppercase tracking-wider text-caramel">+ Añadir al pedido</button>
+        </div>
+      </div>
+      <div class="menu-card rounded-2xl overflow-hidden" data-name="Capuccino clásico" data-price="2600">
+        <div class="img-wrap h-44 overflow-hidden"><img src="https://images.unsplash.com/photo-1534778101976-62847782c213?auto=format&fit=crop&w=700&q=80" class="w-full h-full object-cover" alt="Capuccino"></div>
+        <div class="p-5">
+          <div class="flex justify-between items-start gap-2"><h4 class="font-display text-xl text-espresso">Capuccino clásico</h4><span class="text-caramel font-bold whitespace-nowrap">$2.600</span></div>
+          <p class="text-espresso/60 text-sm mt-1">Espuma sedosa, arte latte a elección.</p>
+          <p class="ingredients text-espresso/55 text-xs">Espresso doble, leche vaporizada, canela opcional.</p>
+          <button class="add-btn mt-4 text-xs font-bold uppercase tracking-wider text-caramel">+ Añadir al pedido</button>
+        </div>
+      </div>
+      <div class="menu-card rounded-2xl overflow-hidden" data-name="Filtrado de especialidad" data-price="2900">
+        <div class="img-wrap h-44 overflow-hidden"><img src="https://images.unsplash.com/photo-1461023058943-07fcbe16d735?auto=format&fit=crop&w=700&q=80" class="w-full h-full object-cover" alt="Café filtrado"></div>
+        <div class="p-5">
+          <div class="flex justify-between items-start gap-2"><h4 class="font-display text-xl text-espresso">Filtrado V60</h4><span class="text-caramel font-bold whitespace-nowrap">$2.900</span></div>
+          <p class="text-espresso/60 text-sm mt-1">Método por goteo, taza limpia y aromática.</p>
+          <p class="ingredients text-espresso/55 text-xs">Grano de origen único, molienda media-fina, extracción lenta.</p>
+          <button class="add-btn mt-4 text-xs font-bold uppercase tracking-wider text-caramel">+ Añadir al pedido</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PASTELERIA -->
+    <div class="tab-panel hidden grid sm:grid-cols-2 lg:grid-cols-3 gap-6" data-panel="pasteleria">
+      <div class="menu-card rounded-2xl overflow-hidden" data-name="Torta de chocolate Amora" data-price="3200">
+        <div class="img-wrap h-44 overflow-hidden"><img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=700&q=80" class="w-full h-full object-cover" alt="Torta de chocolate"></div>
+        <div class="p-5">
+          <div class="flex justify-between items-start gap-2"><h4 class="font-display text-xl text-espresso">Torta de chocolate</h4><span class="text-caramel font-bold whitespace-nowrap">$3.200</span></div>
+          <p class="text-espresso/60 text-sm mt-1">Bizcocho húmedo, ganache 70% cacao.</p>
+          <p class="ingredients text-espresso/55 text-xs">Chocolate belga, crema fresca, toque de café.</p>
+          <button class="add-btn mt-4 text-xs font-bold uppercase tracking-wider text-caramel">+ Añadir al pedido</button>
+        </div>
+      </div>
+      <div class="menu-card rounded-2xl overflow-hidden" data-name="Mini postres surtidos" data-price="2400">
+        <div class="img-wrap h-44 overflow-hidden"><img src="https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=700&q=80" class="w-full h-full object-cover" alt="Mini postres"></div>
+        <div class="p-5">
+          <div class="flex justify-between items-start gap-2"><h4 class="font-display text-xl text-espresso">Mini postres x3</h4><span class="text-caramel font-bold whitespace-nowrap">$2.400</span></div>
+          <p class="text-espresso/60 text-sm mt-1">Selección del día, formato individual.</p>
+          <p class="ingredients text-espresso/55 text-xs">Frutas de estación, crema pastelera, base sablée.</p>
+          <button class="add-btn mt-4 text-xs font-bold uppercase tracking-wider text-caramel">+ Añadir al pedido</button>
+        </div>
+      </div>
+      <div class="menu-card rounded-2xl overflow-hidden" data-name="Cupcakes de temporada" data-price="1900">
+        <div class="img-wrap h-44 overflow-hidden"><img src="https://images.unsplash.com/photo-1571115177098-24ec42ed204d?auto=format&fit=crop&w=700&q=80" class="w-full h-full object-cover" alt="Cupcakes"></div>
+        <div class="p-5">
+          <div class="flex justify-between items-start gap-2"><h4 class="font-display text-xl text-espresso">Cupcakes de temporada</h4><span class="text-caramel font-bold whitespace-nowrap">$1.900</span></div>
+          <p class="text-espresso/60 text-sm mt-1">Sabor rotativo cada semana.</p>
+          <p class="ingredients text-espresso/55 text-xs">Frosting artesanal, relleno sorpresa, decoración a mano.</p>
+          <button class="add-btn mt-4 text-xs font-bold uppercase tracking-wider text-caramel">+ Añadir al pedido</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- BRUNCH -->
+    <div class="tab-panel hidden grid sm:grid-cols-2 lg:grid-cols-3 gap-6" data-panel="brunch">
+      <div class="menu-card rounded-2xl overflow-hidden" data-name="Combo Amora dulce" data-price="5400">
+        <div class="img-wrap h-44 overflow-hidden"><img src="https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?auto=format&fit=crop&w=700&q=80" class="w-full h-full object-cover" alt="Brunch dulce"></div>
+        <div class="p-5">
+          <div class="flex justify-between items-start gap-2"><h4 class="font-display text-xl text-espresso">Combo dulce</h4><span class="text-caramel font-bold whitespace-nowrap">$5.400</span></div>
+          <p class="text-espresso/60 text-sm mt-1">Café + pastelería + jugo exprimido.</p>
+          <p class="ingredients text-espresso/55 text-xs">Croissant, mini torta del día, jugo de naranja natural.</p>
+          <button class="add-btn mt-4 text-xs font-bold uppercase tracking-wider text-caramel">+ Añadir al pedido</button>
+        </div>
+      </div>
+      <div class="menu-card rounded-2xl overflow-hidden" data-name="Combo Amora salado" data-price="5800">
+        <div class="img-wrap h-44 overflow-hidden"><img src="https://images.unsplash.com/photo-1521017432531-fbd92d768814?auto=format&fit=crop&w=700&q=80" class="w-full h-full object-cover" alt="Brunch salado"></div>
+        <div class="p-5">
+          <div class="flex justify-between items-start gap-2"><h4 class="font-display text-xl text-espresso">Combo salado</h4><span class="text-caramel font-bold whitespace-nowrap">$5.800</span></div>
+          <p class="text-espresso/60 text-sm mt-1">Tostado gourmet + café + fruta.</p>
+          <p class="ingredients text-espresso/55 text-xs">Pan de masa madre, huevo, palta, queso de campo.</p>
+          <button class="add-btn mt-4 text-xs font-bold uppercase tracking-wider text-caramel">+ Añadir al pedido</button>
+        </div>
+      </div>
+      <div class="menu-card rounded-2xl overflow-hidden" data-name="Bowl de estación" data-price="4600">
+        <div class="img-wrap h-44 overflow-hidden"><img src="https://images.unsplash.com/photo-1494859802809-d069c3b71a8a?auto=format&fit=crop&w=700&q=80" class="w-full h-full object-cover" alt="Bowl de frutas"></div>
+        <div class="p-5">
+          <div class="flex justify-between items-start gap-2"><h4 class="font-display text-xl text-espresso">Bowl de estación</h4><span class="text-caramel font-bold whitespace-nowrap">$4.600</span></div>
+          <p class="text-espresso/60 text-sm mt-1">Yogur, granola casera y fruta fresca.</p>
+          <p class="ingredients text-espresso/55 text-xs">Yogur natural, granola de la casa, miel, frutos rojos.</p>
+          <button class="add-btn mt-4 text-xs font-bold uppercase tracking-wider text-caramel">+ Añadir al pedido</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- floating cart -->
+  <div id="cartPill" class="fixed bottom-6 right-6 z-40 opacity-0 translate-y-6 scale-90 pointer-events-none">
+    <button id="cartBtn" class="btn-primary flex items-center gap-3 pl-5 pr-6 py-3.5 rounded-full shadow-2xl shadow-espresso/40">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></svg>
+      <span class="text-sm font-semibold"><span id="cartCount">0</span> productos · $<span id="cartTotal">0</span></span>
+    </button>
+  </div>
+</section>
+
+<!-- ============ RESERVAS & DELIVERY ============ -->
+<section id="reservas" class="py-24 md:py-32 px-6 lg:px-10 bg-crema">
+  <div class="max-w-7xl mx-auto">
+    <div class="reveal text-center max-w-2xl mx-auto mb-16">
+      <p class="text-caramel uppercase tracking-[0.3em] text-xs font-bold mb-4">Reservas & delivery</p>
+      <h2 class="font-display text-4xl md:text-5xl text-espresso">Tu mesa, o tu pedido, a un mensaje de distancia</h2>
+    </div>
+
+    <div class="grid lg:grid-cols-2 gap-10">
+      <!-- reserva form -->
+      <div class="reveal bg-cremalight border border-espresso/8 rounded-3xl p-8 md:p-10">
+        <h3 class="font-display text-2xl text-espresso mb-2">Reservar una mesa</h3>
+        <p class="text-espresso/60 mb-8">Confirmamos tu lugar al instante por WhatsApp.</p>
+
+        <form id="reserveForm" class="space-y-4">
+          <div class="grid sm:grid-cols-2 gap-4">
+            <input required type="text" placeholder="Nombre y apellido" class="w-full px-4 py-3 rounded-xl border border-espresso/15 bg-cremalight focus:border-caramel outline-none transition-colors">
+            <input required type="tel" placeholder="Teléfono" class="w-full px-4 py-3 rounded-xl border border-espresso/15 bg-cremalight focus:border-caramel outline-none transition-colors">
+          </div>
+          <div class="grid sm:grid-cols-2 gap-4">
+            <input required type="date" class="w-full px-4 py-3 rounded-xl border border-espresso/15 bg-cremalight focus:border-caramel outline-none transition-colors text-espresso/70">
+            <select required class="w-full px-4 py-3 rounded-xl border border-espresso/15 bg-cremalight focus:border-caramel outline-none transition-colors text-espresso/70">
+              <option value="">Personas</option>
+              <option>1-2 personas</option>
+              <option>3-4 personas</option>
+              <option>5-6 personas</option>
+              <option>7 o más</option>
+            </select>
+          </div>
+          <button type="submit" class="fill-btn btn-primary w-full py-4 rounded-xl font-semibold flex items-center justify-center gap-3">
+            <span class="fill"></span>
+            <svg id="cupIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 21h13M6 3h11l-1 12a5 5 0 0 1-9 0L6 3Z"/><path d="M17 8h2a3 3 0 0 1 0 6h-2"/></svg>
+            <span id="reserveLabel">Confirmar reserva</span>
+          </button>
+        </form>
+      </div>
+
+      <!-- delivery -->
+      <div class="reveal grid gap-6" style="transition-delay:.1s">
+        <div class="bg-espresso text-crema rounded-3xl p-8 md:p-10">
+          <h3 class="font-display text-2xl mb-3">Pedí por WhatsApp</h3>
+          <p class="text-crema/70 mb-6">La forma más rápida: elegí del menú y te confirmamos tiempos y forma de entrega.</p>
+          <a href="https://wa.me/5492990000000" target="_blank" rel="noopener" class="btn-whatsapp inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-semibold">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.39 1.26 4.81L2 22l5.42-1.35a9.9 9.9 0 0 0 4.62 1.14h.01c5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2Z"/></svg>
+            Escribir ahora
+          </a>
+        </div>
+
+        <div class="grid sm:grid-cols-2 gap-6">
+          <a href="#" class="pillar-card bg-cremalight border border-espresso/8 rounded-2xl p-7 flex flex-col items-start gap-3">
+            <span class="w-11 h-11 rounded-full bg-blush/40 flex items-center justify-center font-display italic text-lg">P</span>
+            <span class="font-semibold text-espresso">Pedí por PedidosYa</span>
+            <span class="text-espresso/55 text-sm">Entrega a domicilio en Neuquén Capital.</span>
+          </a>
+          <a href="#" class="pillar-card bg-cremalight border border-espresso/8 rounded-2xl p-7 flex flex-col items-start gap-3">
+            <span class="w-11 h-11 rounded-full bg-blush/40 flex items-center justify-center font-display italic text-lg">R</span>
+            <span class="font-semibold text-espresso">Pedí por Rappi</span>
+            <span class="text-espresso/55 text-sm">Delivery rápido en horario de local.</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ UBICACIÓN ============ -->
+<section id="ubicacion" class="py-24 md:py-32 px-6 lg:px-10 bg-espresso text-crema">
+  <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-10 items-stretch">
+    <div class="reveal rounded-3xl overflow-hidden min-h-[420px] border border-crema/10">
+      <iframe
+        src="https://www.google.com/maps?q=Neuqu%C3%A9n+Capital,+Argentina&output=embed"
+        class="w-full h-full min-h-[420px] grayscale-[15%]"
+        style="border:0;" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+        title="Ubicación de Amora en Neuquén">
+      </iframe>
+    </div>
+
+    <div class="reveal" style="transition-delay:.1s">
+      <p class="text-caramellight uppercase tracking-[0.3em] text-xs font-bold mb-4">Ubicación & contacto</p>
+      <h2 class="font-display text-4xl md:text-5xl mb-8">Te esperamos en Neuquén</h2>
+
+      <div class="space-y-6">
+        <div class="flex gap-4">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#D6A968" stroke-width="1.6" class="mt-1 shrink-0"><path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 0 1 18 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+          <div>
+            <p class="font-semibold">Av. Argentina 250, Neuquén Capital</p>
+            <p class="text-crema/55 text-sm">Zona centro, a metros de la costanera.</p>
+          </div>
+        </div>
+        <div class="flex gap-4">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#D6A968" stroke-width="1.6" class="mt-1 shrink-0"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          <div>
+            <p class="font-semibold">Lunes a viernes · 8:00 a 21:00</p>
+            <p class="font-semibold">Sábados y domingos · 9:00 a 22:00</p>
+          </div>
+        </div>
+        <div class="flex gap-4">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#D6A968" stroke-width="1.6" class="mt-1 shrink-0"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.98.36 1.94.68 2.86a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.22-1.22a2 2 0 0 1 2.11-.45c.92.32 1.88.55 2.86.68A2 2 0 0 1 22 16.92Z"/></svg>
+          <div>
+            <p class="font-semibold">+54 9 299 000-0000</p>
+            <p class="text-crema/55 text-sm">Reservas, pedidos y consultas.</p>
+          </div>
+        </div>
+      </div>
+
+      <a href="https://www.google.com/maps?q=Neuqu%C3%A9n+Capital,+Argentina" target="_blank" rel="noopener" class="mt-9 inline-flex btn-primary px-7 py-3.5 rounded-full text-sm font-semibold items-center gap-2">
+        Cómo llegar
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ RESEÑAS ============ -->
+<section id="resenas" class="py-24 md:py-32 px-6 lg:px-10 bg-crema overflow-hidden">
+  <div class="max-w-7xl mx-auto">
+    <div class="reveal text-center max-w-2xl mx-auto mb-16">
+      <p class="text-caramel uppercase tracking-[0.3em] text-xs font-bold mb-4">Comunidad</p>
+      <h2 class="font-display text-4xl md:text-5xl text-espresso">La cafetería boutique preferida de Neuquén</h2>
+    </div>
+
+    <div class="relative max-w-3xl mx-auto">
+      <div id="testimonialTrack" class="overflow-hidden">
+        <div id="testimonialInner" class="flex transition-transform duration-700 ease-[cubic-bezier(.22,1,.36,1)]">
+
+          <div class="min-w-full px-2">
+            <div class="bg-cremalight border border-espresso/8 rounded-3xl p-10 text-center">
+              <div class="flex justify-center gap-1 mb-5" data-stars>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#B9803F"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8 5.8 21l1.2-6.9-5-4.9 6.9-1z"/></svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#B9803F"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8 5.8 21l1.2-6.9-5-4.9 6.9-1z"/></svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#B9803F"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8 5.8 21l1.2-6.9-5-4.9 6.9-1z"/></svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#B9803F"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8 5.8 21l1.2-6.9-5-4.9 6.9-1z"/></svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#B9803F"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8 5.8 21l1.2-6.9-5-4.9 6.9-1z"/></svg>
+              </div>
+              <p class="font-display italic text-2xl text-espresso leading-relaxed mb-6">"Cada torta parece hecha para vos. El lugar tiene una calidez que no encontrás en otro lado de la ciudad."</p>
+              <p class="font-semibold text-espresso">Julieta M.</p>
+              <p class="text-espresso/50 text-sm">Cliente frecuente</p>
+            </div>
+          </div>
+
+          <div class="min-w-full px-2">
+            <div class="bg-cremalight border border-espresso/8 rounded-3xl p-10 text-center">
+              <div class="flex justify-center gap-1 mb-5" data-stars>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#B9803F"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8 5.8 21l1.2-6.9-5-4.9 6.9-1z"/></svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#B9803F"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8 5.8 21l1.2-6.9-5-4.9 6.9-1z"/></svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#B9803F"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8 5.8 21l1.2-6.9-5-4.9 6.9-1z"/></svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#B9803F"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8 5.8 21l1.2-6.9-5-4.9 6.9-1z"/></svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#B9803F"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8 5.8 21l1.2-6.9-5-4.9 6.9-1z"/></svg>
+              </div>
+              <p class="font-display italic text-2xl text-espresso leading-relaxed mb-6">"El brunch de los domingos ya es una tradición familiar. El café de especialidad es otro nivel."</p>
+              <p class="font-semibold text-espresso">Nicolás R.</p>
+              <p class="text-espresso/50 text-sm">Cliente frecuente</p>
+            </div>
+          </div>
+
+          <div class="min-w-full px-2">
+            <div class="bg-cremalight border border-espresso/8 rounded-3xl p-10 text-center">
+              <div class="flex justify-center gap-1 mb-5" data-stars>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#B9803F"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8 5.8 21l1.2-6.9-5-4.9 6.9-1z"/></svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#B9803F"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8 5.8 21l1.2-6.9-5-4.9 6.9-1z"/></svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#B9803F"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8 5.8 21l1.2-6.9-5-4.9 6.9-1z"/></svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#B9803F"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8 5.8 21l1.2-6.9-5-4.9 6.9-1z"/></svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#B9803F" opacity=".35"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8 5.8 21l1.2-6.9-5-4.9 6.9-1z"/></svg>
+              </div>
+              <p class="font-display italic text-2xl text-espresso leading-relaxed mb-6">"Pedí una torta personalizada y superó lo que imaginaba. Atención impecable de principio a fin."</p>
+              <p class="font-semibold text-espresso">Camila S.</p>
+              <p class="text-espresso/50 text-sm">Cliente frecuente</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="flex justify-center items-center gap-6 mt-8">
+        <button id="prevTest" class="w-11 h-11 rounded-full border border-espresso/20 flex items-center justify-center hover:bg-espresso hover:text-crema transition-colors">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div id="testDots" class="flex gap-2"></div>
+        <button id="nextTest" class="w-11 h-11 rounded-full border border-espresso/20 flex items-center justify-center hover:bg-espresso hover:text-crema transition-colors">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- fotos clientes -->
+    <div class="reveal stagger grid grid-cols-2 sm:grid-cols-4 gap-4 mt-16">
+      <img src="https://images.unsplash.com/photo-1521017432531-fbd92d768814?auto=format&fit=crop&w=400&q=80" class="rounded-xl h-36 w-full object-cover" style="--i:0" alt="Clientes disfrutando en Amora">
+      <img src="https://images.unsplash.com/photo-1445116572660-236099ec97a0?auto=format&fit=crop&w=400&q=80" class="rounded-xl h-36 w-full object-cover" style="--i:1" alt="Clientes disfrutando en Amora">
+      <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=400&q=80" class="rounded-xl h-36 w-full object-cover" style="--i:2" alt="Clientes disfrutando en Amora">
+      <img src="https://images.unsplash.com/photo-1521017432531-fbd92d768814?auto=format&fit=crop&w=400&q=80" class="rounded-xl h-36 w-full object-cover" style="--i:3" alt="Clientes disfrutando en Amora">
+    </div>
+  </div>
+</section>
+
+<!-- ============ GALERÍA & PROMOCIONES ============ -->
+<section id="galeria" class="py-24 md:py-32 bg-espresso text-crema overflow-hidden">
+  <div class="max-w-7xl mx-auto px-6 lg:px-10">
+    <div class="reveal text-center max-w-2xl mx-auto mb-16">
+      <p class="text-caramellight uppercase tracking-[0.3em] text-xs font-bold mb-4">Galería</p>
+      <h2 class="font-display text-4xl md:text-5xl">Un vistazo a Amora</h2>
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16">
+      <div class="reveal-scale col-span-2 row-span-2 overflow-hidden rounded-2xl h-full">
+        <img data-parallax src="https://images.unsplash.com/photo-1509785307050-d4066910ec1e?auto=format&fit=crop&w=1000&q=80" class="parallax-img w-full h-full object-cover min-h-[300px]" alt="Interior de Amora">
+      </div>
+      <div class="reveal-scale overflow-hidden rounded-2xl" style="transition-delay:.1s">
+        <img data-parallax src="https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=600&q=80" class="parallax-img w-full h-40 md:h-full object-cover" alt="Pastelería">
+      </div>
+      <div class="reveal-scale overflow-hidden rounded-2xl" style="transition-delay:.2s">
+        <img data-parallax src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=600&q=80" class="parallax-img w-full h-40 md:h-full object-cover" alt="Granos de café">
+      </div>
+      <div class="reveal-scale overflow-hidden rounded-2xl" style="transition-delay:.15s">
+        <img data-parallax src="https://images.unsplash.com/photo-1495147466023-ac5c588e2e94?auto=format&fit=crop&w=600&q=80" class="parallax-img w-full h-40 object-cover" alt="Café de especialidad">
+      </div>
+      <div class="reveal-scale overflow-hidden rounded-2xl" style="transition-delay:.25s">
+        <img data-parallax src="https://images.unsplash.com/photo-1600093463592-8e36ae95ef56?auto=format&fit=crop&w=600&q=80" class="parallax-img w-full h-40 object-cover" alt="Vitrina de pastelería">
+      </div>
+    </div>
+
+    <!-- promo banner -->
+    <div class="reveal bg-gradient-to-r from-blush to-blushdeep rounded-3xl p-10 md:p-14 grid md:grid-cols-2 gap-8 items-center text-espresso">
+      <div>
+        <p class="uppercase tracking-[0.25em] text-xs font-bold mb-3">Promo de la semana</p>
+        <h3 class="font-display text-3xl md:text-4xl mb-4">Café + torta a elección</h3>
+        <p class="text-espresso/75 mb-6">Válido de lunes a viernes de 15 a 18hs. Consultá disponibilidad por WhatsApp.</p>
+        <a href="https://wa.me/5492990000000" target="_blank" rel="noopener" class="btn-primary inline-flex px-6 py-3 rounded-full text-sm font-semibold">Quiero la promo</a>
+      </div>
+      <div class="flex justify-center md:justify-end">
+        <div class="font-display text-7xl md:text-8xl italic">$3.900</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ REDES SOCIALES ============ -->
+<section class="py-24 md:py-32 px-6 lg:px-10 bg-crema">
+  <div class="max-w-7xl mx-auto">
+    <div class="reveal text-center max-w-2xl mx-auto mb-14">
+      <p class="text-caramel uppercase tracking-[0.3em] text-xs font-bold mb-4">Comunidad digital</p>
+      <h2 class="font-display text-4xl md:text-5xl text-espresso">Seguinos en redes</h2>
+      <p class="text-espresso/65 text-lg mt-4">Nuestras últimas creaciones, promos y el día a día del local.</p>
+    </div>
+
+    <div class="reveal stagger grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+      <a href="#" class="group relative rounded-xl overflow-hidden" style="--i:0"><img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=400&q=80" class="w-full h-40 object-cover group-hover:scale-110 transition-transform duration-700" alt="Instagram Amora"><span class="absolute inset-0 bg-espresso/0 group-hover:bg-espresso/40 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F6EEE1" stroke-width="1.6"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></span></a>
+      <a href="#" class="group relative rounded-xl overflow-hidden" style="--i:1"><img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=400&q=80" class="w-full h-40 object-cover group-hover:scale-110 transition-transform duration-700" alt="Instagram Amora"><span class="absolute inset-0 bg-espresso/0 group-hover:bg-espresso/40 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F6EEE1" stroke-width="1.6"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></span></a>
+      <a href="#" class="group relative rounded-xl overflow-hidden" style="--i:2"><img src="https://images.unsplash.com/photo-1571115177098-24ec42ed204d?auto=format&fit=crop&w=400&q=80" class="w-full h-40 object-cover group-hover:scale-110 transition-transform duration-700" alt="Instagram Amora"><span class="absolute inset-0 bg-espresso/0 group-hover:bg-espresso/40 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F6EEE1" stroke-width="1.6"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></span></a>
+      <a href="#" class="group relative rounded-xl overflow-hidden" style="--i:3"><img src="https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?auto=format&fit=crop&w=400&q=80" class="w-full h-40 object-cover group-hover:scale-110 transition-transform duration-700" alt="Instagram Amora"><span class="absolute inset-0 bg-espresso/0 group-hover:bg-espresso/40 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F6EEE1" stroke-width="1.6"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></span></a>
+    </div>
+
+    <div class="reveal flex justify-center gap-4">
+      <a href="#" target="_blank" rel="noopener" class="btn-outline px-6 py-3 rounded-full text-sm font-semibold inline-flex items-center gap-2">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 21v-8h2.7l.4-3.2h-3.1V7.7c0-.9.3-1.5 1.6-1.5h1.6V3.3C15.9 3.2 15 3.1 14 3.1c-2.4 0-4 1.4-4 4v2.7H7.3V13H10v8h3.5Z"/></svg>
+        Seguir en Facebook
+      </a>
+      <a href="#" target="_blank" rel="noopener" class="btn-primary px-6 py-3 rounded-full text-sm font-semibold inline-flex items-center gap-2">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c2.7 0 3.1 0 4.1.06 1 .05 1.7.2 2.3.45.6.24 1.1.55 1.6 1.05.5.5.8 1 1.05 1.6.25.6.4 1.3.45 2.3.06 1 .06 1.4.06 4.1s0 3.1-.06 4.1c-.05 1-.2 1.7-.45 2.3-.24.6-.55 1.1-1.05 1.6-.5.5-1 .8-1.6 1.05-.6.25-1.3.4-2.3.45-1 .06-1.4.06-4.1.06s-3.1 0-4.1-.06c-1-.05-1.7-.2-2.3-.45-.6-.24-1.1-.55-1.6-1.05-.5-.5-.8-1-1.05-1.6-.25-.6-.4-1.3-.45-2.3C2 15.1 2 14.7 2 12s0-3.1.06-4.1c.05-1 .2-1.7.45-2.3.24-.6.55-1.1 1.05-1.6.5-.5 1-.8 1.6-1.05.6-.25 1.3-.4 2.3-.45C8.9 2 9.3 2 12 2Zm0 2.7c-2.6 0-3 0-4 .06-.9.04-1.4.18-1.7.3-.4.16-.7.36-1 .66-.3.3-.5.6-.66 1-.12.3-.26.8-.3 1.7-.06 1-.06 1.4-.06 4s0 3 .06 4c.04.9.18 1.4.3 1.7.16.4.36.7.66 1 .3.3.6.5 1 .66.3.12.8.26 1.7.3 1 .06 1.4.06 4 .06s3 0 4-.06c.9-.04 1.4-.18 1.7-.3.4-.16.7-.36 1-.66.3-.3.5-.6.66-1 .12-.3.26-.8.3-1.7.06-1 .06-1.4.06-4s0-3-.06-4c-.04-.9-.18-1.4-.3-1.7-.16-.4-.36-.7-.66-1-.3-.3-.6-.5-1-.66-.3-.12-.8-.26-1.7-.3-1-.06-1.4-.06-4-.06Zm0 3.8a5.5 5.5 0 1 1 0 11 5.5 5.5 0 0 1 0-11Zm0 2.7a2.8 2.8 0 1 0 0 5.6 2.8 2.8 0 0 0 0-5.6Zm5.7-3a1.3 1.3 0 1 1-2.6 0 1.3 1.3 0 0 1 2.6 0Z"/></svg>
+        Seguir en Instagram
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="bg-ink text-crema/70 pt-20 pb-10 px-6 lg:px-10">
+  <div class="max-w-7xl mx-auto grid md:grid-cols-4 gap-12 mb-14">
+    <div>
+      <div class="flex items-center gap-3 mb-5">
+        <svg width="34" height="34" viewBox="0 0 40 40" fill="none">
+          <circle cx="20" cy="20" r="19" stroke="#D6A968" stroke-width="1.2"/>
+          <path d="M13 26c0-7 3.5-12 7-12s7 5 7 12" stroke="#F6EEE1" stroke-width="1.4" stroke-linecap="round"/>
+          <path d="M13.5 26h13" stroke="#F6EEE1" stroke-width="1.4" stroke-linecap="round"/>
+        </svg>
+        <span class="font-display text-2xl text-crema">Amora</span>
+      </div>
+      <p class="text-sm leading-relaxed">Cafetería boutique y pastelería artesanal en Neuquén. Sabor y detalle en cada momento.</p>
+    </div>
+    <div>
+      <h4 class="text-crema font-semibold mb-4 text-sm uppercase tracking-wider">Navegación</h4>
+      <ul class="space-y-2.5 text-sm">
+        <li><a href="#nosotros" class="hover:text-caramellight transition-colors">Nosotros</a></li>
+        <li><a href="#menu" class="hover:text-caramellight transition-colors">Menú</a></li>
+        <li><a href="#reservas" class="hover:text-caramellight transition-colors">Reservas</a></li>
+        <li><a href="#galeria" class="hover:text-caramellight transition-colors">Galería</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4 class="text-crema font-semibold mb-4 text-sm uppercase tracking-wider">Contacto</h4>
+      <ul class="space-y-2.5 text-sm">
+        <li>Av. Argentina 250, Neuquén</li>
+        <li>+54 9 299 000-0000</li>
+        <li>hola@amoracafe.com.ar</li>
+      </ul>
+    </div>
+    <div>
+      <h4 class="text-crema font-semibold mb-4 text-sm uppercase tracking-wider">Horarios</h4>
+      <ul class="space-y-2.5 text-sm">
+        <li>Lun a vie · 8:00 – 21:00</li>
+        <li>Sáb y dom · 9:00 – 22:00</li>
+      </ul>
+    </div>
+  </div>
+  <div class="max-w-7xl mx-auto border-t border-crema/10 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-crema/45">
+    <p>© 2026 Amora Cafetería & Pastelería. Todos los derechos reservados.</p>
+    <p>Neuquén, Argentina</p>
+  </div>
+</footer>
+
+<!-- floating whatsapp -->
+<a href="https://wa.me/5492990000000" target="_blank" rel="noopener" aria-label="Escribinos por WhatsApp"
+   class="fixed bottom-6 left-6 z-40 btn-whatsapp w-14 h-14 rounded-full flex items-center justify-center shadow-2xl shadow-espresso/30">
+  <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.39 1.26 4.81L2 22l5.42-1.35a9.9 9.9 0 0 0 4.62 1.14h.01c5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2Zm5.8 14.13c-.24.68-1.4 1.3-1.93 1.36-.5.06-1.06.28-3.54-.74-2.98-1.23-4.89-4.24-5.04-4.44-.15-.2-1.2-1.6-1.2-3.05 0-1.45.76-2.16 1.03-2.46.26-.3.58-.37.77-.37.2 0 .38 0 .55.01.18.01.42-.07.65.5.24.58.82 2 .89 2.15.07.15.12.32.02.52-.1.2-.15.32-.3.5-.15.17-.31.38-.44.51-.15.15-.3.31-.13.6.17.3.76 1.26 1.64 2.04 1.13 1 2.08 1.32 2.38 1.47.3.15.48.13.65-.08.18-.2.75-.87.95-1.17.2-.3.4-.25.66-.15.27.1 1.7.8 1.99.95.3.15.5.22.57.35.07.13.07.75-.17 1.43Z"/></svg>
+</a>
+
+<script>
+(function(){
+  // ---- Nav scroll state ----
+  const nav = document.getElementById('siteNav');
+  const menuToggle = document.getElementById('menuToggle');
+  const mobileMenu = document.getElementById('mobileMenu');
+  menuToggle.addEventListener('click', ()=> mobileMenu.classList.toggle('hidden'));
+  mobileMenu.querySelectorAll('a').forEach(a=> a.addEventListener('click', ()=> mobileMenu.classList.add('hidden')));
+
+  // ---- Reveal on scroll ----
+  const revealEls = document.querySelectorAll('.reveal, .reveal-scale');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, { threshold:.15 });
+  revealEls.forEach(el=> io.observe(el));
+
+  // ---- Hero + gallery parallax ----
+  const heroBg = document.getElementById('heroBg');
+  const parallaxImgs = document.querySelectorAll('[data-parallax]');
+  let ticking = false;
+  function onScroll(){
+    const y = window.scrollY;
+    if(heroBg){ heroBg.style.transform = `translateY(${y*0.25}px) scale(1.1)`; }
+    parallaxImgs.forEach(img=>{
+      const rect = img.getBoundingClientRect();
+      const center = rect.top + rect.height/2 - window.innerHeight/2;
+      img.style.transform = `translateY(${center * -0.06}px) scale(1.12)`;
+    });
+    ticking = false;
+  }
+  window.addEventListener('scroll', ()=>{
+    if(!ticking){ requestAnimationFrame(onScroll); ticking = true; }
+  });
+  onScroll();
+
+  // ---- Nav background ----
+  window.addEventListener('scroll', ()=>{
+    if(window.scrollY > 40){ nav.classList.add('shadow-md'); } else { nav.classList.remove('shadow-md'); }
+  });
+
+  // ---- Menu tabs ----
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  const panels = document.querySelectorAll('.tab-panel');
+  tabBtns.forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      tabBtns.forEach(b=> b.classList.remove('active'));
+      btn.classList.add('active');
+      const target = btn.dataset.tab;
+      panels.forEach(p=>{
+        if(p.dataset.panel === target){ p.classList.remove('hidden'); }
+        else{ p.classList.add('hidden'); }
+      });
+    });
+  });
+
+  // ---- Cart ----
+  let cart = [];
+  const cartPill = document.getElementById('cartPill');
+  const cartCount = document.getElementById('cartCount');
+  const cartTotal = document.getElementById('cartTotal');
+
+  function updateCart(){
+    const count = cart.length;
+    const total = cart.reduce((s,i)=> s + i.price, 0);
+    cartCount.textContent = count;
+    cartTotal.textContent = total.toLocaleString('es-AR');
+    if(count > 0){
+      cartPill.classList.remove('opacity-0','translate-y-6','scale-90','pointer-events-none');
+    } else {
+      cartPill.classList.add('opacity-0','translate-y-6','scale-90','pointer-events-none');
+    }
+  }
+
+  document.querySelectorAll('.add-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const card = btn.closest('.menu-card');
+      cart.push({ name: card.dataset.name, price: parseInt(card.dataset.price,10) });
+      updateCart();
+      const original = btn.textContent;
+      btn.textContent = '✓ Añadido';
+      setTimeout(()=> btn.textContent = original, 1200);
+    });
+  });
+
+  document.getElementById('cartBtn').addEventListener('click', ()=>{
+    if(cart.length === 0) return;
+    const lines = cart.map(i=> `• ${i.name} — $${i.price.toLocaleString('es-AR')}`).join('%0A');
+    const total = cart.reduce((s,i)=> s + i.price, 0);
+    const msg = `Hola Amora! Quiero hacer este pedido:%0A${lines}%0A%0ATotal: $${total.toLocaleString('es-AR')}`;
+    window.open(`https://wa.me/5492990000000?text=${msg}`, '_blank');
+  });
+
+  // ---- Reserve form (coffee fill animation) ----
+  const reserveForm = document.getElementById('reserveForm');
+  const fillBtn = reserveForm.querySelector('.fill-btn');
+  const reserveLabel = document.getElementById('reserveLabel');
+  reserveForm.addEventListener('submit', function(e){
+    e.preventDefault();
+    if(fillBtn.classList.contains('filled')) return;
+    fillBtn.classList.add('filled');
+    reserveLabel.textContent = 'Reserva confirmada ✓';
+    setTimeout(()=>{
+      const data = new FormData(reserveForm);
+      window.open('https://wa.me/5492990000000?text=Hola%20Amora!%20Quiero%20reservar%20una%20mesa.', '_blank');
+    }, 900);
+  });
+
+  // ---- Testimonial carousel ----
+  const track = document.getElementById('testimonialInner');
+  const slides = track.children.length;
+  const dotsWrap = document.getElementById('testDots');
+  let current = 0;
+  for(let i=0;i<slides;i++){
+    const d = document.createElement('button');
+    d.className = 'w-2.5 h-2.5 rounded-full transition-colors ' + (i===0 ? 'bg-caramel' : 'bg-espresso/20');
+    d.addEventListener('click', ()=> goTo(i));
+    dotsWrap.appendChild(d);
+  }
+  function goTo(i){
+    current = (i + slides) % slides;
+    track.style.transform = `translateX(-${current*100}%)`;
+    [...dotsWrap.children].forEach((d,idx)=>{
+      d.className = 'w-2.5 h-2.5 rounded-full transition-colors ' + (idx===current ? 'bg-caramel' : 'bg-espresso/20');
+    });
+  }
+  document.getElementById('prevTest').addEventListener('click', ()=> goTo(current-1));
+  document.getElementById('nextTest').addEventListener('click', ()=> goTo(current+1));
+  let autoTest = setInterval(()=> goTo(current+1), 6000);
+  document.getElementById('testimonialTrack').addEventListener('mouseenter', ()=> clearInterval(autoTest));
+
+  // ---- Star pop animation on scroll ----
+  const starGroups = document.querySelectorAll('[data-stars]');
+  const starIo = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        [...entry.target.children].forEach((star,i)=>{
+          star.style.animationDelay = (i*0.08)+'s';
+          star.classList.add('star-anim');
+        });
+        starIo.unobserve(entry.target);
+      }
+    });
+  }, {threshold:.5});
+  starGroups.forEach(g=> starIo.observe(g));
+
+})();
+</script>
+</body>
+</html>
