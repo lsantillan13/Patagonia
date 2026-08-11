@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atu Sushi — Sabor japonés en Neuquén</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,500;0,600;1,500;1,600&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#141212;
+    --ink2:#1c1918;
+    --rice:#f4efe6;
+    --rice-dim:#cfc6b4;
+    --red:#b3311f;
+    --red-deep:#7f2115;
+    --gold:#b08d3f;
+    --line: rgba(244,239,230,0.14);
+  }
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--ink);
+    color:var(--rice);
+    font-family:'Zen Kaku Gothic New',sans-serif;
+    overflow-x:hidden;
+  }
+  .font-display{font-family:'Bodoni Moda',serif;}
+
+  [data-parallax]{ will-change: transform; }
+
+  .reveal{ opacity:0; transform: translateY(26px); transition: opacity .8s ease, transform .8s ease; }
+  .reveal.in{ opacity:1; transform:translateY(0); }
+
+  .underline-grow{ position:relative; display:inline-block; }
+  .underline-grow::after{
+    content:""; position:absolute; left:0; bottom:-3px; height:1.5px; width:0%;
+    background:var(--red); transition:width .5s ease;
+  }
+  .underline-grow:hover::after{ width:100%; }
+
+  .btn-primary{
+    background:var(--red); color:var(--rice); font-weight:600;
+    transition: transform .25s ease, box-shadow .25s ease, background .25s ease;
+  }
+  .btn-primary:hover{ transform:translateY(-3px); box-shadow:0 14px 28px -12px rgba(179,49,31,0.55); background:var(--red-deep); }
+
+  .btn-ghost{
+    border:1px solid var(--rice-dim); color:var(--rice);
+    transition:border-color .25s ease, background .25s ease;
+  }
+  .btn-ghost:hover{ border-color:var(--red); background:rgba(179,49,31,0.12); }
+
+  /* signature: corte de roll (reveal circular desde el centro) */
+  .roll-card{ position:relative; overflow:hidden; border-radius:10px; }
+  .roll-card img{ transition: transform .7s ease; }
+  .roll-card:hover img{ transform: scale(1.06); }
+  .roll-slice{
+    position:absolute; inset:0;
+    background: radial-gradient(circle at center, rgba(20,18,18,0.97) 0%, rgba(20,18,18,0.97) 60%, transparent 61%);
+    clip-path: circle(0% at 50% 50%);
+    transition: clip-path .6s cubic-bezier(.3,.9,.3,1);
+    display:flex; align-items:center; justify-content:center; text-align:center; padding:1.5rem;
+  }
+  .roll-card:hover .roll-slice{ clip-path: circle(75% at 50% 50%); }
+
+  /* sello hanko */
+  .hanko{
+    position:absolute; top:14px; right:14px; width:44px; height:44px; border-radius:50%;
+    border:2px solid var(--red); color:var(--red);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Bodoni Moda',serif; font-style:italic; font-size:.65rem; text-align:center; line-height:1;
+    background:rgba(20,18,18,0.55);
+    transform: scale(0.6) rotate(-14deg); opacity:0;
+    transition: transform .4s cubic-bezier(.34,1.6,.64,1), opacity .4s ease;
+  }
+  .roll-card:hover .hanko{ transform: scale(1) rotate(-8deg); opacity:1; }
+
+  .filter-pill{
+    font-size:.78rem; letter-spacing:.03em;
+    border:1px solid var(--line); transition:all .25s ease;
+  }
+  .filter-pill.active, .filter-pill:hover{ background:var(--red); color:var(--rice); border-color:var(--red); }
+
+  .marquee-track{ display:flex; width:200%; animation: marquee 30s linear infinite; }
+  @keyframes marquee{ from{transform:translateX(0);} to{transform:translateX(-50%);} }
+
+  .torii-divider{ height:64px; position:relative; }
+
+  /* sello de confirmacion de reserva */
+  .stamp-wrap{ position:relative; }
+  .stamp{
+    position:absolute; top:50%; left:50%;
+    transform: translate(-50%,-50%) scale(2.4) rotate(-18deg);
+    opacity:0; pointer-events:none;
+    border:4px solid var(--red); color:var(--red);
+    border-radius:12px; padding:10px 22px;
+    font-family:'Bodoni Moda',serif; font-style:italic; font-weight:600; font-size:1.1rem;
+    background:rgba(20,18,18,0.4);
+    transition: opacity .35s ease, transform .35s cubic-bezier(.2,.9,.3,1.2);
+  }
+  .stamp.show{ opacity:1; transform: translate(-50%,-50%) scale(1) rotate(-8deg); }
+
+  ::selection{ background:var(--red); color:var(--rice); }
+
+  @media (prefers-reduced-motion: reduce){
+    .reveal, .roll-card img, .roll-slice, .hanko, .stamp{ transition:none !important; }
+    .marquee-track{ animation:none; }
+  }
+
+  input:focus-visible, button:focus-visible, a:focus-visible, select:focus-visible{
+    outline:2px solid var(--red); outline-offset:3px;
+  }
+  input, select{
+    background:var(--ink2); border:1px solid var(--line); color:var(--rice);
+  }
+</style>
+</head>
+<body class="antialiased">
+
+<!-- NAV -->
+<header class="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-[#141212]/85 border-b border-[color:var(--line)]">
+  <div class="max-w-7xl mx-auto px-6 md:px-10 h-20 flex items-center justify-between">
+    <a href="#inicio" class="flex items-center gap-2">
+      <span class="font-display italic text-2xl" style="color:var(--red)">Atu</span>
+      <span class="text-[10px] tracking-[0.3em] text-[color:var(--rice-dim)] hidden sm:inline uppercase">Sushi · Neuquén</span>
+    </a>
+    <nav class="hidden lg:flex items-center gap-8 text-xs tracking-wide uppercase">
+      <a href="#nosotros" class="underline-grow">Nosotros</a>
+      <a href="#menu" class="underline-grow">Menú</a>
+      <a href="#reservas" class="underline-grow">Reservas</a>
+      <a href="#resenas" class="underline-grow">Reseñas</a>
+      <a href="#contacto" class="underline-grow">Contacto</a>
+    </nav>
+    <a href="https://wa.me/5492990000000" target="_blank" class="btn-primary rounded-full px-5 py-2.5 text-sm">WhatsApp</a>
+  </div>
+</header>
+
+<!-- HERO -->
+<section id="inicio" class="relative min-h-[100svh] flex items-end overflow-hidden pt-24">
+  <div data-parallax data-speed="0.32" class="absolute inset-0 -z-10">
+    <img src="https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?q=80&w=1800&auto=format&fit=crop"
+         alt="Bandeja de sushi variado"
+         class="w-full h-[130%] object-cover object-center" />
+    <div class="absolute inset-0" style="background:linear-gradient(180deg, rgba(20,18,18,0.35) 0%, rgba(20,18,18,0.55) 45%, var(--ink) 92%);"></div>
+  </div>
+
+  <div class="max-w-7xl mx-auto w-full px-6 md:px-10 pb-20 reveal">
+    <p class="text-xs tracking-[0.35em] uppercase mb-5" style="color:var(--gold)">Neuquén · Sushi & cocina japonesa</p>
+    <h1 class="font-display italic text-5xl sm:text-6xl md:text-7xl leading-[1.02] mb-6 max-w-3xl">
+      Tradición japonesa, <span style="color:var(--red)">frescura neuquina.</span>
+    </h1>
+    <p class="max-w-xl text-[color:var(--rice-dim)] text-lg mb-8">
+      Rolls, sashimi y nigiris preparados al momento. Cada pieza, cortada con la misma precisión de siempre.
+    </p>
+    <div class="flex flex-wrap gap-4">
+      <a href="#menu" class="btn-primary rounded-full px-7 py-3.5">Ver menú</a>
+      <a href="#reservas" class="btn-ghost rounded-full px-7 py-3.5">Reservar mesa</a>
+    </div>
+  </div>
+</section>
+
+<div class="torii-divider">
+  <svg viewBox="0 0 1200 64" preserveAspectRatio="none" class="w-full h-full">
+    <line x1="0" y1="14" x2="1200" y2="14" stroke="var(--red)" stroke-width="4" opacity="0.85"/>
+    <line x1="0" y1="30" x2="1200" y2="30" stroke="var(--red)" stroke-width="2" opacity="0.5"/>
+    <rect x="140" y="0" width="10" height="64" fill="var(--red)" opacity="0.85"/>
+    <rect x="1050" y="0" width="10" height="64" fill="var(--red)" opacity="0.85"/>
+  </svg>
+</div>
+
+<!-- NOSOTROS -->
+<section id="nosotros" class="max-w-7xl mx-auto px-6 md:px-10 py-24 grid lg:grid-cols-12 gap-12">
+  <div class="lg:col-span-5 reveal">
+    <p class="text-xs tracking-[0.3em] uppercase mb-4" style="color:var(--gold)">Quiénes somos</p>
+    <h2 class="font-display italic text-4xl md:text-5xl leading-tight mb-6">Cada corte, <span style="color:var(--red)">una decisión.</span></h2>
+    <p class="text-[color:var(--rice-dim)] leading-relaxed mb-6">
+      Atu Sushi trae la técnica japonesa a Neuquén: arroz en su punto, pescado fresco y cortes precisos. Cada roll se arma al momento, sin atajos, para que la primera y la última pieza sepan igual de bien.
+    </p>
+    <div class="flex gap-8 text-sm text-[color:var(--rice-dim)]">
+      <span>🍣 Cortes al momento</span>
+      <span>🥢 Ingredientes frescos del día</span>
+    </div>
+  </div>
+  <div class="lg:col-span-7 relative reveal">
+    <div class="rounded-lg overflow-hidden h-full min-h-[380px] relative">
+      <img data-parallax data-speed="0.13" src="https://images.unsplash.com/photo-1611143669185-af224c5e3252?q=80&w=1600&auto=format&fit=crop" alt="Chef preparando sushi" class="w-full h-[120%] object-cover" />
+    </div>
+  </div>
+</section>
+
+<!-- MENU -->
+<section id="menu" class="max-w-7xl mx-auto px-6 md:px-10 py-24">
+  <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-14 reveal">
+    <div>
+      <p class="text-xs tracking-[0.3em] uppercase mb-4" style="color:var(--gold)">Menú digital</p>
+      <h2 class="font-display italic text-4xl md:text-5xl">Elegí tu combinación.</h2>
+    </div>
+    <div class="flex flex-wrap gap-2" id="filterPills">
+      <button class="filter-pill active rounded-full px-4 py-2" data-filter="todos">Todos</button>
+      <button class="filter-pill rounded-full px-4 py-2" data-filter="clasicos">Rolls clásicos</button>
+      <button class="filter-pill rounded-full px-4 py-2" data-filter="especiales">Rolls especiales</button>
+      <button class="filter-pill rounded-full px-4 py-2" data-filter="entradas">Entradas</button>
+      <button class="filter-pill rounded-full px-4 py-2" data-filter="bebidas">Bebidas</button>
+    </div>
+  </div>
+
+  <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8" id="productGrid">
+
+    <div class="product-card reveal" data-cat="clasicos">
+      <div class="roll-card h-72">
+        <img src="https://images.unsplash.com/photo-1583623025817-d180a2221d0a?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover" alt="Roll Philadelphia">
+        <div class="hanko">特選</div>
+        <div class="roll-slice">
+          <div>
+            <h3 class="font-display italic text-2xl mb-1">Philadelphia</h3>
+            <p class="text-xs text-[color:var(--rice-dim)]">Salmón, queso crema, palta · 8 piezas</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card reveal" data-cat="clasicos">
+      <div class="roll-card h-72">
+        <img src="https://images.unsplash.com/photo-1553621042-f6e147245754?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover" alt="Roll California">
+        <div class="hanko">人気</div>
+        <div class="roll-slice">
+          <div>
+            <h3 class="font-display italic text-2xl mb-1">California</h3>
+            <p class="text-xs text-[color:var(--rice-dim)]">Kanikama, palta, sésamo · 8 piezas</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card reveal" data-cat="especiales">
+      <div class="roll-card h-72">
+        <img src="https://images.unsplash.com/photo-1553621042-f6e147245754?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover" alt="Roll tempura especial">
+        <div class="hanko">限定</div>
+        <div class="roll-slice">
+          <div>
+            <h3 class="font-display italic text-2xl mb-1">Hot Roll Tempura</h3>
+            <p class="text-xs text-[color:var(--rice-dim)]">Langostino tempurizado, salsa spicy · 8 piezas</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card reveal" data-cat="entradas">
+      <div class="roll-card h-72">
+        <img src="https://images.unsplash.com/photo-1615361200141-f45040f367be?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover" alt="Sashimi de salmón">
+        <div class="hanko">刺身</div>
+        <div class="roll-slice">
+          <div>
+            <h3 class="font-display italic text-2xl mb-1">Sashimi de Salmón</h3>
+            <p class="text-xs text-[color:var(--rice-dim)]">Cortes frescos del día · 6 piezas</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card reveal" data-cat="entradas">
+      <div class="roll-card h-72">
+        <img src="https://images.unsplash.com/photo-1626804475297-411f37c67338?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover" alt="Gyosas japonesas">
+        <div class="hanko">餃子</div>
+        <div class="roll-slice">
+          <div>
+            <h3 class="font-display italic text-2xl mb-1">Gyosas</h3>
+            <p class="text-xs text-[color:var(--rice-dim)]">Cerdo y vegetales, salsa de soja · 5 uds</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card reveal" data-cat="bebidas">
+      <div class="roll-card h-72">
+        <img src="https://images.unsplash.com/photo-1579027989054-b11a1d75dc76?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover" alt="Copa de sake">
+        <div class="hanko">酒</div>
+        <div class="roll-slice">
+          <div>
+            <h3 class="font-display italic text-2xl mb-1">Sake Premium</h3>
+            <p class="text-xs text-[color:var(--rice-dim)]">Servido frío, copa o botella</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- RESERVAS -->
+<section id="reservas" class="py-24" style="background:var(--ink2);">
+  <div class="max-w-5xl mx-auto px-6 md:px-10">
+    <p class="text-xs tracking-[0.3em] uppercase mb-4 reveal" style="color:var(--gold)">Reservas & delivery</p>
+    <h2 class="font-display italic text-4xl md:text-5xl mb-4 reveal">Reservá tu mesa en un momento.</h2>
+    <p class="text-[color:var(--rice-dim)] mb-12 reveal max-w-xl">Completá los datos y te confirmamos por WhatsApp. Para pedidos a domicilio, también podés escribirnos directo o pedir por PedidosYa y Rappi.</p>
+
+    <div class="grid md:grid-cols-2 gap-10 items-start">
+      <div class="reveal stamp-wrap">
+        <div class="grid grid-cols-2 gap-4 mb-4">
+          <div>
+            <label class="text-xs tracking-[0.15em] block mb-2" style="color:var(--gold)">FECHA</label>
+            <input id="resFecha" type="date" class="w-full rounded px-4 py-3 text-sm">
+          </div>
+          <div>
+            <label class="text-xs tracking-[0.15em] block mb-2" style="color:var(--gold)">HORA</label>
+            <input id="resHora" type="time" class="w-full rounded px-4 py-3 text-sm" value="21:00">
+          </div>
+        </div>
+        <label class="text-xs tracking-[0.15em] block mb-2" style="color:var(--gold)">COMENSALES</label>
+        <input id="resPersonas" type="number" min="1" value="2" class="w-full rounded px-4 py-3 mb-6 text-sm">
+
+        <button id="resBtn" class="btn-primary rounded-full px-7 py-3.5 w-full">Confirmar reserva</button>
+        <div id="resStamp" class="stamp">confirmado</div>
+      </div>
+
+      <div class="rounded-lg p-7" style="background:var(--ink); border:1px solid var(--line);">
+        <p class="text-[10px] tracking-[0.25em] mb-4 uppercase" style="color:var(--gold)">Delivery</p>
+        <p class="text-[color:var(--rice-dim)] mb-4">También pedís por acá:</p>
+        <div class="flex flex-wrap gap-3">
+          <a href="https://wa.me/5492990000000" target="_blank" class="btn-ghost rounded-full px-5 py-2.5 text-sm">WhatsApp</a>
+          <a href="#" class="btn-ghost rounded-full px-5 py-2.5 text-sm">PedidosYa</a>
+          <a href="#" class="btn-ghost rounded-full px-5 py-2.5 text-sm">Rappi</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESEÑAS -->
+<section id="resenas" class="max-w-7xl mx-auto px-6 md:px-10 py-24">
+  <p class="text-xs tracking-[0.3em] uppercase mb-4 reveal" style="color:var(--gold)">El sushi preferido de Neuquén</p>
+  <h2 class="font-display italic text-4xl md:text-5xl mb-14 reveal">Lo que dicen nuestros comensales.</h2>
+
+  <div class="grid md:grid-cols-3 gap-8">
+    <div class="rounded-lg p-7 reveal" style="background:var(--ink2); border:1px solid var(--line);">
+      <p style="color:var(--red)" class="mb-4">★★★★★</p>
+      <p class="text-[color:var(--rice-dim)] mb-5">"El roll tempura es otro nivel, y el arroz siempre en su punto. Ya es nuestro lugar fijo de los viernes."</p>
+      <p class="text-xs text-[color:var(--rice-dim)]">— Agustina, Neuquén Capital</p>
+    </div>
+    <div class="rounded-lg p-7 reveal" style="background:var(--ink2); border:1px solid var(--line);">
+      <p style="color:var(--red)" class="mb-4">★★★★★</p>
+      <p class="text-[color:var(--rice-dim)] mb-5">"Reservé por la web y llegó la confirmación al toque por WhatsApp. Mesa lista, todo perfecto."</p>
+      <p class="text-xs text-[color:var(--rice-dim)]">— Tomás, Cipolletti</p>
+    </div>
+    <div class="rounded-lg p-7 reveal" style="background:var(--ink2); border:1px solid var(--line);">
+      <p style="color:var(--red)" class="mb-4">★★★★★</p>
+      <p class="text-[color:var(--rice-dim)] mb-5">"El sashimi se nota fresco de verdad. Buena atención y ambiente prolijo."</p>
+      <p class="text-xs text-[color:var(--rice-dim)]">— Melina, Plottier</p>
+    </div>
+  </div>
+</section>
+
+<!-- GALERIA / PROMOS -->
+<section class="py-24" style="background:var(--ink2);">
+  <div class="max-w-7xl mx-auto px-6 md:px-10">
+    <p class="text-xs tracking-[0.3em] uppercase mb-4 reveal" style="color:var(--gold)">Galería & promociones</p>
+    <h2 class="font-display italic text-4xl md:text-5xl mb-4 reveal">Lo que sale de la barra esta semana.</h2>
+    <p class="text-[color:var(--rice-dim)] mb-10 reveal">Promo 2x1 en rolls clásicos, martes y miércoles.</p>
+  </div>
+  <div class="overflow-hidden relative">
+    <div class="marquee-track gap-6 px-6">
+      <img src="https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?q=80&w=700&auto=format&fit=crop" class="h-64 w-80 object-cover rounded-lg flex-shrink-0" alt="Bandeja de sushi surtida">
+      <img src="https://images.unsplash.com/photo-1583623025817-d180a2221d0a?q=80&w=700&auto=format&fit=crop" class="h-64 w-80 object-cover rounded-lg flex-shrink-0" alt="Roll Philadelphia">
+      <img src="https://images.unsplash.com/photo-1615361200141-f45040f367be?q=80&w=700&auto=format&fit=crop" class="h-64 w-80 object-cover rounded-lg flex-shrink-0" alt="Sashimi fresco">
+      <img src="https://images.unsplash.com/photo-1611143669185-af224c5e3252?q=80&w=700&auto=format&fit=crop" class="h-64 w-80 object-cover rounded-lg flex-shrink-0" alt="Chef preparando sushi">
+      <img src="https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?q=80&w=700&auto=format&fit=crop" class="h-64 w-80 object-cover rounded-lg flex-shrink-0" alt="Bandeja de sushi surtida">
+      <img src="https://images.unsplash.com/photo-1583623025817-d180a2221d0a?q=80&w=700&auto=format&fit=crop" class="h-64 w-80 object-cover rounded-lg flex-shrink-0" alt="Roll Philadelphia">
+      <img src="https://images.unsplash.com/photo-1615361200141-f45040f367be?q=80&w=700&auto=format&fit=crop" class="h-64 w-80 object-cover rounded-lg flex-shrink-0" alt="Sashimi fresco">
+      <img src="https://images.unsplash.com/photo-1611143669185-af224c5e3252?q=80&w=700&auto=format&fit=crop" class="h-64 w-80 object-cover rounded-lg flex-shrink-0" alt="Chef preparando sushi">
+    </div>
+  </div>
+</section>
+
+<!-- CONTACTO -->
+<section id="contacto" class="max-w-7xl mx-auto px-6 md:px-10 py-24 grid lg:grid-cols-12 gap-10">
+  <div class="lg:col-span-5 reveal">
+    <p class="text-xs tracking-[0.3em] uppercase mb-4" style="color:var(--gold)">Ubicación & contacto</p>
+    <h2 class="font-display italic text-4xl md:text-5xl mb-6">Te esperamos en el local.</h2>
+    <div class="rounded-lg p-6 space-y-3" style="background:var(--ink2); border:1px solid var(--line);">
+      <p class="flex justify-between border-b pb-2" style="border-color:var(--line)"><span>Dirección</span><span class="text-[color:var(--rice-dim)]">Neuquén Capital, Río Negro</span></p>
+      <p class="flex justify-between border-b pb-2" style="border-color:var(--line)"><span>WhatsApp</span><span class="text-[color:var(--rice-dim)]">+54 9 299 000-0000</span></p>
+      <p class="flex justify-between border-b pb-2" style="border-color:var(--line)"><span>Email</span><span class="text-[color:var(--rice-dim)]">hola@atusushi.com.ar</span></p>
+      <p class="flex justify-between"><span>Horario</span><span class="text-[color:var(--rice-dim)]">Mar a Dom · 20 a 00 hs</span></p>
+    </div>
+    <a href="https://wa.me/5492990000000" target="_blank" class="btn-primary rounded-full px-7 py-3.5 inline-block mt-8">Cómo llegar</a>
+  </div>
+  <div class="lg:col-span-7 reveal">
+    <div class="rounded-lg overflow-hidden h-full min-h-[340px] border" style="border-color:var(--line);">
+      <iframe
+        src="https://www.google.com/maps?q=Neuqu%C3%A9n%20Capital&output=embed"
+        class="w-full h-full min-h-[340px] contrast-125"
+        style="filter:invert(88%) hue-rotate(180deg);"
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="border-t" style="border-color:var(--line); background:var(--ink2);">
+  <div class="max-w-7xl mx-auto px-6 md:px-10 py-14 grid md:grid-cols-3 gap-10">
+    <div>
+      <span class="font-display italic text-2xl" style="color:var(--red)">Atu Sushi</span>
+      <p class="text-[color:var(--rice-dim)] mt-3 max-w-xs">Sushi y cocina japonesa en Neuquén. Cortes al momento, ingredientes frescos.</p>
+    </div>
+    <div class="text-sm text-[color:var(--rice-dim)] space-y-2">
+      <p class="tracking-[0.2em] text-xs mb-2 uppercase" style="color:var(--gold)">Seguinos</p>
+      <a href="#" class="block underline-grow w-fit">Instagram</a>
+      <a href="#" class="block underline-grow w-fit">Facebook</a>
+    </div>
+    <div class="text-sm text-[color:var(--rice-dim)] space-y-2">
+      <p class="tracking-[0.2em] text-xs mb-2 uppercase" style="color:var(--gold)">Navegación</p>
+      <a href="#menu" class="block underline-grow w-fit">Menú</a>
+      <a href="#reservas" class="block underline-grow w-fit">Reservas</a>
+      <a href="#contacto" class="block underline-grow w-fit">Contacto</a>
+    </div>
+  </div>
+  <div class="text-center text-[10px] tracking-[0.2em] uppercase text-[color:var(--rice-dim)] pb-8">© 2026 Atu Sushi — hecho en Neuquén</div>
+</footer>
+
+<script>
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el=>io.observe(el));
+
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const parallaxEls = document.querySelectorAll('[data-parallax]');
+  function onScroll(){
+    if(prefersReduced) return;
+    const y = window.scrollY;
+    parallaxEls.forEach(el=>{
+      const speed = parseFloat(el.dataset.speed || 0.2);
+      el.style.transform = `translateY(${y*speed*0.25}px)`;
+    });
+  }
+  window.addEventListener('scroll', onScroll, { passive:true });
+
+  const pills = document.querySelectorAll('#filterPills .filter-pill');
+  const cards = document.querySelectorAll('#productGrid .product-card');
+  pills.forEach(p=>{
+    p.addEventListener('click', ()=>{
+      pills.forEach(x=>x.classList.remove('active'));
+      p.classList.add('active');
+      const f = p.dataset.filter;
+      cards.forEach(c=>{
+        c.style.display = (f==='todos' || c.dataset.cat===f) ? '' : 'none';
+      });
+    });
+  });
+
+  // sello de confirmacion de reserva
+  const resBtn = document.getElementById('resBtn');
+  const resStamp = document.getElementById('resStamp');
+  resBtn.addEventListener('click', ()=>{
+    resStamp.classList.remove('show');
+    void resStamp.offsetWidth;
+    resStamp.classList.add('show');
+  });
+</script>
+</body>
+</html>
