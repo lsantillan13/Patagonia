@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Patagonia Fullstack — Transformamos tu negocio en digital</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0e14;
+    --bg2:#0e131c;
+    --panel:#121926;
+    --panel2:#182231;
+    --cyan:#22d3ee;
+    --magenta:#e879f9;
+    --text:#e7edf5;
+    --dim:#8b96a8;
+    --line: rgba(231,237,245,0.12);
+  }
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    overflow-x:hidden;
+  }
+  .font-display{font-family:'Space Grotesk',sans-serif;}
+  .font-mono{font-family:'Fira Code',monospace;}
+
+  .grad-text{
+    background: linear-gradient(90deg, var(--cyan), var(--magenta));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+
+  [data-parallax]{ will-change: transform; }
+
+  .reveal{ opacity:0; transform: translateY(26px); transition: opacity .8s ease, transform .8s ease; }
+  .reveal.in{ opacity:1; transform:translateY(0); }
+
+  .underline-grow{ position:relative; display:inline-block; }
+  .underline-grow::after{
+    content:""; position:absolute; left:0; bottom:-3px; height:2px; width:0%;
+    background: linear-gradient(90deg, var(--cyan), var(--magenta)); transition:width .4s ease;
+  }
+  .underline-grow:hover::after{ width:100%; }
+
+  .btn-primary{
+    background: linear-gradient(90deg, var(--cyan), var(--magenta)); color:#081019; font-weight:600;
+    transition: transform .25s ease, box-shadow .25s ease, filter .25s ease;
+  }
+  .btn-primary:hover{ transform:translateY(-3px); box-shadow:0 16px 34px -14px rgba(34,211,238,0.45); filter:brightness(1.08); }
+
+  .btn-ghost{
+    border:1px solid var(--line); color:var(--text);
+    transition:border-color .25s ease, background .25s ease;
+  }
+  .btn-ghost:hover{ border-color:var(--cyan); background:rgba(34,211,238,0.08); }
+
+  /* signature: spotlight que sigue el mouse en el hero */
+  #heroSpot{
+    position:absolute; inset:0; pointer-events:none;
+    background: radial-gradient(560px circle at var(--mx,50%) var(--my,30%), rgba(34,211,238,0.16), transparent 60%);
+    transition: background .05s linear;
+  }
+  .grid-bg{
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 42px 42px;
+  }
+
+  /* signature: tarjetas de servicio tipo terminal */
+  .term-card{
+    background:var(--panel); border:1px solid var(--line); border-radius:10px; overflow:hidden;
+    transition: transform .35s ease, border-color .35s ease, box-shadow .35s ease;
+  }
+  .term-card:hover{
+    transform:translateY(-6px);
+    border-color: rgba(34,211,238,0.4);
+    box-shadow:0 20px 40px -20px rgba(34,211,238,0.25);
+  }
+  .term-bar{
+    background:var(--panel2); padding:.6rem 1rem; display:flex; gap:6px; align-items:center;
+    border-bottom:1px solid var(--line);
+  }
+  .term-dot{ width:9px; height:9px; border-radius:50%; }
+  .term-body{ padding:1.4rem; }
+  .term-line::before{ content:"$ "; color:var(--cyan); }
+  .term-output{
+    max-height:0; overflow:hidden; opacity:0;
+    transition: max-height .5s ease, opacity .5s ease, margin-top .5s ease;
+  }
+  .term-card:hover .term-output{ max-height:120px; opacity:1; margin-top:.75rem; }
+  .caret{ display:inline-block; width:7px; height:1.1em; background:var(--cyan); vertical-align:text-bottom; animation: blink 1s step-end infinite; }
+  @keyframes blink{ 50%{ opacity:0; } }
+
+  /* portfolio glow border */
+  .glow-card{ position:relative; border-radius:12px; overflow:hidden; }
+  .glow-card::before{
+    content:""; position:absolute; inset:-1px; border-radius:12px; padding:1px;
+    background:linear-gradient(120deg, var(--cyan), var(--magenta));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor; mask-composite: exclude;
+    opacity:0; transition:opacity .4s ease;
+  }
+  .glow-card:hover::before{ opacity:1; }
+  .glow-card img{ transition: transform .6s ease, filter .6s ease; }
+  .glow-card:hover img{ transform:scale(1.06); filter:brightness(0.55); }
+  .glow-overlay{
+    position:absolute; inset:0; display:flex; flex-direction:column; justify-content:flex-end; padding:1.25rem;
+    opacity:0; transition:opacity .4s ease;
+  }
+  .glow-card:hover .glow-overlay{ opacity:1; }
+
+  .price-card{
+    border:1px solid var(--line); border-radius:14px; transition: transform .3s ease, border-color .3s ease;
+    background:var(--panel);
+  }
+  .price-card:hover{ transform:translateY(-5px); border-color:rgba(34,211,238,0.35); }
+  .price-card.featured{ border-color: rgba(232,121,249,0.5); }
+
+  .filter-pill{
+    font-family:'Fira Code',monospace; font-size:.72rem; letter-spacing:.02em;
+    border:1px solid var(--line); transition:all .25s ease;
+  }
+  .filter-pill.active, .filter-pill:hover{ background:var(--cyan); color:#081019; border-color:var(--cyan); }
+
+  ::selection{ background:var(--magenta); color:#081019; }
+
+  @media (prefers-reduced-motion: reduce){
+    .reveal, .term-card, .term-output, .glow-card img, .glow-overlay, .price-card{ transition:none !important; }
+    .caret{ animation:none; }
+  }
+
+  input:focus-visible, button:focus-visible, a:focus-visible, textarea:focus-visible{
+    outline:2px solid var(--cyan); outline-offset:3px;
+  }
+  input, textarea{ background:var(--panel2); border:1px solid var(--line); color:var(--text); }
+</style>
+</head>
+<body class="antialiased">
+
+<!-- NAV -->
+<header class="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-[#0a0e14]/85 border-b border-[color:var(--line)]">
+  <div class="max-w-7xl mx-auto px-6 md:px-10 h-20 flex items-center justify-between">
+    <a href="#inicio" class="flex items-center gap-2">
+      <span class="font-display font-bold text-xl">Patagonia<span class="grad-text">Fullstack</span></span>
+    </a>
+    <nav class="hidden lg:flex items-center gap-8 font-mono text-xs tracking-wide">
+      <a href="#servicios" class="underline-grow">SERVICIOS</a>
+      <a href="#paquetes" class="underline-grow">PAQUETES</a>
+      <a href="#portfolio" class="underline-grow">PORTFOLIO</a>
+      <a href="#contacto" class="underline-grow">CONTACTO</a>
+    </nav>
+    <a href="https://wa.me/5492996097833" target="_blank" class="btn-primary rounded-full px-5 py-2.5 text-sm">Pedir presupuesto</a>
+  </div>
+</header>
+
+<!-- HERO -->
+<section id="inicio" class="relative min-h-[100svh] flex items-center overflow-hidden pt-24 grid-bg" onmousemove="heroMove(event)">
+  <div id="heroSpot"></div>
+  <div class="absolute inset-0 -z-10" style="background:radial-gradient(circle at 20% 20%, rgba(34,211,238,0.08), transparent 45%), radial-gradient(circle at 80% 70%, rgba(232,121,249,0.08), transparent 45%);"></div>
+
+  <div class="max-w-7xl mx-auto w-full px-6 md:px-10 reveal">
+    <p class="font-mono text-xs tracking-[0.3em] mb-6" style="color:var(--cyan)">NEUQUÉN · SOLUCIONES DIGITALES PARA NEGOCIOS REALES</p>
+    <h1 class="font-display font-bold text-5xl sm:text-6xl md:text-7xl leading-[0.98] mb-6 max-w-4xl">
+      Transformamos tu negocio <span class="grad-text">en digital.</span>
+    </h1>
+    <p class="max-w-xl text-[color:var(--dim)] text-lg mb-8">
+      Desarrollo web, diseño UX/UI, branding y SEO para PyMEs y emprendedores que quieren verse (y funcionar) como una marca grande.
+    </p>
+    <div class="flex flex-wrap gap-4">
+      <a href="#servicios" class="btn-primary rounded-full px-7 py-3.5">Ver servicios</a>
+      <a href="#portfolio" class="btn-ghost rounded-full px-7 py-3.5">Ver portfolio</a>
+    </div>
+  </div>
+</section>
+
+<!-- NOSOTROS -->
+<section class="max-w-7xl mx-auto px-6 md:px-10 py-24 grid lg:grid-cols-12 gap-12">
+  <div class="lg:col-span-5 reveal">
+    <p class="font-mono text-xs tracking-[0.3em] mb-4" style="color:var(--magenta)">QUIÉNES SOMOS</p>
+    <h2 class="font-display font-bold text-4xl md:text-5xl leading-tight mb-6">Un equipo, <span class="grad-text">un negocio a la vez.</span></h2>
+    <p class="text-[color:var(--dim)] leading-relaxed mb-6">
+      Somos Patagonia Fullstack: creamos soluciones digitales integrales para empresas y emprendedores de Neuquén. Cada proyecto se piensa de punta a punta — diseño, desarrollo, contenido y resultados medibles — sin plantillas genéricas.
+    </p>
+    <div class="flex gap-6 font-mono text-sm text-[color:var(--dim)]">
+      <span>&lt;/&gt; Código propio</span>
+      <span>◆ Diseño a medida</span>
+    </div>
+  </div>
+  <div class="lg:col-span-7 relative reveal">
+    <div class="rounded-lg overflow-hidden h-full min-h-[380px] relative">
+      <img data-parallax data-speed="0.13" src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=1600&auto=format&fit=crop" alt="Equipo trabajando en desarrollo web" class="w-full h-[120%] object-cover" />
+      <div class="absolute inset-0" style="background:linear-gradient(180deg, transparent 60%, rgba(10,14,20,0.7) 100%);"></div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICIOS -->
+<section id="servicios" class="max-w-7xl mx-auto px-6 md:px-10 py-24">
+  <p class="font-mono text-xs tracking-[0.3em] mb-4 reveal" style="color:var(--cyan)">SERVICIOS</p>
+  <h2 class="font-display font-bold text-4xl md:text-5xl mb-14 reveal">Todo lo que tu marca necesita online.</h2>
+
+  <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+    <div class="term-card reveal">
+      <div class="term-bar">
+        <span class="term-dot" style="background:#ff5f56"></span>
+        <span class="term-dot" style="background:#ffbd2e"></span>
+        <span class="term-dot" style="background:#27c93f"></span>
+        <span class="font-mono text-[10px] ml-2" style="color:var(--dim)">web.sh</span>
+      </div>
+      <div class="term-body">
+        <p class="font-mono text-sm term-line" style="color:var(--text)">deploy --web-ecommerce</p>
+        <h3 class="font-display font-semibold text-xl mt-3 mb-2">Desarrollo Web & E-commerce</h3>
+        <p class="text-sm text-[color:var(--dim)]">Sitios corporativos, tiendas online y portales profesionales.</p>
+        <div class="term-output font-mono text-xs" style="color:var(--cyan)">✓ Responsive<br>✓ Carga rápida<br>✓ Listo para vender<span class="caret"></span></div>
+      </div>
+    </div>
+
+    <div class="term-card reveal">
+      <div class="term-bar">
+        <span class="term-dot" style="background:#ff5f56"></span>
+        <span class="term-dot" style="background:#ffbd2e"></span>
+        <span class="term-dot" style="background:#27c93f"></span>
+        <span class="font-mono text-[10px] ml-2" style="color:var(--dim)">design.sh</span>
+      </div>
+      <div class="term-body">
+        <p class="font-mono text-sm term-line" style="color:var(--text)">run --ux-ui</p>
+        <h3 class="font-display font-semibold text-xl mt-3 mb-2">Diseño UX/UI</h3>
+        <p class="text-sm text-[color:var(--dim)]">Interfaces modernas, responsive y pensadas para convertir.</p>
+        <div class="term-output font-mono text-xs" style="color:var(--magenta)">✓ Prototipos<br>✓ Sistema visual<br>✓ Testeado en mobile<span class="caret"></span></div>
+      </div>
+    </div>
+
+    <div class="term-card reveal">
+      <div class="term-bar">
+        <span class="term-dot" style="background:#ff5f56"></span>
+        <span class="term-dot" style="background:#ffbd2e"></span>
+        <span class="term-dot" style="background:#27c93f"></span>
+        <span class="font-mono text-[10px] ml-2" style="color:var(--dim)">brand.sh</span>
+      </div>
+      <div class="term-body">
+        <p class="font-mono text-sm term-line" style="color:var(--text)">build --branding</p>
+        <h3 class="font-display font-semibold text-xl mt-3 mb-2">Branding & Identidad Visual</h3>
+        <p class="text-sm text-[color:var(--dim)]">Logos, paletas y un estilo digital consistente en todos lados.</p>
+        <div class="term-output font-mono text-xs" style="color:var(--cyan)">✓ Logo + variantes<br>✓ Paleta y tipografía<br>✓ Manual de marca<span class="caret"></span></div>
+      </div>
+    </div>
+
+    <div class="term-card reveal">
+      <div class="term-bar">
+        <span class="term-dot" style="background:#ff5f56"></span>
+        <span class="term-dot" style="background:#ffbd2e"></span>
+        <span class="term-dot" style="background:#27c93f"></span>
+        <span class="font-mono text-[10px] ml-2" style="color:var(--dim)">seo.sh</span>
+      </div>
+      <div class="term-body">
+        <p class="font-mono text-sm term-line" style="color:var(--text)">optimize --seo-ads</p>
+        <h3 class="font-display font-semibold text-xl mt-3 mb-2">SEO & Marketing Digital</h3>
+        <p class="text-sm text-[color:var(--dim)]">Posicionamiento en Google, campañas y analítica real.</p>
+        <div class="term-output font-mono text-xs" style="color:var(--magenta)">✓ Palabras clave<br>✓ Google Analytics<br>✓ Reportes mensuales<span class="caret"></span></div>
+      </div>
+    </div>
+
+    <div class="term-card reveal">
+      <div class="term-bar">
+        <span class="term-dot" style="background:#ff5f56"></span>
+        <span class="term-dot" style="background:#ffbd2e"></span>
+        <span class="term-dot" style="background:#27c93f"></span>
+        <span class="font-mono text-[10px] ml-2" style="color:var(--dim)">support.sh</span>
+      </div>
+      <div class="term-body">
+        <p class="font-mono text-sm term-line" style="color:var(--text)">watch --uptime</p>
+        <h3 class="font-display font-semibold text-xl mt-3 mb-2">Mantenimiento & Soporte</h3>
+        <p class="text-sm text-[color:var(--dim)]">Planes mensuales de seguridad, backups y mejoras continuas.</p>
+        <div class="term-output font-mono text-xs" style="color:var(--cyan)">✓ Backups<br>✓ Seguridad<br>✓ Actualizaciones<span class="caret"></span></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- PAQUETES -->
+<section id="paquetes" class="py-24" style="background:var(--bg2);">
+  <div class="max-w-7xl mx-auto px-6 md:px-10">
+    <p class="font-mono text-xs tracking-[0.3em] mb-4 reveal" style="color:var(--magenta)">PAQUETES & PRECIOS</p>
+    <h2 class="font-display font-bold text-4xl md:text-5xl mb-14 reveal">Elegí el nivel que necesita tu negocio.</h2>
+
+    <div class="grid md:grid-cols-3 gap-8 mb-8">
+      <div class="price-card p-8 reveal">
+        <p class="font-mono text-xs tracking-[0.2em] mb-3" style="color:var(--cyan)">STARTER PACK</p>
+        <p class="text-sm text-[color:var(--dim)] mb-6">PyMEs y emprendedores</p>
+        <p class="font-display font-bold text-3xl mb-6">$250.000 <span class="text-base font-normal text-[color:var(--dim)]">– $300.000</span></p>
+        <ul class="space-y-2 text-sm text-[color:var(--dim)] mb-8">
+          <li>· Sitio institucional (5 secciones)</li>
+          <li>· Optimización inicial SEO</li>
+          <li>· Dominio + hosting configurado</li>
+        </ul>
+        <a href="https://wa.me/5492996097833" target="_blank" class="btn-ghost rounded-full px-6 py-3 block text-center">Consultar</a>
+      </div>
+
+      <div class="price-card featured p-8 reveal relative">
+        <span class="absolute -top-3 left-8 font-mono text-[10px] px-3 py-1 rounded-full" style="background:var(--magenta); color:#081019;">MÁS ELEGIDO</span>
+        <p class="font-mono text-xs tracking-[0.2em] mb-3" style="color:var(--magenta)">BUSINESS PACK</p>
+        <p class="text-sm text-[color:var(--dim)] mb-6">Empresas en crecimiento</p>
+        <p class="font-display font-bold text-3xl mb-6">$350.000 <span class="text-base font-normal text-[color:var(--dim)]">– $450.000</span></p>
+        <ul class="space-y-2 text-sm text-[color:var(--dim)] mb-8">
+          <li>· Catálogo dinámico o tienda online</li>
+          <li>· Integración WhatsApp y redes</li>
+          <li>· Animaciones y diseño a medida</li>
+        </ul>
+        <a href="https://wa.me/5492996097833" target="_blank" class="btn-primary rounded-full px-6 py-3 block text-center">Consultar</a>
+      </div>
+
+      <div class="price-card p-8 reveal">
+        <p class="font-mono text-xs tracking-[0.2em] mb-3" style="color:var(--cyan)">ENTERPRISE PACK</p>
+        <p class="text-sm text-[color:var(--dim)] mb-6">Soluciones avanzadas</p>
+        <p class="font-display font-bold text-3xl mb-6">A medida</p>
+        <ul class="space-y-2 text-sm text-[color:var(--dim)] mb-8">
+          <li>· Portales y dashboards internos</li>
+          <li>· Integraciones API</li>
+          <li>· SEO avanzado + campañas</li>
+        </ul>
+        <a href="https://wa.me/5492996097833" target="_blank" class="btn-ghost rounded-full px-6 py-3 block text-center">Consultar</a>
+      </div>
+    </div>
+
+    <div class="rounded-lg p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4 reveal" style="background:var(--panel); border:1px solid var(--line);">
+      <div>
+        <p class="font-mono text-xs tracking-[0.2em] mb-1" style="color:var(--magenta)">MANTENIMIENTO MENSUAL + SEO</p>
+        <p class="text-sm text-[color:var(--dim)]">Actualización de contenidos, seguridad, backups y optimización continua.</p>
+      </div>
+      <p class="font-display font-bold text-2xl whitespace-nowrap">$40.000 – $75.000<span class="text-sm font-normal text-[color:var(--dim)]">/mes</span></p>
+    </div>
+  </div>
+</section>
+
+<!-- PORTFOLIO -->
+<section id="portfolio" class="max-w-7xl mx-auto px-6 md:px-10 py-24">
+  <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-14 reveal">
+    <div>
+      <p class="font-mono text-xs tracking-[0.3em] mb-4" style="color:var(--cyan)">PORTFOLIO</p>
+      <h2 class="font-display font-bold text-4xl md:text-5xl">Negocios reales, resultados reales.</h2>
+    </div>
+  </div>
+
+  <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+
+    <div class="glow-card reveal h-64">
+      <img src="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover" alt="Animalada NQN">
+      <div class="glow-overlay">
+        <p class="font-mono text-[10px] mb-1" style="color:var(--cyan)">● EN LÍNEA</p>
+        <h3 class="font-display font-semibold text-lg">Animalada NQN</h3>
+        <p class="text-xs text-[color:var(--dim)]">Alimento balanceado para perros</p>
+      </div>
+    </div>
+
+    <div class="glow-card reveal h-64">
+      <img src="https://images.unsplash.com/photo-1581147036324-c1c88bb6eaa9?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover" alt="Bel-Goy Ferretería">
+      <div class="glow-overlay">
+        <p class="font-mono text-[10px] mb-1" style="color:var(--cyan)">● EN LÍNEA</p>
+        <h3 class="font-display font-semibold text-lg">Bel-Goy Ferretería</h3>
+        <p class="text-xs text-[color:var(--dim)]">Herramientas y materiales de construcción</p>
+      </div>
+    </div>
+
+    <div class="glow-card reveal h-64">
+      <img src="https://images.unsplash.com/photo-1487070183336-b863922373d4?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover" alt="Florería Eluney">
+      <div class="glow-overlay">
+        <p class="font-mono text-[10px] mb-1" style="color:var(--cyan)">● EN LÍNEA</p>
+        <h3 class="font-display font-semibold text-lg">Florería Eluney</h3>
+        <p class="text-xs text-[color:var(--dim)]">Ramos, arreglos y plantas</p>
+      </div>
+    </div>
+
+    <div class="glow-card reveal h-64">
+      <img src="https://images.unsplash.com/photo-1541976590-713941681591?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover" alt="Materiales Aldana">
+      <div class="glow-overlay">
+        <p class="font-mono text-[10px] mb-1" style="color:var(--cyan)">● EN LÍNEA</p>
+        <h3 class="font-display font-semibold text-lg">Materiales Aldana</h3>
+        <p class="text-xs text-[color:var(--dim)]">Corralón y ferretería de obra</p>
+      </div>
+    </div>
+
+    <div class="glow-card reveal h-64">
+      <img src="https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover" alt="Atu Sushi">
+      <div class="glow-overlay">
+        <p class="font-mono text-[10px] mb-1" style="color:var(--cyan)">● EN LÍNEA</p>
+        <h3 class="font-display font-semibold text-lg">Atu Sushi</h3>
+        <p class="text-xs text-[color:var(--dim)]">Sushi y cocina japonesa</p>
+      </div>
+    </div>
+
+    <div class="glow-card reveal h-64">
+      <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover" alt="Amora Cafetería & Pastelería">
+      <div class="glow-overlay">
+        <p class="font-mono text-[10px] mb-1" style="color:var(--ffbd2e)">● PRÓXIMAMENTE</p>
+        <h3 class="font-display font-semibold text-lg">Amora Cafetería</h3>
+        <p class="text-xs text-[color:var(--dim)]">Cafetería boutique y pastelería</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CONTACTO -->
+<section id="contacto" class="max-w-5xl mx-auto px-6 md:px-10 py-24">
+  <p class="font-mono text-xs tracking-[0.3em] mb-4 reveal" style="color:var(--magenta)">CONTACTO</p>
+  <h2 class="font-display font-bold text-4xl md:text-5xl mb-6 reveal">¿Le damos forma digital a tu negocio?</h2>
+  <p class="text-[color:var(--dim)] mb-12 reveal max-w-xl">Contanos qué necesitás y te respondemos con una propuesta concreta, sin vueltas.</p>
+
+  <div class="grid md:grid-cols-2 gap-10">
+    <form class="space-y-4 reveal" onsubmit="return false;">
+      <input type="text" placeholder="Nombre" class="w-full rounded px-4 py-3 text-sm">
+      <input type="text" placeholder="Negocio / marca" class="w-full rounded px-4 py-3 text-sm">
+      <textarea placeholder="Contanos tu proyecto" rows="4" class="w-full rounded px-4 py-3 text-sm"></textarea>
+      <button class="btn-primary rounded-full px-7 py-3.5 w-full">Enviar consulta</button>
+    </form>
+    <div class="rounded-lg p-7 reveal" style="background:var(--panel); border:1px solid var(--line);">
+      <p class="font-mono text-[10px] tracking-[0.25em] mb-4" style="color:var(--cyan)">DATOS DE CONTACTO</p>
+      <p class="flex justify-between border-b py-2 text-sm" style="border-color:var(--line)"><span>WhatsApp</span><span class="text-[color:var(--dim)]">+54 9 2996 09-7833</span></p>
+      <p class="flex justify-between border-b py-2 text-sm" style="border-color:var(--line)"><span>Email</span><span class="text-[color:var(--dim)]">contacto@patagoniafullstack.com.ar</span></p>
+      <p class="flex justify-between py-2 text-sm"><span>Ubicación</span><span class="text-[color:var(--dim)]">Neuquén Capital</span></p>
+      <a href="https://wa.me/5492996097833" target="_blank" class="btn-primary rounded-full px-6 py-3 block text-center mt-6">Escribir por WhatsApp</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="border-t" style="border-color:var(--line); background:var(--bg2);">
+  <div class="max-w-7xl mx-auto px-6 md:px-10 py-14 grid md:grid-cols-3 gap-10">
+    <div>
+      <span class="font-display font-bold text-xl">Patagonia<span class="grad-text">Fullstack</span></span>
+      <p class="text-[color:var(--dim)] mt-3 max-w-xs">Soluciones digitales para negocios reales, desde Neuquén.</p>
+    </div>
+    <div class="font-mono text-sm text-[color:var(--dim)] space-y-2">
+      <p class="tracking-[0.2em] text-xs mb-2" style="color:var(--cyan)">SEGUINOS</p>
+      <a href="#" class="block underline-grow w-fit">Instagram</a>
+      <a href="#" class="block underline-grow w-fit">LinkedIn</a>
+    </div>
+    <div class="font-mono text-sm text-[color:var(--dim)] space-y-2">
+      <p class="tracking-[0.2em] text-xs mb-2" style="color:var(--cyan)">NAVEGACIÓN</p>
+      <a href="#servicios" class="block underline-grow w-fit">Servicios</a>
+      <a href="#paquetes" class="block underline-grow w-fit">Paquetes</a>
+      <a href="#portfolio" class="block underline-grow w-fit">Portfolio</a>
+    </div>
+  </div>
+  <div class="text-center font-mono text-[10px] tracking-[0.2em] text-[color:var(--dim)] pb-8">© 2026 PATAGONIA FULLSTACK — NEUQUÉN, ARGENTINA</div>
+</footer>
+
+<script>
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el=>io.observe(el));
+
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const parallaxEls = document.querySelectorAll('[data-parallax]');
+  function onScroll(){
+    if(prefersReduced) return;
+    const y = window.scrollY;
+    parallaxEls.forEach(el=>{
+      const speed = parseFloat(el.dataset.speed || 0.2);
+      el.style.transform = `translateY(${y*speed*0.25}px)`;
+    });
+  }
+  window.addEventListener('scroll', onScroll, { passive:true });
+
+  function heroMove(e){
+    if(prefersReduced) return;
+    const hero = document.getElementById('inicio');
+    const rect = hero.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    hero.style.setProperty('--mx', x + '%');
+    hero.style.setProperty('--my', y + '%');
+  }
+</script>
+</body>
+</html>
